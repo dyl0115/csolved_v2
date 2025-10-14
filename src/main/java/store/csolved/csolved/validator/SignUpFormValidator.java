@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import store.csolved.csolved.domain.auth.controller.form.SignUpForm;
+import store.csolved.csolved.domain.auth.controller.request.SignUpRequest;
 import store.csolved.csolved.domain.user.mapper.UserMapper;
 
 @RequiredArgsConstructor
@@ -16,20 +16,20 @@ public class SignUpFormValidator implements Validator
     @Override
     public boolean supports(Class<?> clazz)
     {
-        return SignUpForm.class.isAssignableFrom(clazz);
+        return SignUpRequest.class.isAssignableFrom(clazz);
     }
 
     @Override
     public void validate(Object target, Errors errors)
     {
-        SignUpForm form = (SignUpForm) target;
+        SignUpRequest form = (SignUpRequest) target;
 
         checkEmailDuplicate(form, errors);
         checkNicknameDuplicate(form, errors);
         checkPasswordMatch(form, errors);
     }
 
-    private void checkEmailDuplicate(SignUpForm form, Errors errors)
+    private void checkEmailDuplicate(SignUpRequest form, Errors errors)
     {
         if (userMapper.existsByEmail(form.getEmail()))
         {
@@ -37,7 +37,7 @@ public class SignUpFormValidator implements Validator
         }
     }
 
-    private void checkNicknameDuplicate(SignUpForm form, Errors errors)
+    private void checkNicknameDuplicate(SignUpRequest form, Errors errors)
     {
         if (userMapper.existsByNickname(form.getNickname()))
         {
@@ -45,7 +45,7 @@ public class SignUpFormValidator implements Validator
         }
     }
 
-    private void checkPasswordMatch(SignUpForm form, Errors errors)
+    private void checkPasswordMatch(SignUpRequest form, Errors errors)
     {
         if (!form.getPassword().equals(form.getPasswordConfirm()))
         {

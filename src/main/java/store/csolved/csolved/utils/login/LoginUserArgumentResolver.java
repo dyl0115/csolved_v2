@@ -8,13 +8,13 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.utils.SessionManager;
+import store.csolved.csolved.utils.AuthSessionManager;
 
 @RequiredArgsConstructor
 @Component
 public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver
 {
-    private final SessionManager sessionManager;
+    private final AuthSessionManager sessionManager;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter)

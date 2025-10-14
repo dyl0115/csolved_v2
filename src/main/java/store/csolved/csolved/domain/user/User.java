@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import store.csolved.csolved.common.BaseEntity;
+import store.csolved.csolved.domain.auth.service.command.SignUpCommand;
 
 import java.time.LocalDateTime;
 
@@ -22,14 +23,14 @@ public class User extends BaseEntity
     private String company;
     private Boolean admin;
 
-    public static User create(String email, String password, String nickname, String company, boolean admin)
+    public static User from(SignUpCommand command, String hashedPassword)
     {
         return User.builder()
-                .email(email)
-                .password(password)
-                .nickname(nickname)
-                .company(company)
-                .admin(admin)
+                .email(command.getEmail())
+                .password(hashedPassword)
+                .nickname(command.getNickname())
+                .company(null)
+                .admin(false)
                 .build();
     }
 }

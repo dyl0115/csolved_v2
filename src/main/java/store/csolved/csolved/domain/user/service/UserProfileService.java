@@ -7,7 +7,7 @@ import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.domain.user.controller.form.UserProfileForm;
 import store.csolved.csolved.exception.ImageUploadException;
 import store.csolved.csolved.domain.file.FileService;
-import store.csolved.csolved.utils.SessionManager;
+import store.csolved.csolved.utils.AuthSessionManager;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class UserProfileService
 {
     private final static String FOLDER_NAME_USER_PROFILE = "user";
 
-    private final SessionManager sessionManager;
+    private final AuthSessionManager sessionManager;
     private final FileService s3Service;
     private final UserService userService;
 

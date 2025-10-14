@@ -8,14 +8,14 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.utils.SessionManager;
+import store.csolved.csolved.utils.AuthSessionManager;
 
 
 @RequiredArgsConstructor
 @Component
 public class LoginRequestInterceptor implements HandlerInterceptor
 {
-    private final SessionManager sessionManager;
+    private final AuthSessionManager sessionManager;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception

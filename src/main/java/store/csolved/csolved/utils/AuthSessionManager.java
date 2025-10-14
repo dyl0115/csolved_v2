@@ -2,14 +2,12 @@ package store.csolved.csolved.utils;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
 import store.csolved.csolved.domain.user.User;
 
 @RequiredArgsConstructor
 @Component
-public class SessionManager
+public class AuthSessionManager
 {
     private final static String LOGIN_USER_SESSION_KEY = "loginUser";
     private final HttpSession httpSession;
