@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="utf-8"/>
-        <meta name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>커뮤니티 게시판</title>
         <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
@@ -11,223 +10,181 @@
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     
-    <body>
+    <body class="bg-gray-50">
         <!-- 네비게이션 -->
         <div th:replace="~{/layout/nav :: default-nav(${user})}"></div>
         
         <!-- 게시판 배너 -->
-        <img src="/assets/community-banner.svg"
-             alt="커뮤니티 게시판"
-             style="width: 100%; max-height: 300px; min-height: 200px"/>
+        <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
+            <div class="container mx-auto">
+                <div class="flex items-center space-x-3">
+                    <i data-lucide="users" class="w-8 h-8"></i>
+                    <h1 class="text-3xl font-bold">커뮤니티 게시판</h1>
+                </div>
+                <p class="mt-2 text-gray-300">자유롭게 소통하고 정보를 공유하세요</p>
+            </div>
+        </div>
         
         <!-- 게시판 페이지 본문 -->
-        <div class="container"
+        <div class="container mx-auto px-4 py-8"
              th:with="posts=${communityPostListViewModel.posts},
-                         page=${communityPostListViewModel.page},
-                         categories=${communityPostListViewModel.categories}">
-            <div class="row">
-                <div class="col-lg-8">
-                    <!-- 게시글 리스트 -->
-                    <div th:if="${#lists.isEmpty(posts)}">
-                        
-                        <!-- 게시글이 없는 경우: 게시글 작성 메시지를 보여줌 -->
-                        <div class="card text-center my-5">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    게시글이 없습니다
-                                </h5>
-                                <p class="card-text">
-                                    첫 번째 글을 작성해보세요!
-                                </p>
-                                <a th:href="@{/community/createForm}"
-                                   class="btn btn-primary">
-                                    글 작성하기
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 게시글이 있는 경우: 게시글 작성 버튼을 보여줌 -->
-                    <div th:if="${!#lists.isEmpty(posts)}"
-                         class="mb-4 d-flex justify-content-end">
-                        <a class="btn btn-primary"
-                           th:href="@{/community/createForm}">
-                            <i class="bi bi-pencil-square">
-                            </i>
-                            게시글 작성하기
+                        page=${communityPostListViewModel.page},
+                        categories=${communityPostListViewModel.categories}">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- 메인 콘텐츠 -->
+                <div class="lg:col-span-3">
+                    <!-- 게시글이 없는 경우 -->
+                    <div th:if="${#lists.isEmpty(posts)}" class="bg-white rounded-lg shadow-md p-8 text-center">
+                        <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
+                        <h5 class="text-xl font-semibold text-gray-700 mb-2">게시글이 없습니다</h5>
+                        <p class="text-gray-500 mb-4">첫 번째 글을 작성해보세요!</p>
+                        <a th:href="@{/community/createForm}"
+                           class="inline-flex items-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition">
+                            <i data-lucide="edit" class="w-5 h-5"></i>
+                            <span>글 작성하기</span>
                         </a>
                     </div>
                     
-                    <!-- 게시글이 있는 경우: 게시글 리스트를 보여줌 -->
-                    <div class="card mb-4 card-hover"
-                         th:each="post:*{posts}">
-                        <a class="card-body text-decoration-none"
-                           th:href="@{/community/__${post.id}__}">
-                            <div class="row">
-                                <div class="col-md-8">
-                                    
-                                    <!-- 제목 -->
-                                    <p class="card-title fs-4 fw-bolder pt-1 text-truncate"
-                                       style="max-width: 100%;"
-                                       th:text="${post.title}">
-                                        게시글 제목
-                                    </p>
-                                    
-                                    <!-- 태그 -->
-                                    <span class="badge bg-secondary me-1"
-                                          th:each="tag:${post.tags}"
+                    <!-- 게시글이 있는 경우: 작성 버튼 -->
+                    <div th:if="${!#lists.isEmpty(posts)}" class="mb-4 flex justify-end">
+                        <a class="inline-flex items-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition shadow-md"
+                           th:href="@{/community/createForm}">
+                            <i data-lucide="edit" class="w-5 h-5"></i>
+                            <span>게시글 작성</span>
+                        </a>
+                    </div>
+                    
+                    <!-- 게시글 리스트 -->
+                    <div class="space-y-3" th:if="${!#lists.isEmpty(posts)}">
+                        <a th:each="post:*{posts}"
+                           th:href="@{/community/__${post.id}__}"
+                           class="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-4 border border-gray-200 hover:border-gray-300">
+                            
+                            <!-- 제목과 태그 -->
+                            <div class="mb-2">
+                                <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1"
+                                    th:text="${post.title}">
+                                    게시글 제목
+                                </h3>
+                                <div class="flex flex-wrap gap-2">
+                                    <span th:each="tag:${post.tags}"
+                                          class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded"
                                           th:text="${tag.name}">
                                         태그명
                                     </span>
-                                    
-                                    <!-- 카테고리 -->
-                                    <div class="d-flex align-items-center flex-wrap pt-5">
-                                        <div class="d-flex align-items-center me-2">
-                                            <i class="bi bi-journal-text text-muted me-1">
-                                            </i>
-                                            <div class="col-auto small text-muted"
-                                                 th:text="${post.categoryName}">
-                                                자유
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- 댓글수-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <i class="bi bi-chat-dots text-muted me-1">
-                                            </i>
-                                            <div class="col-auto small text-muted "
-                                                 th:text="${post.answerCount}">
-                                                0
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- 좋아요수 -->
-                                        <div class="d-flex align-items-center me-2">
-                                            <i class="bi bi-heart-fill text-muted me-1">
-                                            </i>
-                                            <div class="col-auto small text-muted"
-                                                 th:text="${post.likes}">
-                                                0
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- 조회수-->
-                                        <div class="d-flex align-items-center me-2">
-                                            <i class="bi bi-eye text-muted me-1">
-                                            </i>
-                                            <div class="col-auto small text-muted"
-                                                 th:text="${post.views}">
-                                                0
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- 작성자 -->
-                                        <div class="d-flex align-items-center me-2">
-                                            <i class="bi bi-person text-muted me-1">
-                                            </i>
-                                            <div class="col-auto small text-muted"
-                                                 th:text="${post.anonymous ? '익명' : post.authorNickname}">
-                                                작성자
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- 작성시간 -->
-                                        <div class="d-flex align-items-center me-2">
-                                            <i class="bi bi-clock text-muted me-1">
-                                            </i>
-                                            <div class="timeago col-auto small text-muted"
-                                                 th:data-date="${post.createdAt}">
-                                                1시간 전
-                                            </div>
-                                        </div>
-                                        
-                                        <!-- 수정여부 -->
-                                        <div class="d-flex align-items-center me-2"
-                                             th:if="${post.modifiedAt}">
-                                            <i class="bi bi-pencil text-muted me-1">
-                                            </i>
-                                            <span class="col-auto small text-muted">
-                                                수정됨
-                                            </span>
-                                        </div>
-                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 메타 정보 -->
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500">
+                                <!-- 카테고리 -->
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="folder" class="w-4 h-4"></i>
+                                    <span th:text="${post.categoryName}">자유</span>
+                                </div>
+                                
+                                <!-- 댓글수 -->
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                    <span th:text="${post.answerCount}">0</span>
+                                </div>
+                                
+                                <!-- 좋아요수 -->
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                    <span th:text="${post.likes}">0</span>
+                                </div>
+                                
+                                <!-- 조회수 -->
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                    <span th:text="${post.views}">0</span>
+                                </div>
+                                
+                                <!-- 작성자 -->
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="user" class="w-4 h-4"></i>
+                                    <span th:text="${post.anonymous ? '익명' : post.authorNickname}">작성자</span>
+                                </div>
+                                
+                                <!-- 작성시간 -->
+                                <div class="flex items-center space-x-1">
+                                    <i data-lucide="clock" class="w-4 h-4"></i>
+                                    <span class="timeago" th:data-date="${post.createdAt}">1시간 전</span>
+                                </div>
+                                
+                                <!-- 수정여부 -->
+                                <div th:if="${post.modifiedAt}" class="flex items-center space-x-1 text-blue-600">
+                                    <i data-lucide="edit-3" class="w-4 h-4"></i>
+                                    <span>수정됨</span>
                                 </div>
                             </div>
                         </a>
                     </div>
                     
-                    <!-- 페이지 네이션-->
-                    <nav aria-label="Pagination">
-                        <hr class="my-0"/>
-                        <ul class="pagination justify-content-center my-4">
-                            <li>
-                                <a class="btn btn-primary text-sm-center"
-                                   th:if="${page.currentPage > 1}"
-                                   th:onclick="updatePage([[${page.currentPage - 1}]]); return false">
-                                    이전 페이지
-                                </a>
-                                <button disabled
-                                        class="btn btn-primary text-sm-center"
-                                        th:unless="${page.currentPage > 1}">
-                                    이전 페이지
-                                </button>
-                            </li>
-                            <li>
-                                <div class="d-flex align-items-center">
-                                    <input type="text"
-                                           onkeyup="if(event.key === 'Enter') updatePage(this.value)"
-                                           onblur="updatePage(this.value)"
-                                           class="form-control"
-                                           style="max-width: 60px;"
-                                           th:value="${page.currentPage}"
-                                           th:min="1"
-                                           th:max="${page.totalPage}">
-                                    <span class="text-muted ms-2"
-                                          th:text="| / ${page.totalPage}|"></span>
-                                </div>
-                            </li>
-                            <li>
-                                <a class="btn btn-primary text-sm-center"
-                                   th:if="${page.currentPage < page.totalPage}"
-                                   th:onclick="updatePage([[${page.currentPage + 1}]]); return false;">
-                                    다음 페이지
-                                </a>
-                                <button disabled
-                                        class="btn btn-primary text-sm-center"
-                                        th:unless="${page.currentPage < page.totalPage}">
-                                    다음 페이지
-                                </button>
-                            </li>
-                        </ul>
-                    </nav>
+                    <!-- 페이지네이션 -->
+                    <div class="mt-8 flex items-center justify-center space-x-4">
+                        <!-- 이전 페이지 -->
+                        <button th:if="${page.currentPage > 1}"
+                                th:onclick="updatePage([[${page.currentPage - 1}]]); return false"
+                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            <span>이전</span>
+                        </button>
+                        <button th:unless="${page.currentPage > 1}"
+                                disabled
+                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            <span>이전</span>
+                        </button>
+                        
+                        <!-- 페이지 입력 -->
+                        <div class="flex items-center space-x-2">
+                            <input type="number"
+                                   onkeyup="if(event.key === 'Enter') updatePage(this.value)"
+                                   onblur="updatePage(this.value)"
+                                   class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                   th:value="${page.currentPage}"
+                                   th:min="1"
+                                   th:max="${page.totalPage}">
+                            <span class="text-gray-500" th:text="'/ ' + ${page.totalPage}">/ 10</span>
+                        </div>
+                        
+                        <!-- 다음 페이지 -->
+                        <button th:if="${page.currentPage < page.totalPage}"
+                                th:onclick="updatePage([[${page.currentPage + 1}]]); return false"
+                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                            <span>다음</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                        <button th:unless="${page.currentPage < page.totalPage}"
+                                disabled
+                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
+                            <span>다음</span>
+                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
                 </div>
                 
-                <!-- 사이드 위젯 -->
-                <div class="col-lg-4">
-                    
+                <!-- 사이드바 -->
+                <div class="lg:col-span-1 space-y-4">
                     <!-- 검색 위젯 -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            검색
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
+                            <i data-lucide="search" class="w-5 h-5"></i>
+                            <h3 class="font-semibold">검색</h3>
                         </div>
-                        <div class="card-body sticky-top">
-                            <form method="GET"
-                                  th:action="@{/communities}">
+                        <div class="p-4">
+                            <form method="GET" th:action="@{/communities}">
+                                <input type="hidden" name="page" value="1"/>
                                 
-                                <!-- 검색 기본 페이지는 1 -->
-                                <input type="hidden"
-                                       name="page"
-                                       value="1"/>
-                                
-                                <div class="input-group ">
-                                    
-                                    <!-- 제목/글쓴이 검색방식 -->
+                                <div class="space-y-3">
+                                    <!-- 검색 타입 -->
                                     <select id="search-select"
                                             name="searchType"
-                                            class="form-select"
-                                            style="max-width: 80px;">
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
                                         <option value="title"
-                                                th:selected="${param.searchType != null && param.searchType[0].equals('title') }">
+                                                th:selected="${param.searchType != null && param.searchType[0].equals('title')}">
                                             제목
                                         </option>
                                         <option value="author"
@@ -237,94 +194,67 @@
                                     </select>
                                     
                                     <!-- 검색창 -->
-                                    <input name="searchKeyword"
-                                           class="form-control"
-                                           type="text"
-                                           placeholder="검색어를 입력하세요."
-                                           th:value="${param.searchKeyword}"/>
-                                    <button class="btn btn-primary"
-                                            type="submit">
-                                        <i class="bi bi-search">
-                                        </i>
-                                    </button>
+                                    <div class="flex space-x-2">
+                                        <input name="searchKeyword"
+                                               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                               type="text"
+                                               placeholder="검색어 입력"
+                                               th:value="${param.searchKeyword}"/>
+                                        <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                                                type="submit">
+                                            <i data-lucide="search" class="w-5 h-5"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </form>
                         </div>
                     </div>
                     
-                    <!-- 정렬 위젯-->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            정렬
+                    <!-- 정렬 위젯 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
+                            <i data-lucide="arrow-up-down" class="w-5 h-5"></i>
+                            <h3 class="font-semibold">정렬</h3>
                         </div>
-                        <div class="card-body">
+                        <div class="p-4">
                             <form method="GET">
-                                <input type="hidden"
-                                       name="page"
-                                       value="1"/>
-                                <div class="d-flex flex-column">
-                                    <select class="form-select"
-                                            name="sortType"
-                                            onchange="this.form.submit()"
-                                            th:with="currentSortType=${param.sortType != null ? param.sortType[0] : 'recent'}">
-                                        <option value="recent"
-                                                th:selected="${currentSortType == 'recent'}">
-                                            최신순
-                                        </option>
-                                        <option value="views"
-                                                th:selected="${currentSortType == 'views'}">
-                                            조회수 많은 순
-                                        </option>
-                                        <option value="answers"
-                                                th:selected="${currentSortType == 'answers'}">
-                                            댓글 많은 순
-                                        </option>
-                                        <option value="likes"
-                                                th:selected="${currentSortType == 'likes'}">
-                                            좋아요 많은 순
-                                        </option>
-                                    </select>
-                                </div>
+                                <input type="hidden" name="page" value="1"/>
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                        name="sortType"
+                                        onchange="this.form.submit()"
+                                        th:with="currentSortType=${param.sortType != null ? param.sortType[0] : 'recent'}">
+                                    <option value="recent" th:selected="${currentSortType == 'recent'}">최신순</option>
+                                    <option value="views" th:selected="${currentSortType == 'views'}">조회수 많은 순</option>
+                                    <option value="answers" th:selected="${currentSortType == 'answers'}">댓글 많은 순
+                                    </option>
+                                    <option value="likes" th:selected="${currentSortType == 'likes'}">좋아요 많은 순</option>
+                                </select>
                             </form>
                         </div>
                     </div>
                     
                     <!-- 카테고리 위젯 -->
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            카테고리
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
+                            <i data-lucide="folder" class="w-5 h-5"></i>
+                            <h3 class="font-semibold">카테고리</h3>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <ul class="list-unstyled mb-0"
-                                        th:each="category:*{categories}">
-                                        <li>
-                                            <a id="filter-select"
-                                               class="btn btn-link p-0 text-decoration-none"
-                                               type="button"
-                                               th:value="${category.id}"
-                                               th:text="${category.name}"
-                                               th:href="@{/communities(page=1,filterType='CATEGORY',filterValue=${category.id})}">
-                                                카테고리 이름
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- 사이드 위젯-->
-                    <div class="card mb-4">
-                        <div class="card-header">사이드 위젯</div>
-                        <div class="card-body">
-                            이후 기능 추가...
+                        <div class="p-4">
+                            <ul class="space-y-2">
+                                <li th:each="category:*{categories}">
+                                    <a class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg transition"
+                                       th:href="@{/communities(page=1,filterType='CATEGORY',filterValue=${category.id})}">
+                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                        <span th:text="${category.name}">카테고리 이름</span>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
         <!-- 네비게이션 javascript -->
         <script th:replace="~{/layout/nav :: default-nav-scripts}"></script>
         <script src="/js/list-layout.js"></script>
