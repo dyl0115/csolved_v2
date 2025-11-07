@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.auth.controller.response.SignInResponse;
+import store.csolved.csolved.domain.auth.controller.response.SignOutResponse;
 import store.csolved.csolved.domain.auth.controller.response.SignUpResponse;
 import store.csolved.csolved.domain.auth.service.command.SignInCommand;
 import store.csolved.csolved.domain.auth.service.command.SignUpCommand;
@@ -44,9 +45,10 @@ public class AuthApiController
     @LoginRequest
     @PostMapping("/signOut")
     @ResponseStatus(HttpStatus.OK)
-    public void signOut()
+    public SignOutResponse signOut()
     {
         authService.signOut();
+        return SignOutResponse.success();
     }
 
     @LoginRequest
