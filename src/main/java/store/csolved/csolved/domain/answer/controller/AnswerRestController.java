@@ -17,33 +17,33 @@ public class AnswerRestController
 {
     private final AnswerService answerService;
 
-    @LoginRequest
-    @PostMapping("/{answerId}/score")
-    @ResponseStatus(HttpStatus.OK)
-    public AnswerScoreResponse saveScore(@LoginUser User user,
-                                         @PathVariable Long answerId,
-                                         @RequestBody Long score)
-    {
-        Long prevScore = answerService.getScore(answerId, user.getId());
-        if (prevScore != null)
-        {
-            return AnswerScoreResponse.duplicate(prevScore);
-        }
+//    @LoginRequest
+//    @PostMapping("/{answerId}/score")
+//    @ResponseStatus(HttpStatus.OK)
+//    public AnswerScoreResponse saveScore(@LoginUser User user,
+//                                         @PathVariable Long answerId,
+//                                         @RequestBody Long score)
+//    {
+//        Long prevScore = answerService.getScore(answerId, user.getId());
+//        if (prevScore != null)
+//        {
+//            return AnswerScoreResponse.duplicate(prevScore);
+//        }
+//
+//        Answer answer = answerService.saveScore(answerId, user.getId(), score);
+//        return AnswerScoreResponse.success(answer);
+//    }
 
-        Answer answer = answerService.saveScore(answerId, user.getId(), score);
-        return AnswerScoreResponse.success(answer);
-    }
-
-    @LoginRequest
-    @PutMapping("/{answerId}/score")
-    @ResponseStatus(HttpStatus.OK)
-    public AnswerScoreResponse updateScore(@LoginUser User user,
-                                           @PathVariable Long answerId,
-                                           @RequestBody Long score)
-    {
-        Answer answer = answerService.updateScore(answerId, user.getId(), score);
-        return AnswerScoreResponse.success(answer);
-    }
+//    @LoginRequest
+//    @PutMapping("/{answerId}/score")
+//    @ResponseStatus(HttpStatus.OK)
+//    public AnswerScoreResponse updateScore(@LoginUser User user,
+//                                           @PathVariable Long answerId,
+//                                           @RequestBody Long score)
+//    {
+//        Answer answer = answerService.updateScore(answerId, user.getId(), score);
+//        return AnswerScoreResponse.success(answer);
+//    }
 
     @LoginRequest
     @DeleteMapping("/{answerId}")

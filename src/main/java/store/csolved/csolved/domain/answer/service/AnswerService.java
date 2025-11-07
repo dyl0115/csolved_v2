@@ -27,27 +27,27 @@ public class AnswerService
         return answerMapper.getAnswers(questionId);
     }
 
-    public Long getScore(Long answerId, Long userId)
-    {
-        return answerMapper.getScore(answerId, userId);
-    }
+//    public Long getScore(Long answerId, Long userId)
+//    {
+//        return answerMapper.getScore(answerId, userId);
+//    }
 
-    @Transactional
-    public Answer saveScore(Long answerId, Long userId, Long score)
-    {
-        answerMapper.saveScore(answerId, score);
-        answerMapper.saveVoter(answerId, userId, score);
-        return answerMapper.getAnswer(answerId);
-    }
+//    @Transactional
+//    public Answer saveScore(Long answerId, Long userId, Long score)
+//    {
+//        answerMapper.saveScore(answerId, score);
+//        answerMapper.saveVoter(answerId, userId, score);
+//        return answerMapper.getAnswer(answerId);
+//    }
 
-    @Transactional
-    public Answer updateScore(Long answerId, Long userId, Long score)
-    {
-        Long prevScore = answerMapper.getScore(answerId, userId);
-        answerMapper.updateScore(answerId, prevScore, score);
-        answerMapper.updateVoter(answerId, userId, score);
-        return answerMapper.getAnswer(answerId);
-    }
+//    @Transactional
+//    public Answer updateScore(Long answerId, Long userId, Long score)
+//    {
+//        Long prevScore = answerMapper.getScore(answerId, userId);
+//        answerMapper.updateScore(answerId, prevScore, score);
+//        answerMapper.updateVoter(answerId, userId, score);
+//        return answerMapper.getAnswer(answerId);
+//    }
 
     @Transactional
     public void delete(Long answerId)

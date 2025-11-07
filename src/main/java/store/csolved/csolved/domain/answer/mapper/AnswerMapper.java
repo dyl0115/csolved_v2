@@ -18,15 +18,13 @@ public interface AnswerMapper
 
     void decreaseAnswerCount(Long postId);
 
-    Long getScore(Long answerId, Long userId);
+//    Long getScore(Long answerId, Long userId);
 
-    void saveScore(Long answerId, Long score);
-
-    void updateScore(Long answerId, Long oldScore, Long newScore);
-
-    void saveVoter(Long answerId, Long userId, Long score);
-
-    void updateVoter(Long answerId, Long userId, Long score);
+//    void saveScore(Long answerId, Long score);
+//
+//    void saveVoter(Long answerId, Long userId, Long score);
+//
+//    void updateVoter(Long answerId, Long userId, Long score);
 
     boolean existComments(Long answerId);
 

@@ -1,15 +1,19 @@
 <!DOCTYPE html>
-<html lang="en"
-      th:replace="~{/layout/default-layout::default-layout(user=${user}, title=~{::title}, content=~{::body})}">
+<html lang="en">
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport"
               content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>
-            커뮤니티 게시판
-        </title>
+        <title>커뮤니티 게시판</title>
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <!-- Lucide Icons -->
+        <script src="https://unpkg.com/lucide@latest"></script>
     </head>
+    
     <body>
+        <!-- 네비게이션 -->
+        <div th:replace="~{/layout/nav :: default-nav(${user})}"></div>
         
         <!-- 게시판 배너 -->
         <img src="/assets/community-banner.svg"
@@ -321,7 +325,8 @@
                 </div>
             </div>
         </div>
-        <!-- 리스트 레이아웃 -->
+        <!-- 네비게이션 javascript -->
+        <script th:replace="~{/layout/nav :: default-nav-scripts}"></script>
         <script src="/js/list-layout.js"></script>
     </body>
 </html>
