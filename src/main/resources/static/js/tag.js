@@ -70,15 +70,15 @@ document.addEventListener('DOMContentLoaded', function ()
 
         // 태그 뱃지 생성
         const tag = document.createElement('span');
-        tag.classList.add('badge', 'bg-primary', 'me-1', 'mb-1', 'd-flex', 'align-items-center');
+        tag.classList.add('inline-flex', 'items-center', 'gap-2', 'px-3', 'py-1', 'mr-1', 'mb-1', 'text-sm', 'font-medium', 'text-white', 'bg-blue-600', 'rounded-full');
         tag.textContent = tagText;
 
         // 태그 삭제 버튼 생성
         const removeButton = document.createElement('button');
         removeButton.type = 'button';
-        removeButton.classList.add('btn-close', 'btn-close-white', 'ms-2');
+        removeButton.classList.add('inline-flex', 'items-center', 'justify-center', 'w-4', 'h-4', 'text-white', 'hover:text-gray-200', 'focus:outline-none', 'transition-colors');
         removeButton.setAttribute('aria-label', 'Remove');
-        removeButton.style.fontSize = '0.7em';
+        removeButton.innerHTML = '×';
 
         // 삭제 버튼 클릭 시
         removeButton.onclick = () =>

@@ -29,10 +29,8 @@ public class Community extends Post
                 .content(command.getContent())
                 .authorId(command.getAuthorId())
                 .anonymous(command.isAnonymous())
-                .views(0L)
-                .likes(0L)
-                .answerCount(0L)
                 .categoryId(command.getCategoryId())
+                .tags(command.getTags())
                 .build();
     }
 }

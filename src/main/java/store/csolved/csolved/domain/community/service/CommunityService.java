@@ -15,6 +15,7 @@ import store.csolved.csolved.domain.community.service.command.CommunityUpdateCom
 import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
+import store.csolved.csolved.domain.tag.service.TagService;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.page.Pagination;
 import store.csolved.csolved.utils.page.PaginationManager;
@@ -36,6 +37,8 @@ public class CommunityService
     private final CommentMapper commentMapper;
     private final BookmarkService bookmarkService;
     private final PaginationManager paginationManager;
+
+    private final TagService tagService;
 
     @Transactional
     public Long save(Community community)
@@ -99,10 +102,10 @@ public class CommunityService
     }
 
     @Transactional
-    public Long update(Long communityId, CommunityUpdateCommand command)
+    public void update(Long communityId, CommunityUpdateCommand command)
     {
         communityMapper.updateCommunity(communityId, Community.from(command));
-        return communityId;
+        tagService.updateTags(communityId, command.getTags());
     }
 
     @Transactional

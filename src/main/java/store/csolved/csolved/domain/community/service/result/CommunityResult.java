@@ -6,6 +6,7 @@ import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.domain.tag.Tag;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -22,7 +23,7 @@ public class CommunityResult
     private Long answerCount;
     private Long categoryId;
     private String categoryName;
-    private List<Tag> tags;
+    private String tags;
 
     public static CommunityResult from(Community community)
     {
@@ -38,7 +39,14 @@ public class CommunityResult
                 .answerCount(community.getAnswerCount())
                 .categoryId(community.getCategoryId())
                 .categoryName(community.getCategoryName())
-                .tags(community.getTags())
+                .tags(tagsToString(community.getTags()))
                 .build();
+    }
+
+    private static String tagsToString(List<Tag> tags)
+    {
+        return tags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.joining(","));
     }
 }

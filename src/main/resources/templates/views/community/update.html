@@ -24,8 +24,6 @@
                 
                 <!-- 본문 -->
                 <div class="p-6">
-                    <input type="hidden" name="_method" value="PUT"/>
-                    
                     <!-- 카테고리 -->
                     <div class="mb-6">
                         <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">
@@ -96,9 +94,8 @@
                                 <span>태그</span>
                             </div>
                         </label>
-                        <div
-                                class="flex flex-wrap items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-colors min-h-[42px]"
-                                id="tags-container">
+                        <div class="flex flex-wrap items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-colors min-h-[42px]"
+                             id="tags-container">
                             
                             <!-- 실제 태그가 전송되는 영역-->
                             <input type="hidden" id="tag-hidden-input" th:value="${post.tags}">

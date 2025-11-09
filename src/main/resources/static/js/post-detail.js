@@ -68,30 +68,30 @@ async function toggleBookmark(bookmarkButton)
 }
 
 // 게시글 삭제
-async function deletePost(postType, pluralPostType, postId)
-{
-    try
-    {
-        const response = await fetch(`/api/${postType}/${postId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-
-        if (!response.ok)
-        {
-            throw new Error('삭제에 실패했습니다.');
-        }
-        window.location.replace(`/${pluralPostType}?page=1`);
-
-    }
-    catch (error)
-    {
-        console.error('Error:', error);
-        alert('삭제 중 오류가 발생했습니다.');
-    }
-}
+// async function deletePost(postType, pluralPostType, postId)
+// {
+//     try
+//     {
+//         const response = await fetch(`/api/${postType}/${postId}`, {
+//             method: 'DELETE',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             }
+//         });
+//
+//         if (!response.ok)
+//         {
+//             throw new Error('삭제에 실패했습니다.');
+//         }
+//         window.location.replace(`/${pluralPostType}?page=1`);
+//
+//     }
+//     catch (error)
+//     {
+//         console.error('Error:', error);
+//         alert('삭제 중 오류가 발생했습니다.');
+//     }
+// }
 
 // 답글 삭제
 async function deleteAnswer(answerId)

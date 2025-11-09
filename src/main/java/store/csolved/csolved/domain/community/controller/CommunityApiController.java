@@ -8,16 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.community.controller.request.CommunityUpdateRequest;
-import store.csolved.csolved.domain.community.controller.response.CommunityUpdateResponse;
-import store.csolved.csolved.domain.community.controller.view_model.CommunityCreateUpdateVM;
 import store.csolved.csolved.domain.community.service.CommunityService;
 import store.csolved.csolved.domain.community.service.command.CommunityUpdateCommand;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.utils.login.LoginUser;
 import store.csolved.csolved.domain.community.service.CommunityFacade;
 import store.csolved.csolved.domain.user.User;
-
-import java.util.Map;
 
 @RequestMapping("/api/community")
 @RequiredArgsConstructor
@@ -50,11 +46,10 @@ public class CommunityApiController
 
     @LoginRequest
     @PutMapping("/{postId}")
-    public CommunityUpdateResponse updatePost(@PathVariable("postId") Long postId,
-                                              @Valid @RequestBody CommunityUpdateRequest request)
+    public void updatePost(@PathVariable("postId") Long postId,
+                           @Valid @RequestBody CommunityUpdateRequest request)
     {
         communityService.update(postId, CommunityUpdateCommand.from(request));
-        return CommunityUpdateResponse.success();
     }
 
     @LoginRequest
@@ -72,10 +67,8 @@ public class CommunityApiController
 
     @LoginRequest
     @DeleteMapping("/{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Long postId)
+    public void deletePost(@PathVariable Long postId)
     {
-        communityFacade.delete(postId);
+        communityService.delete(postId);
     }
-
 }
