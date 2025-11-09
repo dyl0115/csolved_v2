@@ -3,7 +3,7 @@ package store.csolved.csolved.domain.community.controller.view_model;
 import lombok.Builder;
 import lombok.Getter;
 import store.csolved.csolved.domain.category.Category;
-import store.csolved.csolved.domain.community.Community;
+import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.utils.page.Pagination;
 
 import java.util.List;

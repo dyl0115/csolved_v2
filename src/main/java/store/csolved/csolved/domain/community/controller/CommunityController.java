@@ -1,24 +1,22 @@
 package store.csolved.csolved.domain.community.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.answer.controller.form.AnswerCreateForm;
 import store.csolved.csolved.domain.category.Category;
 import store.csolved.csolved.domain.category.service.CategoryService;
 import store.csolved.csolved.domain.community.service.CommunityService;
 import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
+import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
-import store.csolved.csolved.domain.community.controller.form.CommunityCreateUpdateForm;
+import store.csolved.csolved.domain.community.controller.request.CommunityUpdateRequest;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityCreateUpdateVM;
-import store.csolved.csolved.domain.community.controller.view_model.CommunityDetailVM;
 import store.csolved.csolved.domain.community.service.CommunityFacade;
 import store.csolved.csolved.utils.filter.FilterInfo;
 import store.csolved.csolved.utils.filter.Filtering;
@@ -50,11 +48,11 @@ public class CommunityController
 
     @LoginRequest
     @GetMapping("/communities")
-    public String getCommunityPosts(@PageInfo Long pageNumber,
-                                    @SortInfo Sorting sort,
-                                    @FilterInfo Filtering filter,
-                                    @SearchInfo Searching search,
-                                    Model model)
+    public String getPosts(@PageInfo Long pageNumber,
+                           @SortInfo Sorting sort,
+                           @FilterInfo Filtering filter,
+                           @SearchInfo Searching search,
+                           Model model)
     {
         CommunityAndPageResult communitiesAndPage = communityService.getCommunitiesAndPage(pageNumber, sort, filter, search);
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
@@ -68,12 +66,12 @@ public class CommunityController
 
     @LoginRequest
     @GetMapping("/community/{postId}")
-    public String viewPost(@LoginUser User user,
-                           @PathVariable Long postId,
-                           Model model)
+    public String getPost(@LoginUser User user,
+                          @PathVariable Long postId,
+                          Model model)
     {
         CommunityWithAnswersAndCommentsResult result
-                = communityService.getCommunity(user.getId(), postId);
+                = communityService.getCommunityWithAnswersAndComments(user.getId(), postId);
 
         model.addAttribute("post", result.getCommunity());
         model.addAttribute("bookmarked", result.isBookmarked());
@@ -86,75 +84,29 @@ public class CommunityController
     }
 
     @LoginRequest
-    @GetMapping("/community/{postId}/read")
-    public String getPost(@LoginUser User user,
-                          @PathVariable Long postId,
-                          Model model)
-    {
-        CommunityWithAnswersAndCommentsResult post = communityService.getCommunity(user.getId(), postId);
-        model.addAttribute("communityPostDetails", post);
-        model.addAttribute("answerCreateForm", AnswerCreateForm.empty());
-        model.addAttribute("commentCreateForm", CommentCreateForm.empty());
-        return VIEWS_COMMUNITY_DETAIL;
-    }
-
-    @LoginRequest
     @GetMapping("/community/createForm")
-    public String initCreate(Model model)
+    public String getCreateForm(Model model)
     {
         CommunityCreateUpdateVM viewModel = communityFacade.initCreate();
         model.addAttribute("createVM", viewModel);
-        model.addAttribute("createForm", CommunityCreateUpdateForm.empty());
+        model.addAttribute("createForm", CommunityUpdateRequest.empty());
         return VIEWS_COMMUNITY_CREATE_FORM;
     }
 
     @LoginRequest
-    @PostMapping("/community")
-    public String processCreate(@Valid @ModelAttribute("createForm") CommunityCreateUpdateForm form,
-                                BindingResult result,
-                                Model model)
-    {
-        if (result.hasErrors())
-        {
-            CommunityCreateUpdateVM viewModel = communityFacade.initCreate();
-            model.addAttribute("createVM", viewModel);
-            return VIEWS_COMMUNITY_CREATE_FORM;
-        }
-        else
-        {
-            communityFacade.save(form);
-            return "redirect:/communities?page=1";
-        }
-    }
-
-    @LoginRequest
     @GetMapping("/community/{postId}/updateForm")
-    public String initUpdate(@PathVariable Long postId,
-                             Model model)
-    {
-        CommunityCreateUpdateVM viewModel = communityFacade.initUpdate();
-        model.addAttribute("updateVM", viewModel);
-        CommunityCreateUpdateForm form = communityFacade.initUpdateForm(postId);
-        model.addAttribute("updateForm", form);
-        return VIEWS_COMMUNITY_UPDATE_FORM;
-    }
-
-    @LoginRequest
-    @PutMapping("/community/{postId}")
-    public String processUpdate(@PathVariable("postId") Long postId,
-                                @Valid @ModelAttribute("updateForm") CommunityCreateUpdateForm form,
-                                BindingResult result,
+    public String getUpdateForm(@PathVariable Long postId,
                                 Model model)
     {
-        if (result.hasErrors())
-        {
-            CommunityCreateUpdateVM viewModel = communityFacade.initUpdate();
-            model.addAttribute("updateVM", viewModel);
-            return VIEWS_COMMUNITY_UPDATE_FORM;
-        }
 
-        communityFacade.update(postId, form);
-        return "redirect:/communities?page=1";
+        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
+        CommunityResult post = communityService.getCommunity(postId);
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("post", post);
+        model.addAttribute("postId", postId);
+
+        return VIEWS_COMMUNITY_UPDATE_FORM;
     }
 }
 

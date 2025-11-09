@@ -13,7 +13,6 @@ import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.domain.answer.controller.form.AnswerCreateForm;
 import store.csolved.csolved.domain.answer.service.AnswerService;
 import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
-import store.csolved.csolved.domain.community.service.CommunityFacade;
 import store.csolved.csolved.utils.login.LoginUser;
 
 import static store.csolved.csolved.domain.community.controller.CommunityController.VIEWS_COMMUNITY_DETAIL;
@@ -75,13 +74,13 @@ public class AnswerController
     {
         if (result.hasErrors())
         {
-            model.addAttribute("communityPostDetails", communityService.getCommunity(user.getId(), postId));
+            model.addAttribute("communityPostDetails", communityService.getCommunityWithAnswersAndComments(user.getId(), postId));
             model.addAttribute("commentCreateForm", CommentCreateForm.empty());
             return VIEWS_COMMUNITY_DETAIL;
         }
 
         answerService.saveAnswer(form.toAnswer());
-        model.addAttribute("communityPostDetails", communityService.getCommunity(user.getId(), postId));
+        model.addAttribute("communityPostDetails", communityService.getCommunityWithAnswersAndComments(user.getId(), postId));
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());
         return "redirect:/community/" + postId + "/read";
     }

@@ -10,10 +10,10 @@ import store.csolved.csolved.domain.category.Category;
 import store.csolved.csolved.domain.category.service.CategoryService;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.service.CommentService;
-import store.csolved.csolved.domain.community.controller.form.CommunityCreateUpdateForm;
+import store.csolved.csolved.domain.community.controller.request.CommunityUpdateRequest;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityCreateUpdateVM;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityDetailVM;
-import store.csolved.csolved.domain.community.Community;
+import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.utils.page.PaginationManager;
 import store.csolved.csolved.domain.tag.service.TagService;
 
@@ -33,13 +33,11 @@ public class CommunityFacade
     private final CategoryService categoryService;
     private final TagService tagService;
 
-    private final PaginationManager paginationUtils;
-
     // 커뮤니티글, 글의 태그 저장.
-    public void save(CommunityCreateUpdateForm form)
+    public void save(CommunityUpdateRequest request)
     {
-        Long saveId = communityService.save(form.getCommunity());
-        tagService.saveTags(saveId, form.getTagList());
+//        Long saveId = communityService.save(request.getCommunity());
+//        tagService.saveTags(saveId, request.getTagList());
     }
 
     // 커뮤니티글 작성 시 viewModel 제공
@@ -56,19 +54,11 @@ public class CommunityFacade
         return CommunityCreateUpdateVM.from(categories);
     }
 
-    // 커뮤니티글 업데이트 시 기존 게시글 제공
-    public CommunityCreateUpdateForm initUpdateForm(Long communityId)
-    {
-//        Community community = communityService.getCommunity(communityId);
-//        return CommunityCreateUpdateForm.from(community);
-        return null;
-    }
-
     // 커뮤니티글 업데이트
     @Transactional
-    public void update(Long postId, CommunityCreateUpdateForm form)
+    public void update(Long postId, CommunityUpdateRequest form)
     {
-        communityService.update(postId, form.getCommunity());
+//        communityService.update(postId, Community.from(command));
         tagService.updateTags(postId, form.getTagList());
     }
 

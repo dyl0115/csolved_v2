@@ -9,10 +9,11 @@ import store.csolved.csolved.domain.answer.mapper.AnswerMapper;
 import store.csolved.csolved.domain.bookmark.service.BookmarkService;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
-import store.csolved.csolved.domain.comment.service.CommentService;
-import store.csolved.csolved.domain.community.Community;
+import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.domain.community.mapper.CommunityMapper;
+import store.csolved.csolved.domain.community.service.command.CommunityUpdateCommand;
 import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
+import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.page.Pagination;
@@ -53,12 +54,17 @@ public class CommunityService
                 search.getKeyword());
     }
 
-    public CommunityWithAnswersAndCommentsResult getCommunity(Long userId, Long communityId)
+    public CommunityResult getCommunity(Long communityId)
+    {
+        Community community = communityMapper.getCommunity(communityId);
+        return CommunityResult.from(community);
+    }
+
+    public CommunityWithAnswersAndCommentsResult getCommunityWithAnswersAndComments(Long userId, Long communityId)
     {
         Community community = communityMapper.getCommunity(communityId);
         boolean bookmarked = bookmarkService.hasBookmarked(userId, communityId);
         List<AnswerWithComments> answersWithComments = getAnswersWithComments(communityId);
-
         return CommunityWithAnswersAndCommentsResult.from(community, bookmarked, answersWithComments);
     }
 
@@ -93,9 +99,9 @@ public class CommunityService
     }
 
     @Transactional
-    public Long update(Long communityId, Community community)
+    public Long update(Long communityId, CommunityUpdateCommand command)
     {
-        communityMapper.updateCommunity(communityId, community);
+        communityMapper.updateCommunity(communityId, Community.from(command));
         return communityId;
     }
 

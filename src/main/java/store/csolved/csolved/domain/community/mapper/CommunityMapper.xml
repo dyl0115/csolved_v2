@@ -4,7 +4,7 @@
 
 <mapper namespace="store.csolved.csolved.domain.community.mapper.CommunityMapper">
 
-    <resultMap id="communityResultMap" type="store.csolved.csolved.domain.community.Community">
+    <resultMap id="communityResultMap" type="store.csolved.csolved.domain.community.mapper.entity.Community">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>

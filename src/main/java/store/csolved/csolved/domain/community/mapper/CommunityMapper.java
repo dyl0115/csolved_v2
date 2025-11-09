@@ -1,7 +1,7 @@
 package store.csolved.csolved.domain.community.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.csolved.csolved.domain.community.Community;
+import store.csolved.csolved.domain.community.mapper.entity.Community;
 
 import java.util.List;
 
