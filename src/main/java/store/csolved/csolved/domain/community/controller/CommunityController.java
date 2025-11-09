@@ -135,3 +135,7 @@ public class CommunityController
         return "redirect:/communities?page=1";
     }
 }
+
+//첫 화면은 그냥 기존 ssr 방식대로 모든 html을 조립해서 준다.
+// 이후 사용자가 정렬, 검색, 등등을 활용하면 json을 반환하도록 한다.
+// 그럼 클라이언트 단에서 이 json을 가지고 html을 조립힌다.

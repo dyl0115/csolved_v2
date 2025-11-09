@@ -21,9 +21,6 @@ import store.csolved.csolved.domain.auth.controller.request.SignUpRequest;
 @RequestMapping("/api/auth")
 public class AuthApiController
 {
-
-//    private final SignUpFormValidator signUpFormValidator;
-
     private final AuthService authService;
 
     @PostMapping("/signIn")
