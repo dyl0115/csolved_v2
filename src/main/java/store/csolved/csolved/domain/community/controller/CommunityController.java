@@ -12,13 +12,13 @@ import store.csolved.csolved.domain.category.Category;
 import store.csolved.csolved.domain.category.service.CategoryService;
 import store.csolved.csolved.domain.community.service.CommunityService;
 import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
+import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
 import store.csolved.csolved.domain.community.controller.form.CommunityCreateUpdateForm;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityCreateUpdateVM;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityDetailVM;
-import store.csolved.csolved.domain.community.controller.view_model.CommunityListVM;
 import store.csolved.csolved.domain.community.service.CommunityFacade;
 import store.csolved.csolved.utils.filter.FilterInfo;
 import store.csolved.csolved.utils.filter.Filtering;
@@ -57,7 +57,7 @@ public class CommunityController
                                     Model model)
     {
         CommunityAndPageResult communitiesAndPage = communityService.getCommunitiesAndPage(pageNumber, sort, filter, search);
-        List<Category> categories = categoryService.getAll(COMMUNITY.getCode());
+        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
 
         model.addAttribute("page", communitiesAndPage.getPage());
         model.addAttribute("posts", communitiesAndPage.getCommunities());
@@ -72,10 +72,16 @@ public class CommunityController
                            @PathVariable Long postId,
                            Model model)
     {
-        CommunityDetailVM communityPost = communityFacade.viewPost(user.getId(), postId);
-        model.addAttribute("communityPostDetails", communityPost);
+        CommunityWithAnswersAndCommentsResult result
+                = communityService.getCommunity(user.getId(), postId);
+
+        model.addAttribute("post", result.getCommunity());
+        model.addAttribute("bookmarked", result.isBookmarked());
+        model.addAttribute("answersWithComments", result.getAnswersWithComments());
+
         model.addAttribute("answerCreateForm", AnswerCreateForm.empty());
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());
+
         return VIEWS_COMMUNITY_DETAIL;
     }
 
@@ -85,7 +91,7 @@ public class CommunityController
                           @PathVariable Long postId,
                           Model model)
     {
-        CommunityDetailVM post = communityFacade.getPost(user.getId(), postId);
+        CommunityWithAnswersAndCommentsResult post = communityService.getCommunity(user.getId(), postId);
         model.addAttribute("communityPostDetails", post);
         model.addAttribute("answerCreateForm", AnswerCreateForm.empty());
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());

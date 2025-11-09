@@ -56,7 +56,9 @@ async function toggleBookmark(bookmarkButton)
             const newBookmarked = !bookmarked;
             bookmarkButton.setAttribute('bookmarked', newBookmarked);
             bookmarkText.textContent = newBookmarked ? '북마크 취소' : '북마크';
-            bookmarkIcon.className = newBookmarked ? 'bi bi-bookmark-x-fill' : 'bi bi-bookmark-fill';
+            bookmarkIcon.setAttribute('data-lucide', newBookmarked ? 'bookmark-x' : 'bookmark');
+            // Lucide 아이콘 재초기화
+            lucide.createIcons();
             break;
         default:
             alert('북마크 처리 중 오류가 발생했습니다.');
@@ -146,7 +148,7 @@ async function deleteComment(commentId)
 document.getElementById('toggle-answer-form').addEventListener('click', function ()
 {
     const card = document.getElementById('answer-form-card');
-    card.classList.toggle('d-none');
+    card.classList.toggle('hidden');
 });
 
 // 대댓글 토글 기능
@@ -155,7 +157,7 @@ document.querySelectorAll('.toggle-comment-form').forEach(element =>
     element.addEventListener('click', function ()
     {
         const commentForm = this.nextElementSibling;
-        commentForm.classList.toggle('d-none');
+        commentForm.classList.toggle('hidden');
     });
 });
 

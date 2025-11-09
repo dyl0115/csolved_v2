@@ -13,14 +13,8 @@ import store.csolved.csolved.domain.comment.service.CommentService;
 import store.csolved.csolved.domain.community.controller.form.CommunityCreateUpdateForm;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityCreateUpdateVM;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityDetailVM;
-import store.csolved.csolved.domain.community.controller.view_model.CommunityListVM;
 import store.csolved.csolved.domain.community.Community;
-import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
-import store.csolved.csolved.utils.filter.Filtering;
-import store.csolved.csolved.utils.page.Pagination;
 import store.csolved.csolved.utils.page.PaginationManager;
-import store.csolved.csolved.utils.search.Searching;
-import store.csolved.csolved.utils.sort.Sorting;
 import store.csolved.csolved.domain.tag.service.TagService;
 
 import java.util.List;
@@ -51,22 +45,23 @@ public class CommunityFacade
     // 커뮤니티글 작성 시 viewModel 제공
     public CommunityCreateUpdateVM initCreate()
     {
-        List<Category> categories = categoryService.getAll(COMMUNITY.getCode());
+        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
         return CommunityCreateUpdateVM.from(categories);
     }
 
     // 커뮤니티글 업데이트 시 viewModel 제공
     public CommunityCreateUpdateVM initUpdate()
     {
-        List<Category> categories = categoryService.getAll(COMMUNITY.getCode());
+        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
         return CommunityCreateUpdateVM.from(categories);
     }
 
     // 커뮤니티글 업데이트 시 기존 게시글 제공
     public CommunityCreateUpdateForm initUpdateForm(Long communityId)
     {
-        Community community = communityService.getCommunity(communityId);
-        return CommunityCreateUpdateForm.from(community);
+//        Community community = communityService.getCommunity(communityId);
+//        return CommunityCreateUpdateForm.from(community);
+        return null;
     }
 
     // 커뮤니티글 업데이트
@@ -106,14 +101,15 @@ public class CommunityFacade
 //        return CommunityListVM.from(page, categories, communities);
 //    }
 
-    public CommunityDetailVM getPost(Long userId, Long postId)
-    {
-        Community community = communityService.getCommunity(postId);
-        boolean bookmarked = bookmarkService.hasBookmarked(userId, postId);
-        List<Answer> answers = answerService.getAnswers(postId);
-        Map<Long, List<Comment>> comments = commentService.getComments(extractIds(answers));
-        return CommunityDetailVM.from(community, bookmarked, answers, comments);
-    }
+//    public CommunityDetailVM getPost(Long userId, Long postId)
+//    {
+//        Community community = communityService.getCommunity(userId, postId);
+//        boolean bookmarked = bookmarkService.hasBookmarked(userId, postId);
+//        List<Answer> answers = answerService.getAnswers(postId);
+//        Map<Long, List<Comment>> comments = commentService.getComments(extractIds(answers));
+//
+//        return CommunityDetailVM.from(community, bookmarked, answers, comments);
+//    }
 
     // 커뮤니티글 상세 조회
     public CommunityDetailVM viewPost(Long userId, Long postId)

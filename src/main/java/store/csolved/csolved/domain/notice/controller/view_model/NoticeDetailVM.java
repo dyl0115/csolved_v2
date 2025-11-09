@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import store.csolved.csolved.domain.answer.Answer;
 import store.csolved.csolved.domain.answer.AnswerWithComments;
-import store.csolved.csolved.domain.code_review.CodeReview;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.notice.Notice;
 

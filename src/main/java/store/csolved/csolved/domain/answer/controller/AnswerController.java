@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import store.csolved.csolved.domain.community.service.CommunityService;
 import store.csolved.csolved.domain.notice.service.NoticeFacade;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
@@ -25,7 +26,8 @@ public class AnswerController
     private final NoticeFacade noticeFacade;
     //    private final QuestionFacade questionFacade;
     private final AnswerService answerService;
-    private final CommunityFacade communityFacade;
+    //    private final CommunityFacade communityFacade;
+    private final CommunityService communityService;
 //    private final CodeReviewFacade codeReviewFacade;
 
     @LoginRequest
@@ -73,13 +75,13 @@ public class AnswerController
     {
         if (result.hasErrors())
         {
-            model.addAttribute("communityPostDetails", communityFacade.getPost(user.getId(), postId));
+            model.addAttribute("communityPostDetails", communityService.getCommunity(user.getId(), postId));
             model.addAttribute("commentCreateForm", CommentCreateForm.empty());
             return VIEWS_COMMUNITY_DETAIL;
         }
 
         answerService.saveAnswer(form.toAnswer());
-        model.addAttribute("communityPostDetails", communityFacade.getPost(user.getId(), postId));
+        model.addAttribute("communityPostDetails", communityService.getCommunity(user.getId(), postId));
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());
         return "redirect:/community/" + postId + "/read";
     }

@@ -19,16 +19,8 @@ public class AnswerWithComments
     private String authorNickname;
     private boolean anonymous;
     private String content;
-    private Double averageScore;
-    private Long voterCount;
     private LocalDateTime createdAt;
     private List<Comment> comments;
-
-    private static Double calcAverageScore(Long totalScore, Long voterCount)
-    {
-        if (voterCount == 0) return 0D;
-        return totalScore.doubleValue() / voterCount;
-    }
 
     public static AnswerWithComments from(Answer answer,
                                           List<Comment> comments)
@@ -40,8 +32,6 @@ public class AnswerWithComments
                 .authorNickname(answer.getAuthorNickname())
                 .anonymous(answer.isAnonymous())
                 .content(answer.getContent())
-                .averageScore(calcAverageScore(answer.getTotalScore(), answer.getVoterCount()))
-                .voterCount(answer.getVoterCount())
                 .createdAt(answer.getCreatedAt())
                 .comments(comments)
                 .build();
