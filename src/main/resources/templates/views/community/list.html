@@ -27,9 +27,9 @@
         
         <!-- 게시판 페이지 본문 -->
         <div class="container mx-auto px-4 py-8"
-             th:with="posts=${communityPostListViewModel.posts},
-                        page=${communityPostListViewModel.page},
-                        categories=${communityPostListViewModel.categories}">
+             th:with="posts=${posts},
+                        page=${page},
+                        categories=${categories}">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- 메인 콘텐츠 -->
                 <div class="lg:col-span-3">

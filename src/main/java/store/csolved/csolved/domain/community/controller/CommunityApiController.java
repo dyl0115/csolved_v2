@@ -12,7 +12,7 @@ import store.csolved.csolved.domain.user.User;
 @RequestMapping("/api/community")
 @RequiredArgsConstructor
 @RestController
-public class CommunityRestController
+public class CommunityApiController
 {
     private final CommunityFacade communityFacade;
 

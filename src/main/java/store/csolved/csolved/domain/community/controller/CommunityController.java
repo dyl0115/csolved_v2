@@ -8,6 +8,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.answer.controller.form.AnswerCreateForm;
+import store.csolved.csolved.domain.category.Category;
+import store.csolved.csolved.domain.category.service.CategoryService;
+import store.csolved.csolved.domain.community.service.CommunityService;
+import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
@@ -25,6 +29,10 @@ import store.csolved.csolved.utils.search.Searching;
 import store.csolved.csolved.utils.sort.SortInfo;
 import store.csolved.csolved.utils.sort.Sorting;
 
+import java.util.List;
+
+import static store.csolved.csolved.common.PostType.COMMUNITY;
+
 @Slf4j
 @RequiredArgsConstructor
 @Controller
@@ -37,16 +45,24 @@ public class CommunityController
 
     private final CommunityFacade communityFacade;
 
+    private final CommunityService communityService;
+    private final CategoryService categoryService;
+
     @LoginRequest
     @GetMapping("/communities")
-    public String getCommunityPosts(@PageInfo Long page,
+    public String getCommunityPosts(@PageInfo Long pageNumber,
                                     @SortInfo Sorting sort,
                                     @FilterInfo Filtering filter,
                                     @SearchInfo Searching search,
                                     Model model)
     {
-        CommunityListVM viewModel = communityFacade.getCommunityPosts(page, sort, filter, search);
-        model.addAttribute("communityPostListViewModel", viewModel);
+        CommunityAndPageResult communitiesAndPage = communityService.getCommunitiesAndPage(pageNumber, sort, filter, search);
+        List<Category> categories = categoryService.getAll(COMMUNITY.getCode());
+
+        model.addAttribute("page", communitiesAndPage.getPage());
+        model.addAttribute("posts", communitiesAndPage.getCommunities());
+        model.addAttribute("categories", categories);
+
         return VIEWS_COMMUNITY_LIST;
     }
 

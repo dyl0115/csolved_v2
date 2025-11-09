@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.csolved.csolved.domain.community.Community;
 import store.csolved.csolved.domain.community.mapper.CommunityMapper;
+import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.page.Pagination;
+import store.csolved.csolved.utils.page.PaginationManager;
 import store.csolved.csolved.utils.search.Searching;
 import store.csolved.csolved.utils.sort.Sorting;
 
@@ -19,6 +21,7 @@ import static store.csolved.csolved.common.PostType.COMMUNITY;
 public class CommunityService
 {
     private final CommunityMapper communityMapper;
+    private final PaginationManager paginationManager;
 
     @Transactional
     public Long save(Community community)
@@ -42,12 +45,17 @@ public class CommunityService
         return communityMapper.getCommunity(communityId);
     }
 
-    public List<Community> getCommunities(Pagination page,
-                                          Sorting sort,
-                                          Filtering filter,
-                                          Searching search)
+    public CommunityAndPageResult getCommunitiesAndPage(Long pageNumber,
+                                                        Sorting sort,
+                                                        Filtering filter,
+                                                        Searching search)
     {
-        return communityMapper.getCommunities(
+
+        Long totalPage = countCommunities(filter, search);
+
+        Pagination page = paginationManager.createPagination(pageNumber, totalPage);
+
+        List<Community> communities = communityMapper.getCommunities(
                 COMMUNITY.getCode(),
                 page.getOffset(),
                 page.getSize(),
@@ -56,6 +64,8 @@ public class CommunityService
                 filter.getFilterValue(),
                 search.getSearchType(),
                 search.getKeyword());
+
+        return CommunityAndPageResult.from(communities, page);
     }
 
     @Transactional

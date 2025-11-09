@@ -15,6 +15,7 @@ import store.csolved.csolved.domain.community.controller.view_model.CommunityCre
 import store.csolved.csolved.domain.community.controller.view_model.CommunityDetailVM;
 import store.csolved.csolved.domain.community.controller.view_model.CommunityListVM;
 import store.csolved.csolved.domain.community.Community;
+import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.page.Pagination;
 import store.csolved.csolved.utils.page.PaginationManager;
@@ -89,26 +90,21 @@ public class CommunityFacade
     }
 
     // 커뮤니티글 리스트 조회
-    public CommunityListVM getCommunityPosts(Long pageNumber,
-                                             Sorting sort,
-                                             Filtering filter,
-                                             Searching search)
-    {
-        // DB에서 커뮤니티글 개수를 가져옴
-        Long total = communityService.countCommunities(filter, search);
-
-        // 사용자가 요청한 페이지 번호, 글 개수를 사용하여 페이지 정보를 생성
-        Pagination page = paginationUtils.createPagination(pageNumber, total);
-
-        // 페이지 정보를 사용하여 DB에 필요한 커뮤니티글만 조회
-        List<Community> communities = communityService.getCommunities(page, sort, filter, search);
-
-        // 카테고리의 정보를 모두 가져옴.
-        List<Category> categories = categoryService.getAll(COMMUNITY.getCode());
-
-        // 모든 데이터를 사용하여 viewModel 생성 후 반환
-        return CommunityListVM.from(page, categories, communities);
-    }
+//    public CommunityListVM getCommunityPosts(Long pageNumber,
+//                                             Sorting sort,
+//                                             Filtering filter,
+//                                             Searching search)
+//    {
+//
+//        // 페이지 정보를 사용하여 DB에 필요한 커뮤니티글만 조회
+//        CommunityAndPageResult communitiesAndPage = communityService.getCommunities(pageNumber, sort, filter, search);
+//
+//        // 카테고리의 정보를 모두 가져옴.
+//        List<Category> categories = categoryService.getAll(COMMUNITY.getCode());
+//
+//        // 모든 데이터를 사용하여 viewModel 생성 후 반환
+//        return CommunityListVM.from(page, categories, communities);
+//    }
 
     public CommunityDetailVM getPost(Long userId, Long postId)
     {
