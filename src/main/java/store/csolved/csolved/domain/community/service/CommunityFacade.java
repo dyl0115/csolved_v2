@@ -63,9 +63,9 @@ public class CommunityFacade
     }
 
     // 커뮤니티글 좋아요
-    public boolean addLike(Long postId, Long userId)
+    public void addLike(Long postId, Long userId)
     {
-        return communityService.addLike(postId, userId);
+        communityService.addLike(postId, userId);
     }
 
     // 커뮤니티글 삭제

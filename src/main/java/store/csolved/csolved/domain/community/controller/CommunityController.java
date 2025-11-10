@@ -94,7 +94,7 @@ public class CommunityController
     {
 
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
-        CommunityResult post = communityService.getCommunity(postId);
+        CommunityResult post = communityService.getPost(postId);
 
         model.addAttribute("categories", categories);
         model.addAttribute("post", post);

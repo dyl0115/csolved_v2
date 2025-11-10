@@ -22,15 +22,12 @@ import store.csolved.csolved.domain.user.User;
 @RestController
 public class CommunityApiController
 {
-    private final CommunityFacade communityFacade;
-
     private final CommunityService communityService;
 
     @LoginRequest
     @PostMapping
     public void createPost(@Valid @RequestBody CommunityCreateRequest request)
     {
-        System.out.println(request.getTags());
         communityService.create(CommunityCreateCommand.from(request));
     }
 
@@ -51,14 +48,9 @@ public class CommunityApiController
 
     @LoginRequest
     @PostMapping("/{postId}/likes")
-    public ResponseEntity<Void> addLike(@LoginUser User user,
-                                        @PathVariable Long postId)
+    public void addLike(@LoginUser User user,
+                        @PathVariable Long postId)
     {
-        boolean valid = communityFacade.addLike(postId, user.getId());
-        if (!valid)
-        {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        communityService.addLike(postId, user.getId());
     }
 }

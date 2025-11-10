@@ -17,6 +17,8 @@ import store.csolved.csolved.domain.community.service.result.CommunityAndPageRes
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.tag.service.TagService;
+import store.csolved.csolved.global.exception.CsolvedException;
+import store.csolved.csolved.global.exception.ExceptionCode;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.page.Pagination;
 import store.csolved.csolved.utils.page.PaginationManager;
@@ -52,17 +54,18 @@ public class CommunityService
     @Transactional
     public void update(Long communityId, CommunityUpdateCommand command)
     {
-        communityMapper.updateCommunity(communityId, Community.from(command));
+        Community post = Community.from(command);
+        communityMapper.updateCommunity(communityId, post);
         tagService.updateTags(communityId, command.getTags());
     }
 
     @Transactional
-    public void delete(Long communityId)
+    public void delete(Long postId)
     {
-        communityMapper.deleteCommunity(communityId);
+        communityMapper.deleteCommunity(postId);
     }
 
-    public Long countCommunities(Filtering filter, Searching search)
+    public Long countPosts(Filtering filter, Searching search)
     {
         return communityMapper.countCommunities(
                 COMMUNITY.getCode(),
@@ -72,7 +75,7 @@ public class CommunityService
                 search.getKeyword());
     }
 
-    public CommunityResult getCommunity(Long communityId)
+    public CommunityResult getPost(Long communityId)
     {
         Community community = communityMapper.getCommunity(communityId);
         return CommunityResult.from(community);
@@ -92,7 +95,7 @@ public class CommunityService
                                                         Searching search)
     {
 
-        Long totalPage = countCommunities(filter, search);
+        Long totalPage = countPosts(filter, search);
 
         Pagination page = paginationManager.createPagination(pageNumber, totalPage);
 
@@ -117,16 +120,15 @@ public class CommunityService
     }
 
     @Transactional
-    public boolean addLike(Long communityId, Long userId)
+    public void addLike(Long communityId, Long userId)
     {
         if (communityMapper.hasUserLiked(communityId, userId))
         {
-            return false;
+            throw new CsolvedException(ExceptionCode.ALREADY_LIKED);
         }
 
         communityMapper.addUserLike(communityId, userId);
         communityMapper.increaseLikes(communityId);
-        return true;
     }
 
     private List<AnswerWithComments> getAnswersWithComments(Long communityId)
