@@ -2,8 +2,10 @@ const scriptEl = document.currentScript;
 const uploadUrl = scriptEl.dataset.uploadImageUrl;
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-function initEditor() {
-    return new Promise((resolve) => {
+function initEditor()
+{
+    return new Promise((resolve) =>
+    {
         tinymce.init({
             selector: '.large-editor',
             height: 500,
@@ -44,21 +46,27 @@ function initEditor() {
 
             // 이미지 업로드 설정
             images_upload_url: uploadUrl || '',
-            images_upload_handler: function (blobInfo, progress) {
-                return new Promise(async (resolve, reject) => {
-                    try {
+            images_upload_handler: function (blobInfo, progress)
+            {
+                return new Promise(async (resolve, reject) =>
+                {
+                    try
+                    {
                         // 1. 이미지 압축
-                        const compressedBlob = await new Promise((resolve, reject) => {
+                        const compressedBlob = await new Promise((resolve, reject) =>
+                        {
                             new Compressor(blobInfo.blob(), {
                                 quality: 0.6, // 화질 (0 ~ 1)
                                 maxWidth: 1920, // 최대 너비
                                 maxHeight: 1080, // 최대 높이
                                 mimeType: 'image/jpeg', // JPEG로 변환 (용량 70% 감소)
                                 convertSize: 1000000, // 1MB 이상 이미지만 변환
-                                success(result) {
+                                success(result)
+                                {
                                     resolve(result);
                                 },
-                                error(err) {
+                                error(err)
+                                {
                                     reject(err);
                                 }
                             });
@@ -69,12 +77,15 @@ function initEditor() {
                         xhr.withCredentials = false;
                         xhr.open('POST', uploadUrl);
 
-                        xhr.upload.onprogress = (e) => {
+                        xhr.upload.onprogress = (e) =>
+                        {
                             progress(e.loaded / e.total * 100);
                         };
 
-                        xhr.onload = () => {
-                            if (xhr.status < 200 || xhr.status >= 300) {
+                        xhr.onload = () =>
+                        {
+                            if (xhr.status < 200 || xhr.status >= 300)
+                            {
                                 reject('HTTP Error: ' + xhr.status);
                                 return;
                             }
@@ -82,7 +93,8 @@ function initEditor() {
                             resolve(json.location);
                         };
 
-                        xhr.onerror = () => {
+                        xhr.onerror = () =>
+                        {
                             reject('Upload failed');
                         };
 
@@ -90,7 +102,9 @@ function initEditor() {
                         formData.append('file', compressedBlob, blobInfo.filename()); // 압축된 Blob 사용
                         xhr.send(formData);
 
-                    } catch (err) {
+                    }
+                    catch (err)
+                    {
                         reject('Compression failed: ' + err.message);
                     }
                 });
@@ -119,17 +133,21 @@ function initEditor() {
                     height: auto;
                 }
             `,
-            setup: function (editor) {
-                editor.on('change keyup', function () {
+            setup: function (editor)
+            {
+                editor.on('change keyup', function ()
+                {
                     Prism.highlightAll();
                 });
 
-                editor.on('init', function () {
+                editor.on('init', function ()
+                {
                     // 현재 에디터의 ID를 가져옴
                     const editorId = editor.id;
                     const editorElement = document.getElementById(editorId);
 
-                    if (editorElement && editorElement.classList.contains('is-invalid')) {
+                    if (editorElement && editorElement.classList.contains('is-invalid'))
+                    {
                         editor.getContainer().style.border = '1px solid #dc3545';
                     }
                 });
@@ -201,13 +219,17 @@ function initEditor() {
                     height: auto;
                 }
             `,
-            setup: function (editor) {
-                editor.on('change keyup', function () {
+            setup: function (editor)
+            {
+                editor.on('change keyup', function ()
+                {
                     Prism.highlightAll();
                 });
 
-                editor.on('init', function () {
-                    if (document.getElementById('medium-editor').classList.contains('is-invalid')) {
+                editor.on('init', function ()
+                {
+                    if (document.querySelector('.medium-editor').classList.contains('is-invalid'))
+                    {
                         editor.getContainer().style.border = '1px solid #dc3545';
                     }
                 });
@@ -272,17 +294,21 @@ function initEditor() {
                     height: auto;
                 }
             `,
-            setup: function (editor) {
-                editor.on('change keyup', function () {
+            setup: function (editor)
+            {
+                editor.on('change keyup', function ()
+                {
                     Prism.highlightAll();
                 });
 
-                editor.on('init', function () {
+                editor.on('init', function ()
+                {
                     // 현재 에디터의 ID를 가져옴
                     const editorId = editor.id;
                     const editorElement = document.getElementById(editorId);
 
-                    if (editorElement && editorElement.classList.contains('is-invalid')) {
+                    if (editorElement && editorElement.classList.contains('is-invalid'))
+                    {
                         editor.getContainer().style.border = '1px solid #dc3545';
                     }
                 });
@@ -291,8 +317,10 @@ function initEditor() {
     });
 }
 
-document.querySelectorAll('form').forEach(form => {
-    form.addEventListener('submit', function (e) {
+document.querySelectorAll('form').forEach(form =>
+{
+    form.addEventListener('submit', function (e)
+    {
         e.preventDefault();
         const textarea = this.querySelector('textarea');
         const editorInstance = tinymce.get(textarea.id);
@@ -302,11 +330,15 @@ document.querySelectorAll('form').forEach(form => {
 });
 
 // DOM이 완전히 로드된 후 초기화
-document.addEventListener('DOMContentLoaded', async function () {
-    try {
+document.addEventListener('DOMContentLoaded', async function ()
+{
+    try
+    {
         await initEditor();
         console.log('Editor initialized successfully');
-    } catch (error) {
+    }
+    catch (error)
+    {
         console.error('Editor initialization failed:', error);
         // 폴백: 일반 textarea로 대체
         document.querySelector('.large-editor').style.display = 'block';

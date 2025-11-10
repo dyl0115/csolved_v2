@@ -192,9 +192,7 @@
                 const tags = document.getElementById('tag-hidden-input').value;
                 const content = document.getElementById('content').value;
 
-
-                console.log("tags ", tags);
-                const data = {
+                const request = {
                     categoryId: parseInt(categoryId),
                     title: title,
                     authorId: parseInt(authorId),
@@ -210,7 +208,7 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify(request)
                     });
 
                     if (response.ok)

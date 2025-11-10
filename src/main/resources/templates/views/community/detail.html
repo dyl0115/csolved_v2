@@ -160,45 +160,38 @@
                     <!-- 댓글 작성 폼 -->
                     <div class="bg-white rounded-lg shadow-md mb-6 hidden"
                          id="answer-form-card">
-                        <div class="p-4"
-                             th:object="${answerCreateForm}">
-                            
+                        <div class="p-4">
                             <form id="answer-form"
-                                  class="flex flex-col"
-                                  method="post"
-                                  th:action="@{/community/__${postId}__/answers}">
-                                
+                                  class="flex flex-col">
                                 <input type="hidden"
                                        id="answer-author-id"
                                        name="authorId"
                                        th:value="${user.id}"/>
                                 
-                                <textarea id="medium-editor"
+                                <textarea id="answer-content"
                                           class="medium-editor w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
                                           rows="3"
-                                          placeholder="댓글을 달아 생각을 공유해 주세요!"
-                                          th:field="*{content}"
-                                          th:classappend="${#fields.hasErrors('content')} ? 'border-red-500' : ''">
+                                          placeholder="댓글을 달아 생각을 공유해 주세요!">
                                 </textarea>
                                 
-                                <div class="text-red-500 text-sm mb-3"
-                                     th:if="${#fields.hasErrors('content')}"
-                                     th:errors="*{content}">
+                                <div id="answer-error"
+                                     class="text-red-500 text-sm mb-3">
+                                    댓글 에러 메시지
                                 </div>
                                 
                                 <div class="flex justify-between items-center">
                                     <div class="flex items-center">
-                                        <input class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
-                                               type="checkbox"
-                                               id="answer-anonymous"
-                                               th:field="*{anonymous}">
+                                        <input id="answer-anonymous"
+                                               class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
+                                               type="checkbox">
                                         <label class="ml-2 text-sm text-gray-700"
                                                for="answer-anonymous">
                                             익명으로 댓글 달기
                                         </label>
                                     </div>
                                     <button type="submit"
-                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                                            onclick="createAnswer()">
                                         <i data-lucide="send" class="w-4 h-4"></i>
                                         <span>등록</span>
                                     </button>
@@ -214,7 +207,6 @@
                          th:with="answers=${answersWithComments}">
                         <div class="bg-white rounded-lg shadow-md">
                             <div class="p-6">
-                                
                                 <!-- 댓글이 없는 경우 메시지 보여주기 -->
                                 <div th:if="${#lists.isEmpty(answers)}" class="text-center py-8">
                                     <i data-lucide="message-circle" class="w-12 h-12 mx-auto text-gray-400 mb-3"></i>
@@ -278,8 +270,7 @@
                                              id="comment-form-card">
                                             <form class="flex flex-col"
                                                   method="POST"
-                                                  th:action="@{/community/{postId}/answers/{answerId}/comment(postId=${postId}, answerId=${answer.id})}"
-                                                  th:object="${commentCreateForm}">
+                                                  th:action="@{/community/{postId}/answers/{answerId}/comment(postId=${postId}, answerId=${answer.id})}">
                                                 
                                                 <!-- 게시글 아이디  -->
                                                 <input type="hidden"
@@ -301,25 +292,20 @@
                                                         class="small-editor w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
                                                         rows="3"
                                                         placeholder="답변에 대한 댓글을 작성하세요!"
-                                                        th:id="|small-editor${answer.id}|"
-                                                        th:field="*{content}"
-                                                        th:classappend="${#fields.hasErrors('content')} ? 'border-red-500' : ''">
+                                                        th:id="|small-editor${answer.id}|">
                                                 </textarea>
                                                 
                                                 <!-- 대댓글 오류 메시지 -->
-                                                <div class="text-red-500 text-sm mb-3"
-                                                     th:if="${#fields.hasErrors()}"
-                                                     th:errors="*{content}">
+                                                <div class="text-red-500 text-sm mb-3 hidden">
+                                                    대댓글 오류 메시지
                                                 </div>
                                                 
                                                 <div class="flex justify-between items-center">
-                                                    
                                                     <!-- 대댓글 익명/실명 선택-->
                                                     <div class="flex items-center">
                                                         <input class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
                                                                type="checkbox"
-                                                               id="anonymous-checkbox-${answer.id}"
-                                                               th:field="*{anonymous}">
+                                                               id="anonymous-checkbox-${answer.id}">
                                                         <label class="ml-2 text-sm text-gray-700"
                                                                for="anonymous-checkbox-${answer.id}">
                                                             익명으로 댓글 달기
@@ -370,9 +356,7 @@
                                                             <i data-lucide="trash-2" class="w-3 h-3"></i>
                                                             <span>삭제</span>
                                                         </button>
-                                                        <!-- 댓글 삭제 경고 모달-->
-                                                        <!--                                                        <div th:insert="~{/fragments/common/modal::danger-modal(|commentDeleteConfirmModal${comment.id}|, '댓글 삭제', '정말 삭제하시겠습니까?', '취소', '삭제', |deleteComment(${comment.id})|)}"></div>-->
-                                                    </span>
+                                                       </span>
                                                 </div>
                                                 
                                                 <!-- 대댓글 내용 -->
@@ -441,6 +425,11 @@
                 </div>
             </div>
         </div>
+        
+        <div th:fragment="answerCard">
+        
+        </div>
+        
         <!-- Prism JS -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
         <!-- Prism 지원 언어 -->
@@ -463,10 +452,6 @@
         
         <script th:inline="javascript">
 
-            const postId = '[[${post.id}]]';
-            const likeButton = document.getElementById('like-button');
-            const likeCount = document.getElementById('like-count');
-
             async function toggleAnswerForm()
             {
                 const answerFormCard = document.getElementById('answer-form-card');
@@ -482,13 +467,68 @@
                 commentForm.classList.toggle('hidden');
             }
 
+            async function createAnswer()
+            {
+                const postId = '[[${post.id}]]';
+                const answerSaveUrl = `/api/answer`;
+                const postRedirectUrl = `/community/${postId}?skipView=true`;
+                const answerAuthorId = document.getElementById('answer-author-id').value;
+                const answerAnonymous = document.getElementById('answer-anonymous').checked;
+                const answerContent = document.getElementById('answer-content').value;
+                const answerError = document.getElementById('answer-error');
+
+                const request = {
+                    postId: parseInt(postId),
+                    authorId: parseInt(answerAuthorId),
+                    anonymous: answerAnonymous,
+                    content: answerContent,
+                }
+
+                console.log(request);
+                console.log("postId " + parseInt(postId));
+                console.log("answerAuthorId " + parseInt(answerAuthorId));
+                console.log("answerAnonymous " + answerAnonymous);
+                console.log("answerContent " + answerContent);
+
+                try
+                {
+                    const response = await fetch(answerSaveUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(request)
+                    });
+
+                    if (response.ok)
+                    {
+                        // window.location.href = postRedirectUrl;
+                        alert('저장완료');
+                    } else
+                    {
+                        const errorData = await response.json();
+                        alert('postID ' + postId);
+                        alert('오류? ' + errorData.message);
+                        answerError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
+                    }
+                }
+                catch (error)
+                {
+                    console.error('Error:', error);
+                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                }
+            }
+
             async function deletePost()
             {
+                const postId = '[[${post.id}]]';
+                const url = `/api/community/${postId}`;
+
                 if (confirm("게시글을 삭제하겠습니까?"))
                 {
                     try
                     {
-                        const response = await fetch(`/api/community/${postId}`, {
+                        const response = await fetch(url, {
                             method: 'DELETE',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -515,6 +555,9 @@
 
             async function addLike()
             {
+                const postId = '[[${post.id}]]';
+                const likeButton = document.getElementById('like-button');
+                const likeCount = document.getElementById('like-count');
                 let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
 
                 try

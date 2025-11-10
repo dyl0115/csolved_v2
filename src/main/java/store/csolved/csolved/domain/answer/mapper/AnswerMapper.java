@@ -1,7 +1,7 @@
 package store.csolved.csolved.domain.answer.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.csolved.csolved.domain.answer.Answer;
+import store.csolved.csolved.domain.answer.mapper.entity.Answer;
 
 import java.util.List;
 

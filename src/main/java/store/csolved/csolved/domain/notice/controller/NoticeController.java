@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import store.csolved.csolved.domain.answer.controller.form.AnswerCreateForm;
+import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
 import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
 import store.csolved.csolved.domain.notice.controller.form.NoticeCreateUpdateForm;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeListVM;
@@ -66,7 +66,7 @@ public class NoticeController
                              Model model)
     {
         model.addAttribute("noticeDetails", noticeFacade.viewNotice(postId));
-        model.addAttribute("answerCreateForm", AnswerCreateForm.empty());
+        model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());
         return VIEWS_NOTICE_DETAIL;
     }
@@ -77,7 +77,7 @@ public class NoticeController
                             Model model)
     {
         model.addAttribute("noticeDetails", noticeFacade.getNotice(postId));
-        model.addAttribute("answerCreateForm", AnswerCreateForm.empty());
+        model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());
         return VIEWS_NOTICE_DETAIL;
     }

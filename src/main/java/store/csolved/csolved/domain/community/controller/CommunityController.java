@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import store.csolved.csolved.domain.answer.controller.form.AnswerCreateForm;
+import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
 import store.csolved.csolved.domain.category.Category;
 import store.csolved.csolved.domain.category.service.CategoryService;
 import store.csolved.csolved.domain.community.service.CommunityService;
@@ -66,13 +66,13 @@ public class CommunityController
                           Model model)
     {
         CommunityWithAnswersAndCommentsResult result
-                = communityService.getCommunityWithAnswersAndComments(user.getId(), postId);
+                = communityService.getPostWithAnswersAndComments(user.getId(), postId);
 
         model.addAttribute("post", result.getCommunity());
         model.addAttribute("bookmarked", result.isBookmarked());
         model.addAttribute("answersWithComments", result.getAnswersWithComments());
 
-        model.addAttribute("answerCreateForm", AnswerCreateForm.empty());
+        model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
         model.addAttribute("commentCreateForm", CommentCreateForm.empty());
 
         return VIEWS_COMMUNITY_DETAIL;

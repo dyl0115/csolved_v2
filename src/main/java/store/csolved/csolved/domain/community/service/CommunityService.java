@@ -3,7 +3,7 @@ package store.csolved.csolved.domain.community.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.csolved.csolved.domain.answer.Answer;
+import store.csolved.csolved.domain.answer.mapper.entity.Answer;
 import store.csolved.csolved.domain.answer.AnswerWithComments;
 import store.csolved.csolved.domain.answer.mapper.AnswerMapper;
 import store.csolved.csolved.domain.bookmark.service.BookmarkService;
@@ -81,7 +81,7 @@ public class CommunityService
         return CommunityResult.from(community);
     }
 
-    public CommunityWithAnswersAndCommentsResult getCommunityWithAnswersAndComments(Long userId, Long communityId)
+    public CommunityWithAnswersAndCommentsResult getPostWithAnswersAndComments(Long userId, Long communityId)
     {
         Community community = communityMapper.getCommunity(communityId);
         boolean bookmarked = bookmarkService.hasBookmarked(userId, communityId);

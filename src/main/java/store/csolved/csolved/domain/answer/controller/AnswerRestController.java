@@ -4,11 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.login.LoginUser;
-import store.csolved.csolved.domain.answer.controller.response.AnswerScoreResponse;
-import store.csolved.csolved.domain.answer.Answer;
 import store.csolved.csolved.domain.answer.service.AnswerService;
-import store.csolved.csolved.domain.user.User;
 
 @RequestMapping("/api/answers")
 @RequiredArgsConstructor
