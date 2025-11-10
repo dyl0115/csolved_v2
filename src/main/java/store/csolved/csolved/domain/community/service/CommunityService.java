@@ -11,6 +11,7 @@ import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
 import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.domain.community.mapper.CommunityMapper;
+import store.csolved.csolved.domain.community.service.command.CommunityCreateCommand;
 import store.csolved.csolved.domain.community.service.command.CommunityUpdateCommand;
 import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
@@ -41,10 +42,24 @@ public class CommunityService
     private final TagService tagService;
 
     @Transactional
-    public Long save(Community community)
+    public void create(CommunityCreateCommand command)
     {
-        communityMapper.saveCommunity(COMMUNITY.getCode(), community);
-        return community.getId();
+        Community post = Community.from(command);
+        communityMapper.saveCommunity(COMMUNITY.getCode(), post);
+        tagService.saveTags(post.getId(), command.getTags());
+    }
+
+    @Transactional
+    public void update(Long communityId, CommunityUpdateCommand command)
+    {
+        communityMapper.updateCommunity(communityId, Community.from(command));
+        tagService.updateTags(communityId, command.getTags());
+    }
+
+    @Transactional
+    public void delete(Long communityId)
+    {
+        communityMapper.deleteCommunity(communityId);
     }
 
     public Long countCommunities(Filtering filter, Searching search)
@@ -99,19 +114,6 @@ public class CommunityService
     {
         communityMapper.increaseView(communityId);
         return communityMapper.getCommunity(communityId);
-    }
-
-    @Transactional
-    public void update(Long communityId, CommunityUpdateCommand command)
-    {
-        communityMapper.updateCommunity(communityId, Community.from(command));
-        tagService.updateTags(communityId, command.getTags());
-    }
-
-    @Transactional
-    public void delete(Long communityId)
-    {
-        communityMapper.deleteCommunity(communityId);
     }
 
     @Transactional

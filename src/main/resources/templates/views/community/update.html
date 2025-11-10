@@ -12,6 +12,9 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet"/>
     </head>
     <body class="bg-gray-50">
+        <!-- 네비게이션 -->
+        <div th:replace="~{/layout/nav :: default-nav(${user})}"></div>
+        
         <div class="max-w-5xl mx-auto py-8 px-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <!-- 헤더 -->
@@ -26,6 +29,11 @@
                 <div class="p-6">
                     <!-- 카테고리 -->
                     <div class="mb-6">
+                        <label for="postId" class="hidden">
+                            게시글 아이디
+                        </label>
+                        <input class="hidden" id="postId" th:value="${post.id}">
+                        
                         <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">
                             <div class="flex items-center gap-2">
                                 <i data-lucide="folder" class="w-4 h-4"></i>
@@ -72,11 +80,10 @@
                     <div class="mb-6">
                         <label class="flex items-center gap-3 cursor-pointer">
                             <div class="relative">
-                                <input
-                                        type="checkbox"
-                                        id="anonymousToggle"
-                                        class="sr-only peer"
-                                        th:checked="${post.anonymous}">
+                                <input type="checkbox"
+                                       id="anonymousToggle"
+                                       class="sr-only peer"
+                                       th:checked="${post.anonymous}">
                                 <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
                             </div>
                             <div class="flex items-center gap-2 text-gray-700">
@@ -171,13 +178,12 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
         <!-- 태그 관련 JS-->
         <script src="/js/tag.js"></script>
-        
-        <!-- Lucide 아이콘 초기화 -->
-        <script>
-            lucide.createIcons();
-        </script>
+        <!-- 네비게이션 javascript -->
+        <script th:replace="~{/layout/nav :: default-nav-scripts}"></script>
         
         <script th:inline="javascript">
+
+            lucide.createIcons();
 
             async function updatePost()
             {
@@ -187,7 +193,7 @@
                     tinymce.triggerSave();
                 }
 
-                const postId = '[[${postId}]]';
+                const postId = document.getElementById('postId').value;
                 const categoryId = document.getElementById('categoryId').value;
                 const title = document.getElementById('title').value;
                 const authorId = document.getElementById('authorId').value;

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @Builder
 public class CommunityResult
 {
+    private Long id;
     private String postType;
     private String title;
     private boolean anonymous;
@@ -28,6 +29,7 @@ public class CommunityResult
     public static CommunityResult from(Community community)
     {
         return CommunityResult.builder()
+                .id(community.getId())
                 .postType(community.getPostType())
                 .title(community.getTitle())
                 .anonymous(community.isAnonymous())

@@ -15,9 +15,6 @@ import store.csolved.csolved.domain.community.service.result.CommunityWithAnswer
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
-import store.csolved.csolved.domain.community.controller.request.CommunityUpdateRequest;
-import store.csolved.csolved.domain.community.controller.view_model.CommunityCreateUpdateVM;
-import store.csolved.csolved.domain.community.service.CommunityFacade;
 import store.csolved.csolved.utils.filter.FilterInfo;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.login.LoginUser;
@@ -40,8 +37,6 @@ public class CommunityController
     public final static String VIEWS_COMMUNITY_UPDATE_FORM = "/views/community/update";
     public final static String VIEWS_COMMUNITY_LIST = "/views/community/list";
     public final static String VIEWS_COMMUNITY_DETAIL = "/views/community/detail";
-
-    private final CommunityFacade communityFacade;
 
     private final CommunityService communityService;
     private final CategoryService categoryService;
@@ -87,9 +82,8 @@ public class CommunityController
     @GetMapping("/community/createForm")
     public String getCreateForm(Model model)
     {
-        CommunityCreateUpdateVM viewModel = communityFacade.initCreate();
-        model.addAttribute("createVM", viewModel);
-        model.addAttribute("createForm", CommunityUpdateRequest.empty());
+        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
+        model.addAttribute("categories", categories);
         return VIEWS_COMMUNITY_CREATE_FORM;
     }
 
@@ -104,7 +98,6 @@ public class CommunityController
 
         model.addAttribute("categories", categories);
         model.addAttribute("post", post);
-        model.addAttribute("postId", postId);
 
         return VIEWS_COMMUNITY_UPDATE_FORM;
     }
