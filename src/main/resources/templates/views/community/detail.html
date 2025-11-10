@@ -134,7 +134,8 @@
                         
                         <!-- 답변하기 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition shadow-sm"
-                                id="toggle-answer-form">
+                                id="toggle-answer-form"
+                                onclick="toggleAnswerForm()">
                             <i data-lucide="message-circle" class="w-5 h-5"></i>
                             <span>답변 달기</span>
                         </button>
@@ -206,7 +207,7 @@
                         </div>
                     </div>
                     
-                    <!-- 답변 리스트 -->
+                    <!-- 댓글 리스트 -->
                     <div class="mb-6"
                          id="answer-list"
                          th:fragment="answer-list"
@@ -266,13 +267,15 @@
                                         </div>
                                         
                                         <!-- 대댓글 쓰기 버튼 -->
-                                        <button class="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 toggle-comment-form">
+                                        <button class="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 toggle-comment-form"
+                                                onclick="toggleCommentForm(this)">
                                             <i data-lucide="corner-down-right" class="w-4 h-4"></i>
                                             <span>댓글 쓰기</span>
                                         </button>
                                         
                                         <!-- 대댓글 작성 폼 -->
-                                        <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full">
+                                        <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
+                                             id="comment-form-card">
                                             <form class="flex flex-col"
                                                   method="POST"
                                                   th:action="@{/community/{postId}/answers/{answerId}/comment(postId=${postId}, answerId=${answer.id})}"
@@ -463,7 +466,21 @@
             const postId = '[[${post.id}]]';
             const likeButton = document.getElementById('like-button');
             const likeCount = document.getElementById('like-count');
-            let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
+
+            async function toggleAnswerForm()
+            {
+                const answerFormCard = document.getElementById('answer-form-card');
+                answerFormCard.classList.toggle('hidden');
+            }
+
+            async function toggleCommentForm(button)
+            {
+                const commentFormCards = document.querySelectorAll('.comment-form');
+                const commentForm = button.nextElementSibling;
+
+                commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
+                commentForm.classList.toggle('hidden');
+            }
 
             async function deletePost()
             {
@@ -498,6 +515,8 @@
 
             async function addLike()
             {
+                let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
+
                 try
                 {
                     const response = await fetch(`/api/community/${postId}/likes`, {
@@ -525,6 +544,7 @@
                     alert('서버와의 통신 중 오류가 발생했습니다.');
                 }
             }
+        
         </script>
     </body>
 </html>
