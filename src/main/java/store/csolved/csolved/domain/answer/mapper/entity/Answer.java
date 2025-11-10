@@ -5,6 +5,8 @@ import lombok.experimental.SuperBuilder;
 import store.csolved.csolved.common.BaseEntity;
 import store.csolved.csolved.domain.answer.service.command.AnswerCreateCommand;
 
+import java.time.LocalDateTime;
+
 @Getter
 @SuperBuilder
 @NoArgsConstructor
@@ -17,8 +19,6 @@ public class Answer extends BaseEntity
     private String authorNickname;
     private boolean anonymous;
     private String content;
-//    private Long totalScore;
-//    private Long voterCount;
 
     public static Answer from(AnswerCreateCommand command)
     {
@@ -27,6 +27,7 @@ public class Answer extends BaseEntity
                 .authorId(command.getAuthorId())
                 .anonymous(command.getAnonymous())
                 .content(command.getContent())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

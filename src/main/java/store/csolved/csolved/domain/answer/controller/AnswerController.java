@@ -49,7 +49,6 @@ public class AnswerController
     public void saveCommunityAnswer(@LoginUser User user,
                                     @Valid @RequestBody AnswerCreateRequest request)
     {
-        System.out.println("helo");
         answerService.saveAnswer(AnswerCreateCommand.from(request));
     }
 

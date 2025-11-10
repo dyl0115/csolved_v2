@@ -8,8 +8,6 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
-        <!-- Prism CSS -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet"/>
     </head>
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
@@ -426,25 +424,8 @@
             </div>
         </div>
         
-        <div th:fragment="answerCard">
-        
-        </div>
-        
-        <!-- Prism JS -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-        <!-- Prism 지원 언어 -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-java.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
         <!-- 상세 포스트 관련 JS -->
         <script src="/js/post-detail.js"></script>
-        <!-- TinyMCE 에디터 -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
-        <!--  TinyMCE 에디터 JS-->
-        <script src="/js/editor.js" defer data-upload-image-url="/api/upload-image"></script>
         <!-- Timeago.js-->
         <script src="/js/timeago.js"></script>
         <!-- 네비게이션 javascript -->
@@ -502,13 +483,10 @@
 
                     if (response.ok)
                     {
-                        // window.location.href = postRedirectUrl;
-                        alert('저장완료');
+                        window.location.href = postRedirectUrl;
                     } else
                     {
                         const errorData = await response.json();
-                        alert('postID ' + postId);
-                        alert('오류? ' + errorData.message);
                         answerError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
                     }
                 }
