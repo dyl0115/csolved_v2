@@ -130,6 +130,7 @@ function initQuillEditor(selector)
     }
 
     quill = new Quill(selector, config);
+    quill.root.style.minHeight = '300px';
 
     const originalContent = document.getElementById('content').value;
 

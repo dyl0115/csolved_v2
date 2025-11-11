@@ -344,7 +344,8 @@
                                                     
                                                     <!-- 대댓글 삭제버튼-->
                                                     <span th:if="${comment.authorId == user.id}">
-                                                        <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition">
+                                                        <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
+                                                                th:onclick="|deleteComment(${comment.id})|">
                                                             <i data-lucide="trash-2" class="w-3 h-3"></i>
                                                             <span>삭제</span>
                                                         </button>
@@ -531,24 +532,54 @@
             }
         }
 
-        async function deleteAnswer(answerId)
+        async function deleteComment(commentId)
         {
-            const postId = '[[${post.id}]]';
-            const deleteAnswerUrl = `/api/answer/${answerId}`;
-            const getPostRedirectUrl = `/community/${postId}?skipView=true`;
-
+            const communityId = '[[${post.id}]]';
+            const requestUrl = `/api/comment/${commentId}`;
+            const redirectUrl = `/community/${communityId}?skipView=true`;
 
             if (confirm('댓글을 삭제하시겠습니까?'))
             {
                 try
                 {
-                    const response = await fetch(deleteAnswerUrl, {
+                    const response = await fetch(requestUrl, {
                         method: 'DELETE'
                     });
 
                     if (response.ok)
                     {
-                        window.location.href = getPostRedirectUrl;
+                        window.location.href = redirectUrl;
+                    } else
+                    {
+                        const errorData = await response.json();
+                        alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
+                    }
+                }
+                catch (error)
+                {
+                    console.error('Error:', error);
+                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                }
+            }
+        }
+
+        async function deleteAnswer(answerId)
+        {
+            const postId = '[[${post.id}]]';
+            const requestUrl = `/api/answer/${answerId}`;
+            const redirectUrl = `/community/${postId}?skipView=true`;
+
+            if (confirm('댓글을 삭제하시겠습니까?'))
+            {
+                try
+                {
+                    const response = await fetch(requestUrl, {
+                        method: 'DELETE'
+                    });
+
+                    if (response.ok)
+                    {
+                        window.location.href = redirectUrl;
                     } else
                     {
                         const errorData = await response.json();

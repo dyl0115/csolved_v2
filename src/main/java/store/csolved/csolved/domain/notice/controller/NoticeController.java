@@ -1,16 +1,13 @@
 package store.csolved.csolved.domain.notice.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
-import store.csolved.csolved.domain.comment.controller.request.CommentCreateRequest;
-import store.csolved.csolved.domain.notice.controller.request.NoticeCreateUpdateRequest;
-import store.csolved.csolved.domain.notice.controller.view_model.NoticeListVM;
-import store.csolved.csolved.domain.notice.service.NoticeFacade;
+import store.csolved.csolved.domain.notice.service.NoticeService;
+import store.csolved.csolved.domain.notice.service.result.NoticeResult;
+import store.csolved.csolved.domain.notice.service.result.NoticeWithAnswersAndCommentsResult;
+import store.csolved.csolved.domain.notice.service.result.NoticesAndPageResult;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.utils.page.PageInfo;
 import store.csolved.csolved.utils.search.SearchInfo;
@@ -25,86 +22,51 @@ public class NoticeController
     public final static String VIEWS_NOTICE_LIST = "/views/notice/list";
     public final static String VIEWS_NOTICE_DETAIL = "/views/notice/detail";
 
-    private final NoticeFacade noticeFacade;
-
-    @LoginRequest
-    @GetMapping("/notice/createForm")
-    public String initCreate(Model model)
-    {
-        model.addAttribute("createForm", NoticeCreateUpdateRequest.empty());
-        return VIEWS_NOTICE_CREATE_FORM;
-    }
-
-    @LoginRequest
-    @PostMapping("/notice")
-    public String processCreate(@Valid @ModelAttribute("createForm") NoticeCreateUpdateRequest form,
-                                BindingResult result)
-    {
-        if (result.hasErrors())
-        {
-            return VIEWS_NOTICE_CREATE_FORM;
-        }
-
-        noticeFacade.save(form);
-        return "redirect:/notices?page=1";
-    }
+    private final NoticeService noticeService;
 
     @LoginRequest
     @GetMapping("/notices")
-    public String getNotices(@PageInfo Long page,
+    public String getNotices(@PageInfo Long pageNumber,
                              @SearchInfo Searching search,
                              Model model)
     {
-        NoticeListVM viewModel = noticeFacade.getNotices(page, search);
-        model.addAttribute("noticeListViewModel", viewModel);
+        NoticesAndPageResult noticesAndPage = noticeService.getNoticesAndPage(pageNumber, search);
+        model.addAttribute("notices", noticesAndPage.getNotices());
+        model.addAttribute("page", noticesAndPage.getPage());
+
         return VIEWS_NOTICE_LIST;
     }
 
     @LoginRequest
-    @GetMapping("/notice/{postId}")
-    public String viewNotice(@PathVariable Long postId,
-                             Model model)
-    {
-        model.addAttribute("noticeDetails", noticeFacade.viewNotice(postId));
-        model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
-        model.addAttribute("commentCreateForm", CommentCreateRequest.empty());
-        return VIEWS_NOTICE_DETAIL;
-    }
-
-    @LoginRequest
-    @GetMapping("/notice/{postId}/read")
-    public String getNotice(@PathVariable Long postId,
+    @GetMapping("/notice/{noticeId}")
+    public String getNotice(@PathVariable Long noticeId,
                             Model model)
     {
-        model.addAttribute("noticeDetails", noticeFacade.getNotice(postId));
-        model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
-        model.addAttribute("commentCreateForm", CommentCreateRequest.empty());
+        NoticeWithAnswersAndCommentsResult result = noticeService.getNoticeWithAnswersAndComments(noticeId);
+
+        model.addAttribute("notice", result.getNotice());
+        model.addAttribute("answersWithComments", result.getAnswersWithComments());
+
         return VIEWS_NOTICE_DETAIL;
     }
 
 
     @LoginRequest
-    @GetMapping("/notice/{postId}/updateForm")
-    public String initUpdate(@PathVariable Long postId,
-                             Model model)
+    @GetMapping("/notice/createForm")
+    public String getNoticeCreateForm()
     {
-        NoticeCreateUpdateRequest form = noticeFacade.initUpdateForm(postId);
-        model.addAttribute("updateForm", form);
+        return VIEWS_NOTICE_CREATE_FORM;
+    }
+
+    @LoginRequest
+    @GetMapping("/notice/{noticeId}/updateForm")
+    public String getNoticeUpdateForm(@PathVariable Long noticeId,
+                                      Model model)
+    {
+        NoticeResult result = noticeService.getNotice(noticeId);
+        model.addAttribute("notice", result);
         return VIEWS_NOTICE_UPDATE_FORM;
     }
 
-    @LoginRequest
-    @PutMapping("/notice/{postId}")
-    public String processUpdate(@PathVariable("postId") Long postId,
-                                @Valid @ModelAttribute("updateForm") NoticeCreateUpdateRequest form,
-                                BindingResult result)
-    {
-        if (result.hasErrors())
-        {
-            return VIEWS_NOTICE_UPDATE_FORM;
-        }
 
-        noticeFacade.update(postId, form);
-        return "redirect:/notices?page=1";
-    }
 }

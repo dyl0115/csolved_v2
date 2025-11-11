@@ -7,8 +7,8 @@ import store.csolved.csolved.domain.answer.mapper.entity.Answer;
 import store.csolved.csolved.domain.answer.service.AnswerService;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.service.CommentService;
-import store.csolved.csolved.domain.notice.Notice;
-import store.csolved.csolved.domain.notice.controller.request.NoticeCreateUpdateRequest;
+import store.csolved.csolved.domain.notice.mapper.entity.Notice;
+import store.csolved.csolved.domain.notice.controller.request.NoticeCreateRequest;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeDetailVM;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeListVM;
 import store.csolved.csolved.utils.page.Pagination;
@@ -27,15 +27,9 @@ public class NoticeFacade
     private final PaginationManager paginationUtils;
     private final CommentService commentService;
 
-    @Transactional
-    public void save(NoticeCreateUpdateRequest form)
-    {
-        noticeService.save(form.getNotice());
-    }
-
     public NoticeListVM getNotices(Long pageNumber, Searching search)
     {
-        Long total = noticeService.countNotice(search);
+        Long total = noticeService.countNotices(search);
         Pagination page = paginationUtils.createPagination(pageNumber, total);
         List<Notice> notices = noticeService.getNotices(page, search);
         return NoticeListVM.from(page, notices);
@@ -51,10 +45,11 @@ public class NoticeFacade
 
     public NoticeDetailVM getNotice(Long postId)
     {
-        Notice notice = noticeService.getNotice(postId);
-        List<Answer> answers = answerService.getAnswers(postId);
-        Map<Long, List<Comment>> comments = commentService.getComments(extractIds(answers));
-        return NoticeDetailVM.from(notice, answers, comments);
+//        Notice notice = noticeService.getNotice(postId);
+//        List<Answer> answers = answerService.getAnswers(postId);
+//        Map<Long, List<Comment>> comments = commentService.getComments(extractIds(answers));
+//        return NoticeDetailVM.from(notice, answers, comments);
+        return null;
     }
 
     private List<Long> extractIds(List<Answer> answers)
@@ -65,15 +60,16 @@ public class NoticeFacade
     }
 
     @Transactional
-    public void update(Long postId, NoticeCreateUpdateRequest form)
+    public void update(Long postId, NoticeCreateRequest form)
     {
-        noticeService.update(postId, form.getNotice());
+//        noticeService.update(postId, form.getNotice());
     }
 
-    public NoticeCreateUpdateRequest initUpdateForm(Long postId)
+    public NoticeCreateRequest initUpdateForm(Long postId)
     {
-        Notice notice = noticeService.getNotice(postId);
-        return NoticeCreateUpdateRequest.from(notice);
+//        Notice notice = noticeService.getNotice(postId);
+//        return NoticeCreateRequest.from(notice);
+        return null;
     }
 
     @Transactional

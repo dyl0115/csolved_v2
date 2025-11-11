@@ -1,4 +1,4 @@
-package store.csolved.csolved.domain.notice.controller.view_model;
+package store.csolved.csolved.domain.notice.service.result;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -9,17 +9,16 @@ import java.util.List;
 
 @Getter
 @Builder
-public class NoticeListVM
+public class NoticesAndPageResult
 {
+    private List<Notice> notices;
     private Pagination page;
-    private List<Notice> posts;
 
-    public static NoticeListVM from(Pagination page,
-                                    List<Notice> posts)
+    public static NoticesAndPageResult from(List<Notice> notices, Pagination page)
     {
-        return NoticeListVM.builder()
+        return NoticesAndPageResult.builder()
+                .notices(notices)
                 .page(page)
-                .posts(posts)
                 .build();
     }
 }

@@ -4,7 +4,7 @@
 
 <mapper namespace="store.csolved.csolved.domain.notice.mapper.NoticeMapper">
 
-    <resultMap id="noticeResultMap" type="store.csolved.csolved.domain.notice.Notice">
+    <resultMap id="noticeResultMap" type="store.csolved.csolved.domain.notice.mapper.entity.Notice">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>

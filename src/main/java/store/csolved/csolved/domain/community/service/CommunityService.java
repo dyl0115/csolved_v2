@@ -13,7 +13,7 @@ import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.domain.community.mapper.CommunityMapper;
 import store.csolved.csolved.domain.community.service.command.CommunityCreateCommand;
 import store.csolved.csolved.domain.community.service.command.CommunityUpdateCommand;
-import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
+import store.csolved.csolved.domain.community.service.result.CommunitiesAndPageResult;
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.tag.service.TagService;
@@ -75,13 +75,13 @@ public class CommunityService
                 search.getKeyword());
     }
 
-    public CommunityResult getPost(Long communityId)
+    public CommunityResult getCommunity(Long communityId)
     {
         Community community = communityMapper.getCommunity(communityId);
         return CommunityResult.from(community);
     }
 
-    public CommunityWithAnswersAndCommentsResult getPostWithAnswersAndComments(Long userId, Long communityId)
+    public CommunityWithAnswersAndCommentsResult getCommunityWithAnswersAndComments(Long userId, Long communityId)
     {
         Community community = communityMapper.getCommunity(communityId);
         boolean bookmarked = bookmarkService.hasBookmarked(userId, communityId);
@@ -89,10 +89,10 @@ public class CommunityService
         return CommunityWithAnswersAndCommentsResult.from(community, bookmarked, answersWithComments);
     }
 
-    public CommunityAndPageResult getCommunitiesAndPage(Long pageNumber,
-                                                        Sorting sort,
-                                                        Filtering filter,
-                                                        Searching search)
+    public CommunitiesAndPageResult getPostsAndPage(Long pageNumber,
+                                                    Sorting sort,
+                                                    Filtering filter,
+                                                    Searching search)
     {
 
         Long totalPage = countPosts(filter, search);
@@ -109,7 +109,7 @@ public class CommunityService
                 search.getSearchType(),
                 search.getKeyword());
 
-        return CommunityAndPageResult.from(communities, page);
+        return CommunitiesAndPageResult.from(communities, page);
     }
 
     @Transactional

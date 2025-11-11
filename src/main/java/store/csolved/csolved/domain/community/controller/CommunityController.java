@@ -5,16 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
 import store.csolved.csolved.domain.category.Category;
 import store.csolved.csolved.domain.category.service.CategoryService;
 import store.csolved.csolved.domain.community.service.CommunityService;
-import store.csolved.csolved.domain.community.service.result.CommunityAndPageResult;
+import store.csolved.csolved.domain.community.service.result.CommunitiesAndPageResult;
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.domain.comment.controller.request.CommentCreateRequest;
 import store.csolved.csolved.utils.filter.FilterInfo;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.login.LoginUser;
@@ -49,11 +47,11 @@ public class CommunityController
                            @SearchInfo Searching search,
                            Model model)
     {
-        CommunityAndPageResult communitiesAndPage = communityService.getCommunitiesAndPage(pageNumber, sort, filter, search);
+        CommunitiesAndPageResult communitiesAndPage = communityService.getPostsAndPage(pageNumber, sort, filter, search);
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
 
         model.addAttribute("page", communitiesAndPage.getPage());
-        model.addAttribute("posts", communitiesAndPage.getCommunities());
+        model.addAttribute("posts", communitiesAndPage.getPosts());
         model.addAttribute("categories", categories);
 
         return VIEWS_COMMUNITY_LIST;
@@ -61,12 +59,12 @@ public class CommunityController
 
     @LoginRequest
     @GetMapping("/community/{postId}")
-    public String getPost(@LoginUser User user,
-                          @PathVariable Long postId,
-                          Model model)
+    public String getCommunity(@LoginUser User user,
+                               @PathVariable Long postId,
+                               Model model)
     {
         CommunityWithAnswersAndCommentsResult result
-                = communityService.getPostWithAnswersAndComments(user.getId(), postId);
+                = communityService.getCommunityWithAnswersAndComments(user.getId(), postId);
 
         model.addAttribute("post", result.getCommunity());
         model.addAttribute("bookmarked", result.isBookmarked());
@@ -85,16 +83,16 @@ public class CommunityController
     }
 
     @LoginRequest
-    @GetMapping("/community/{postId}/updateForm")
-    public String getUpdateForm(@PathVariable Long postId,
+    @GetMapping("/community/{communityId}/updateForm")
+    public String getUpdateForm(@PathVariable Long communityId,
                                 Model model)
     {
 
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
-        CommunityResult post = communityService.getPost(postId);
+        CommunityResult community = communityService.getCommunity(communityId);
 
         model.addAttribute("categories", categories);
-        model.addAttribute("post", post);
+        model.addAttribute("post", community);
 
         return VIEWS_COMMUNITY_UPDATE_FORM;
     }

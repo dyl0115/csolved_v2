@@ -1,10 +1,13 @@
 package store.csolved.csolved.domain.notice.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import store.csolved.csolved.domain.notice.service.NoticeFacade;
+import store.csolved.csolved.domain.notice.controller.request.NoticeCreateRequest;
+import store.csolved.csolved.domain.notice.controller.request.NoticeUpdateRequest;
+import store.csolved.csolved.domain.notice.service.NoticeService;
+import store.csolved.csolved.domain.notice.service.command.NoticeCreateCommand;
+import store.csolved.csolved.domain.notice.service.command.NoticeUpdateCommand;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.utils.login.LoginUser;
@@ -14,26 +17,35 @@ import store.csolved.csolved.utils.login.LoginUser;
 @RestController
 public class NoticeRestController
 {
-    private final NoticeFacade noticeFacade;
+    private final NoticeService noticeService;
 
     @LoginRequest
-    @PostMapping("/{postId}/likes")
-    public ResponseEntity<Void> addLike(@LoginUser User user,
-                                        @PathVariable Long postId)
+    @PostMapping
+    public void saveNotice(@Valid @RequestBody NoticeCreateRequest request)
     {
-        boolean valid = noticeFacade.addLike(postId, user.getId());
-        if (!valid)
-        {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-        return ResponseEntity.status(HttpStatus.OK).build();
+        noticeService.saveNotice(NoticeCreateCommand.from(request));
     }
 
     @LoginRequest
-    @DeleteMapping("/{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Long postId)
+    @PostMapping("/{noticeId}/likes")
+    public void addLike(@LoginUser User user,
+                        @PathVariable Long noticeId)
     {
-        noticeFacade.delete(postId);
+        noticeService.addLike(noticeId, user.getId());
+    }
+
+    @LoginRequest
+    @DeleteMapping("/{noticeId}")
+    public void deleteNotice(@PathVariable Long noticeId)
+    {
+        noticeService.delete(noticeId);
+    }
+
+    @LoginRequest
+    @PutMapping("/{noticeId}")
+    public void updateNotice(@PathVariable("noticeId") Long noticeId,
+                             @Valid @RequestBody NoticeUpdateRequest request)
+    {
+        noticeService.update(noticeId, NoticeUpdateCommand.from(request));
     }
 }
