@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ImageSaveResponse
+public class UploadImageResponse
 {
     private String imageUrl;
 
-    public static ImageSaveResponse from(String imageUrl)
+    public static UploadImageResponse from(String imageUrl)
     {
-        return ImageSaveResponse.builder()
+        return UploadImageResponse.builder()
                 .imageUrl(imageUrl)
                 .build();
     }

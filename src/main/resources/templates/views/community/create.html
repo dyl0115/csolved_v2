@@ -8,6 +8,10 @@
         <script src="https://cdn.tailwindcss.com"></script>
         <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
+        <!-- Quill Editor CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
+        <!-- Quill Resize CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.css" rel="stylesheet">
     </head>
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
@@ -53,12 +57,11 @@
                                 <span>제목</span>
                             </div>
                         </label>
-                        <input
-                                type="text"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                id="title"
-                                placeholder="제목을 입력하세요"
-                                required>
+                        <input type="text"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                               id="title"
+                               placeholder="제목을 입력하세요"
+                               required>
                         <span class="text-red-500 text-sm mt-1 hidden error-message">
                             제목 오류 메시지
                         </span>
@@ -120,11 +123,10 @@
                                 <span>내용</span>
                             </div>
                         </label>
-                        <textarea
-                                id="content"
-                                class="large-editor w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                placeholder="내용을 입력하세요">
-                        </textarea>
+                        
+                        <textarea id="content" name="content" style="display:none;"></textarea>
+                        <div id="editor"></div>
+                        
                         <span class="text-red-500 text-sm mt-1 hidden error-message">
                             컨텐츠 에러 메시지
                         </span>
@@ -151,16 +153,23 @@
             </div>
         </div>
         
-        <!-- 이미지 업로드 Compressor -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/compressorjs/1.2.1/compressor.min.js"></script>
-        <!-- 태그 관련 JS-->
-        <script src="/js/tag.js"></script>
-        <!-- 네비게이션 javascript -->
-        <script th:replace="~{/layout/nav :: default-nav-scripts}"></script>
+        <!-- Quill Editor -->
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script src="/js/editor/quill-editor.js"></script>
+        <script src="/js/editor/quill-resize.js"></script>
+        
+        <!-- Page Utils -->
+        <script src="/js/tag/tag.js"></script>
+        <script src="/js/navigation/navigation.js"></script>
         
         <script th:inline="javascript">
 
-            lucide.createIcons();
+            document.addEventListener('DOMContentLoaded', async function ()
+            {
+                initNavigation();
+                initQuillEditor('#editor');
+                lucide.createIcons();
+            });
 
             async function createPost()
             {

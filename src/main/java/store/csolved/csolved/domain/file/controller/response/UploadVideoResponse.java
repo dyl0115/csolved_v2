@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UploadImageResponse
+public class UploadVideoResponse
 {
-    private String imageUrl;
+    private String videoUrl;
 
-    public static UploadImageResponse from(String imageUrl)
+    public static UploadVideoResponse from(String videoUrl)
     {
-        return UploadImageResponse.builder()
-                .imageUrl(imageUrl)
+        return UploadVideoResponse.builder()
+                .videoUrl(videoUrl)
                 .build();
     }
 }

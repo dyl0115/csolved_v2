@@ -428,10 +428,16 @@
         <script src="/js/post-detail.js"></script>
         <!-- Timeago.js-->
         <script src="/js/timeago.js"></script>
-        <!-- 네비게이션 javascript -->
-        <script th:replace="~{/layout/nav :: default-nav-scripts}"></script>
+        <!-- 네비게이션 -->
+        <script src="/js/navigation/navigation.js"></script>
         
         <script th:inline="javascript">
+            
+            document.addEventListener('DOMContentLoaded', async function ()
+            {
+                initNavigation();
+                lucide.createIcons();
+            });
 
             async function toggleAnswerForm()
             {
@@ -464,12 +470,6 @@
                     anonymous: answerAnonymous,
                     content: answerContent,
                 }
-
-                console.log(request);
-                console.log("postId " + parseInt(postId));
-                console.log("answerAuthorId " + parseInt(answerAuthorId));
-                console.log("answerAnonymous " + answerAnonymous);
-                console.log("answerContent " + answerContent);
 
                 try
                 {

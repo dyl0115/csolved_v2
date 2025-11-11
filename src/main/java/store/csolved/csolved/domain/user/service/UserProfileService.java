@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.domain.user.controller.form.UserProfileForm;
 import store.csolved.csolved.exception.ImageUploadException;
-import store.csolved.csolved.domain.file.FileService;
+import store.csolved.csolved.domain.file.service.FileService;
 import store.csolved.csolved.utils.AuthSessionManager;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class UserProfileService
 
         if (!profileImage.isEmpty())
         {
-            String profileUrl = s3Service.upload(profileImage, FOLDER_NAME_USER_PROFILE);
+            String profileUrl = s3Service.uploadImage(profileImage);
             if (profileUrl == null)
             {
                 throw new ImageUploadException("이미지 저장 실패");
