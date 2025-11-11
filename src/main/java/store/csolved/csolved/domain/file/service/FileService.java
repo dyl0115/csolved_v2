@@ -19,7 +19,7 @@ public class FileService
     @Value("${aws.s3.bucket-name}")
     private String bucket;
 
-    public String upload(MultipartFile file, String folderName) throws IOException
+    public String uploadImage(MultipartFile file, String folderName) throws IOException
     {
         String fileName = folderName + "/" + UUID.randomUUID() + "_" + file.getOriginalFilename();
         ObjectMetadata metadata = new ObjectMetadata();

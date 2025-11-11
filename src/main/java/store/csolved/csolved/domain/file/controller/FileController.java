@@ -22,7 +22,7 @@ public class FileController
     {
         try
         {
-            String imageUrl = fileService.upload(file, "post/free-board");
+            String imageUrl = fileService.uploadImage(file, "post/free-board");
             HashMap<String, String> response = new HashMap<>();
             response.put("location", imageUrl);
             return ResponseEntity.ok(response);
