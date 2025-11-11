@@ -8,7 +8,7 @@ import store.csolved.csolved.domain.answer.service.AnswerService;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.service.CommentService;
 import store.csolved.csolved.domain.notice.Notice;
-import store.csolved.csolved.domain.notice.controller.form.NoticeCreateUpdateForm;
+import store.csolved.csolved.domain.notice.controller.request.NoticeCreateUpdateRequest;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeDetailVM;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeListVM;
 import store.csolved.csolved.utils.page.Pagination;
@@ -28,7 +28,7 @@ public class NoticeFacade
     private final CommentService commentService;
 
     @Transactional
-    public void save(NoticeCreateUpdateForm form)
+    public void save(NoticeCreateUpdateRequest form)
     {
         noticeService.save(form.getNotice());
     }
@@ -65,15 +65,15 @@ public class NoticeFacade
     }
 
     @Transactional
-    public void update(Long postId, NoticeCreateUpdateForm form)
+    public void update(Long postId, NoticeCreateUpdateRequest form)
     {
         noticeService.update(postId, form.getNotice());
     }
 
-    public NoticeCreateUpdateForm initUpdateForm(Long postId)
+    public NoticeCreateUpdateRequest initUpdateForm(Long postId)
     {
         Notice notice = noticeService.getNotice(postId);
-        return NoticeCreateUpdateForm.from(notice);
+        return NoticeCreateUpdateRequest.from(notice);
     }
 
     @Transactional

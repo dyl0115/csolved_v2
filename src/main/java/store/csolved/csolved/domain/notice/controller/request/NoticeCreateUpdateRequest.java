@@ -1,4 +1,4 @@
-package store.csolved.csolved.domain.notice.controller.form;
+package store.csolved.csolved.domain.notice.controller.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import store.csolved.csolved.domain.notice.Notice;
 
 @Getter
 @Builder
-public class NoticeCreateUpdateForm
+public class NoticeCreateUpdateRequest
 {
     @NotBlank(message = "제목을 입력해주세요.")
     @Size(min = 2, max = 50, message = "제목은 최소 2글자에서 50자까지 가능합니다.")
@@ -25,16 +25,16 @@ public class NoticeCreateUpdateForm
     @NotNull(message = "실명/익명 여부를 선택해주세요.")
     private boolean anonymous;
 
-    public static NoticeCreateUpdateForm empty()
+    public static NoticeCreateUpdateRequest empty()
     {
-        return NoticeCreateUpdateForm.builder()
+        return NoticeCreateUpdateRequest.builder()
                 .anonymous(false)
                 .build();
     }
 
-    public static NoticeCreateUpdateForm from(store.csolved.csolved.domain.notice.Notice notice)
+    public static NoticeCreateUpdateRequest from(store.csolved.csolved.domain.notice.Notice notice)
     {
-        return NoticeCreateUpdateForm.builder()
+        return NoticeCreateUpdateRequest.builder()
                 .title(notice.getTitle())
                 .content(notice.getContent())
                 .authorId(notice.getAuthorId())
