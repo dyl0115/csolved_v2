@@ -2,11 +2,9 @@ package store.csolved.csolved.domain.answer.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import store.csolved.csolved.domain.answer.mapper.entity.Answer;
 import store.csolved.csolved.domain.answer.service.command.AnswerCreateCommand;
 import store.csolved.csolved.domain.community.service.CommunityService;
 import store.csolved.csolved.domain.notice.service.NoticeFacade;
@@ -14,14 +12,14 @@ import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
 import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
 import store.csolved.csolved.domain.answer.service.AnswerService;
-import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
+import store.csolved.csolved.domain.comment.controller.request.CommentCreateRequest;
 import store.csolved.csolved.utils.login.LoginUser;
 
 import static store.csolved.csolved.domain.notice.controller.NoticeController.VIEWS_NOTICE_DETAIL;
 
 @RequiredArgsConstructor
 @RestController
-public class AnswerController
+public class AnswerApiController
 {
     private final NoticeFacade noticeFacade;
     private final AnswerService answerService;
@@ -37,7 +35,7 @@ public class AnswerController
         if (result.hasErrors())
         {
             model.addAttribute("noticeDetails", noticeFacade.getNotice(postId));
-            model.addAttribute("commentCreateForm", CommentCreateForm.empty());
+            model.addAttribute("commentCreateForm", CommentCreateRequest.empty());
             return VIEWS_NOTICE_DETAIL;
         }
 //        answerService.saveAnswer(Answer.from(n));
@@ -52,4 +50,10 @@ public class AnswerController
         answerService.saveAnswer(AnswerCreateCommand.from(request));
     }
 
+    @LoginRequest
+    @DeleteMapping("/api/answer/{answerId}")
+    public void deleteAnswer(@PathVariable Long answerId)
+    {
+        answerService.delete(answerId);
+    }
 }

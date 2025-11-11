@@ -1,4 +1,4 @@
-package store.csolved.csolved.domain.comment.controller.form;
+package store.csolved.csolved.domain.comment.controller.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,7 +8,7 @@ import store.csolved.csolved.domain.comment.Comment;
 
 @Builder
 @Data
-public class CommentCreateForm
+public class CommentCreateRequest
 {
     private Long postId;
     private Long answerId;
@@ -20,9 +20,9 @@ public class CommentCreateForm
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
-    public static CommentCreateForm empty()
+    public static CommentCreateRequest empty()
     {
-        return CommentCreateForm.builder()
+        return CommentCreateRequest.builder()
                 .build();
     }
 

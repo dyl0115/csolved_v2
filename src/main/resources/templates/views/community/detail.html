@@ -4,9 +4,7 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>상세 게시글</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body class="bg-gray-50">
@@ -139,10 +137,10 @@
                         </button>
                         
                         <!-- 북마크 버튼 -->
-                        <button class="inline-flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow-sm"
-                                th:postId="${post.id}"
+                        <button id="bookmark-button"
+                                class="inline-flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow-sm"
                                 th:bookmarked="${bookmarked}"
-                                th:onclick="|toggleBookmark(this)|">
+                                onclick="toggleBookmark()">
                             <i id="bookmark-icon"
                                data-lucide="bookmark"
                                th:attr="data-lucide=${bookmarked ? 'bookmark-x' : 'bookmark'}"
@@ -167,13 +165,12 @@
                                        th:value="${user.id}"/>
                                 
                                 <textarea id="answer-content"
-                                          class="medium-editor w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
-                                          rows="3"
-                                          placeholder="댓글을 달아 생각을 공유해 주세요!">
-                                </textarea>
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
+                                          placeholder="답변에 대한 댓글을 작성하세요!"
+                                          rows="3"></textarea>
                                 
                                 <div id="answer-error"
-                                     class="text-red-500 text-sm mb-3">
+                                     class="text-red-500 text-sm mb-3 hidden">
                                     댓글 에러 메시지
                                 </div>
                                 
@@ -189,7 +186,7 @@
                                     </div>
                                     <button type="submit"
                                             class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-                                            onclick="createAnswer()">
+                                            onclick="submitAnswer()">
                                         <i data-lucide="send" class="w-4 h-4"></i>
                                         <span>등록</span>
                                     </button>
@@ -242,8 +239,7 @@
                                             <!-- 댓글삭제 버튼 -->
                                             <span th:if="${answer.authorId == user.id}">
                                                 <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
-                                                        data-bs-toggle="modal"
-                                                        th:data-bs-target="${'#answerDeleteConfirmModal' + answer.id}">
+                                                        th:onclick="|deleteAnswer(${answer.id})|">
                                                     <i data-lucide="trash-2" class="w-3 h-3"></i>
                                                     <span>삭제</span>
                                                 </button>
@@ -251,7 +247,7 @@
                                         </div>
                                         
                                         <!-- 댓글내용 -->
-                                        <div class="mb-3 text-gray-700 prose max-w-none"
+                                        <div class="mb-3 text-gray-700 prose max-w-none break-words"
                                              th:utext="${answer.content}">
                                             댓글 내용
                                         </div>
@@ -266,53 +262,53 @@
                                         <!-- 대댓글 작성 폼 -->
                                         <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
                                              id="comment-form-card">
-                                            <form class="flex flex-col"
-                                                  method="POST"
-                                                  th:action="@{/community/{postId}/answers/{answerId}/comment(postId=${postId}, answerId=${answer.id})}">
-                                                
+                                            <form class="flex flex-col">
                                                 <!-- 게시글 아이디  -->
-                                                <input type="hidden"
+                                                <input th:id="|comment-post${answer.id}|"
+                                                       type="hidden"
                                                        th:name="postId"
                                                        th:value="${postId}"/>
                                                 
                                                 <!-- 답변 아이디 -->
-                                                <input type="hidden"
+                                                <input th:id="|comment-answer${answer.id}|"
+                                                       type="hidden"
                                                        th:name="answerId"
                                                        th:value="${answer.id}"/>
                                                 
                                                 <!-- 답변자 아이디 -->
-                                                <input type="hidden"
+                                                <input th:id="|comment-author${answer.id}|"
+                                                       type="hidden"
                                                        th:name="authorId"
                                                        th:value="${user.id}"/>
                                                 
                                                 <!-- 대댓글 내용 -->
                                                 <textarea
+                                                        th:id="|comment-content${answer.id}|"
                                                         class="small-editor w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
                                                         rows="3"
-                                                        placeholder="답변에 대한 댓글을 작성하세요!"
-                                                        th:id="|small-editor${answer.id}|">
-                                                </textarea>
+                                                        placeholder="답변에 대한 댓글을 작성하세요!"></textarea>
                                                 
-                                                <!-- 대댓글 오류 메시지 -->
-                                                <div class="text-red-500 text-sm mb-3 hidden">
+                                                <div th:id="|comment-error${answer.id}|"
+                                                     class="text-red-500 text-sm mb-3 hidden">
                                                     대댓글 오류 메시지
                                                 </div>
                                                 
                                                 <div class="flex justify-between items-center">
                                                     <!-- 대댓글 익명/실명 선택-->
                                                     <div class="flex items-center">
-                                                        <input class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
-                                                               type="checkbox"
-                                                               id="anonymous-checkbox-${answer.id}">
+                                                        <input th:id="|comment-anonymous${answer.id}|"
+                                                               class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
+                                                               type="checkbox">
                                                         <label class="ml-2 text-sm text-gray-700"
-                                                               for="anonymous-checkbox-${answer.id}">
+                                                               th:for="|comment-anonymous${answer.id}|">
                                                             익명으로 댓글 달기
                                                         </label>
                                                     </div>
                                                     
                                                     <!-- 대댓글 등록 버튼 -->
-                                                    <button type="submit"
-                                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
+                                                    <button type="button"
+                                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                                                            th:onclick="|submitComment(${answer.id})|">
                                                         <i data-lucide="send" class="w-4 h-4"></i>
                                                         <span>등록</span>
                                                     </button>
@@ -348,9 +344,7 @@
                                                     
                                                     <!-- 대댓글 삭제버튼-->
                                                     <span th:if="${comment.authorId == user.id}">
-                                                        <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
-                                                                data-bs-toggle="modal"
-                                                                th:data-bs-target="${'#commentDeleteConfirmModal' + comment.id}">
+                                                        <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition">
                                                             <i data-lucide="trash-2" class="w-3 h-3"></i>
                                                             <span>삭제</span>
                                                         </button>
@@ -423,138 +417,140 @@
                 </div>
             </div>
         </div>
-        
-        <!-- 상세 포스트 관련 JS -->
-        <script src="/js/post-detail.js"></script>
-        <!-- Timeago.js-->
-        <script src="/js/timeago.js"></script>
-        <!-- 네비게이션 -->
-        <script src="/js/navigation/navigation.js"></script>
-        
-        <script th:inline="javascript">
-            
-            document.addEventListener('DOMContentLoaded', async function ()
-            {
-                initNavigation();
-                lucide.createIcons();
-            });
+        <div th:replace="~{/layout/footer :: default-footer}"></div>
+    </body>
+    <script th:inline="javascript">
 
-            async function toggleAnswerForm()
-            {
-                const answerFormCard = document.getElementById('answer-form-card');
-                answerFormCard.classList.toggle('hidden');
+        document.addEventListener('DOMContentLoaded', async function ()
+        {
+            initNavigation();
+            lucide.createIcons();
+        });
+
+        async function toggleAnswerForm()
+        {
+            const answerFormCard = document.getElementById('answer-form-card');
+            answerFormCard.classList.toggle('hidden');
+        }
+
+        async function toggleCommentForm(button)
+        {
+            const commentFormCards = document.querySelectorAll('.comment-form');
+            const commentForm = button.nextElementSibling;
+
+            commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
+            commentForm.classList.toggle('hidden');
+        }
+
+        async function submitComment(answerId)
+        {
+            const postId = '[[${post.id}]]';
+            const createCommentUrl = `/api/comment`;
+            const getPostRedirectUrl = `/community/${postId}?skipView=true`;
+            const commentAuthorId = document.getElementById(`comment-author${answerId}`).value;
+            const commentContent = document.getElementById(`comment-content${answerId}`).value;
+            const commentAnonymous = document.getElementById(`comment-anonymous${answerId}`).checked;
+            const commentError = document.getElementById(`comment-error${answerId}`);
+
+            const request = {
+                postId: parseInt(postId),
+                answerId: parseInt(answerId),
+                authorId: parseInt(commentAuthorId),
+                content: commentContent,
+                anonymous: commentAnonymous
             }
 
-            async function toggleCommentForm(button)
+            try
             {
-                const commentFormCards = document.querySelectorAll('.comment-form');
-                const commentForm = button.nextElementSibling;
+                const response = await fetch(createCommentUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request)
+                });
 
-                commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
-                commentForm.classList.toggle('hidden');
-            }
-
-            async function createAnswer()
-            {
-                const postId = '[[${post.id}]]';
-                const answerSaveUrl = `/api/answer`;
-                const postRedirectUrl = `/community/${postId}?skipView=true`;
-                const answerAuthorId = document.getElementById('answer-author-id').value;
-                const answerAnonymous = document.getElementById('answer-anonymous').checked;
-                const answerContent = document.getElementById('answer-content').value;
-                const answerError = document.getElementById('answer-error');
-
-                const request = {
-                    postId: parseInt(postId),
-                    authorId: parseInt(answerAuthorId),
-                    anonymous: answerAnonymous,
-                    content: answerContent,
+                if (response.ok)
+                {
+                    window.location.href = getPostRedirectUrl;
+                } else
+                {
+                    const errorData = await response.json();
+                    commentError.classList.toggle('hidden');
+                    commentError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
                 }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
 
+        async function submitAnswer()
+        {
+            const postId = '[[${post.id}]]';
+            const createAnswerUrl = `/api/answer`;
+            const getPostRedirectUrl = `/community/${postId}?skipView=true`;
+            const answerAuthorId = document.getElementById('answer-author-id').value;
+            const answerAnonymous = document.getElementById('answer-anonymous').checked;
+            const answerContent = document.getElementById('answer-content').value;
+            const answerError = document.getElementById('answer-error');
+
+            const request = {
+                postId: parseInt(postId),
+                authorId: parseInt(answerAuthorId),
+                anonymous: answerAnonymous,
+                content: answerContent,
+            }
+
+            try
+            {
+                const response = await fetch(createAnswerUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(request)
+                });
+
+                if (response.ok)
+                {
+                    window.location.href = getPostRedirectUrl;
+                } else
+                {
+                    const errorData = await response.json();
+                    answerError.classList.toggle('hidden');
+                    answerError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function deleteAnswer(answerId)
+        {
+            const postId = '[[${post.id}]]';
+            const deleteAnswerUrl = `/api/answer/${answerId}`;
+            const getPostRedirectUrl = `/community/${postId}?skipView=true`;
+
+
+            if (confirm('댓글을 삭제하시겠습니까?'))
+            {
                 try
                 {
-                    const response = await fetch(answerSaveUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(request)
+                    const response = await fetch(deleteAnswerUrl, {
+                        method: 'DELETE'
                     });
 
                     if (response.ok)
                     {
-                        window.location.href = postRedirectUrl;
+                        window.location.href = getPostRedirectUrl;
                     } else
                     {
-                        const errorData = await response.json();
-                        answerError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
-                    }
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                    alert('서버와의 통신 중 오류가 발생했습니다.');
-                }
-            }
-
-            async function deletePost()
-            {
-                const postId = '[[${post.id}]]';
-                const url = `/api/community/${postId}`;
-
-                if (confirm("게시글을 삭제하겠습니까?"))
-                {
-                    try
-                    {
-                        const response = await fetch(url, {
-                            method: 'DELETE',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        });
-
-                        if (response.ok)
-                        {
-                            alert("삭제가 완료되었습니다.");
-                            window.location.href = '/communities?page=1';
-                        } else
-                        {
-                            const errorData = await response.json();
-                            alert('삭제 실패: ' + (errorData.message || '알 수 없는 오류가 발생했습니다.'));
-                        }
-                    }
-                    catch (error)
-                    {
-                        console.error('Error:', error);
-                        alert('서버와의 통신 중 오류가 발생했습니다.');
-                    }
-                }
-            }
-
-            async function addLike()
-            {
-                const postId = '[[${post.id}]]';
-                const likeButton = document.getElementById('like-button');
-                const likeCount = document.getElementById('like-count');
-                let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
-
-                try
-                {
-                    const response = await fetch(`/api/community/${postId}/likes`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-
-                    if (response.ok)
-                    {
-                        likeCount.textContent = ++likeCountInt;
-                        likeButton.disabled = true;
-
-                    } else
-                    {
-                        // 이미 이전에 좋아요를 누른 경우(spring 예외 처리 후 작성할 것)
                         const errorData = await response.json();
                         alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
                     }
@@ -565,7 +561,113 @@
                     alert('서버와의 통신 중 오류가 발생했습니다.');
                 }
             }
-        
-        </script>
-    </body>
+        }
+
+        async function deletePost()
+        {
+            const postId = '[[${post.id}]]';
+            const url = `/api/community/${postId}`;
+
+            if (confirm("게시글을 삭제하겠습니까?"))
+            {
+                try
+                {
+                    const response = await fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (response.ok)
+                    {
+                        alert("삭제가 완료되었습니다.");
+                        window.location.href = '/communities?page=1';
+                    } else
+                    {
+                        const errorData = await response.json();
+                        alert('삭제 실패: ' + (errorData.message || '알 수 없는 오류가 발생했습니다.'));
+                    }
+                }
+                catch (error)
+                {
+                    console.error('Error:', error);
+                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                }
+            }
+        }
+
+        async function addLike()
+        {
+            const postId = '[[${post.id}]]';
+            const likeButton = document.getElementById('like-button');
+            const likeCount = document.getElementById('like-count');
+            let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
+
+            try
+            {
+                const response = await fetch(`/api/community/${postId}/likes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok)
+                {
+                    likeCount.textContent = ++likeCountInt;
+                    likeButton.disabled = true;
+
+                } else
+                {
+                    const errorData = await response.json();
+                    alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function toggleBookmark()
+        {
+            const postId = '[[${post.id}]]';
+            const bookmarkButton = document.getElementById('bookmark-button');
+            const bookmarked = bookmarkButton.getAttribute('bookmarked') === 'true';
+            const bookmarkIcon = document.getElementById('bookmark-icon');
+            const bookmarkText = document.getElementById('bookmark-text');
+            const requestUrl = `/api/bookmark/${postId}`;
+            const requestMethod = bookmarked ? 'DELETE' : 'POST';
+
+            const response = await fetch(requestUrl,
+                {
+                    method: requestMethod
+                })
+
+            try
+            {
+                if (response.ok)
+                {
+                    const newBookmarked = !bookmarked;
+                    bookmarkButton.setAttribute('bookmarked', newBookmarked);
+                    bookmarkText.textContent = newBookmarked ? '북마크 취소' : '북마크';
+                    bookmarkIcon.setAttribute('data-lucide', newBookmarked ? 'bookmark-x' : 'bookmark');
+                    lucide.createIcons();
+                } else
+                {
+                    const errorData = await response.json();
+                    alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
+    </script>
+    <script src="/js/timeago.js"></script>
+    <script src="/js/navigation/navigation.js"></script>
 </html>

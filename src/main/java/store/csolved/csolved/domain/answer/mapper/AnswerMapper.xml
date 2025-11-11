@@ -44,50 +44,12 @@
         where id = #{questionId};
     </update>
 
-
-<!--    <select id="getScore">-->
-<!--        select score-->
-<!--        from answer_ratings-->
-<!--        where answer_id = #{answerId}-->
-<!--          and user_id = #{userId};-->
-<!--    </select>-->
-
-<!--    <update id="updateScore">-->
-<!--        update answers-->
-<!--        set total_score = total_score - #{oldScore} + #{newScore}-->
-<!--        where id = #{answerId}-->
-<!--    </update>-->
-
-<!--    <update id="updateVoter">-->
-<!--        update answer_ratings-->
-<!--        set score = #{score}-->
-<!--        where answer_id = #{answerId}-->
-<!--          and user_id = #{userId};-->
-<!--    </update>-->
-
-<!--    <update id="saveScore">-->
-    <!--        update answers-->
-    <!--        set total_score = total_score + #{score},-->
-    <!--            voter_count = voter_count + 1-->
-    <!--        where id = #{answerId};-->
-    <!--    </update>-->
-
-    <!--    <insert id="saveVoter">-->
-    <!--        insert into answer_ratings(answer_id, user_id, score)-->
-    <!--        values (#{answerId}, #{userId}, #{score});-->
-    <!--    </insert>-->
-
     <select id="existComments">
         select exists(select 1
                       from comments
                       where answer_id = #{answerId})
     </select>
 
-    <delete id="hardDeleteScores">
-        delete
-        from answer_ratings
-        where answer_id = #{answerId};
-    </delete>
 
     <update id="softDelete">
         update answers

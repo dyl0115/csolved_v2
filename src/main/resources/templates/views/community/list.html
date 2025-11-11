@@ -254,18 +254,18 @@
                 </div>
             </div>
         </div>
-        
-        <!-- 네비게이션 -->
-        <script src="/js/navigation/navigation.js"></script>
-        <script src="/js/list-layout.js"></script>
-        
-        <script th:inline="javascript">
-            document.addEventListener('DOMContentLoaded', async function ()
-            {
-                initNavigation();
-                lucide.createIcons();
-            });
-        </script>
+        <!-- 푸터 -->
+        <div th:replace="~{/layout/footer :: default-footer}"></div>
     </body>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', async function ()
+        {
+            initNavigation();
+            lucide.createIcons();
+        });
+    </script>
+    <!-- 네비게이션 -->
+    <script src="/js/navigation/navigation.js"></script>
+    <script src="/js/list-layout.js"></script>
 </html>
 

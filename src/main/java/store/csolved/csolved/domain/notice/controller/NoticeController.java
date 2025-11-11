@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
-import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
+import store.csolved.csolved.domain.comment.controller.request.CommentCreateRequest;
 import store.csolved.csolved.domain.notice.controller.form.NoticeCreateUpdateForm;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeListVM;
 import store.csolved.csolved.domain.notice.service.NoticeFacade;
@@ -67,7 +67,7 @@ public class NoticeController
     {
         model.addAttribute("noticeDetails", noticeFacade.viewNotice(postId));
         model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
-        model.addAttribute("commentCreateForm", CommentCreateForm.empty());
+        model.addAttribute("commentCreateForm", CommentCreateRequest.empty());
         return VIEWS_NOTICE_DETAIL;
     }
 
@@ -78,7 +78,7 @@ public class NoticeController
     {
         model.addAttribute("noticeDetails", noticeFacade.getNotice(postId));
         model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
-        model.addAttribute("commentCreateForm", CommentCreateForm.empty());
+        model.addAttribute("commentCreateForm", CommentCreateRequest.empty());
         return VIEWS_NOTICE_DETAIL;
     }
 

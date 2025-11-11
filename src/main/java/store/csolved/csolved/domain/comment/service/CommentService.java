@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
+import store.csolved.csolved.domain.comment.service.command.CommentCreateCommand;
 import store.csolved.csolved.exception.AccessDeniedException;
 
 import java.util.List;
@@ -19,9 +20,9 @@ public class CommentService
     private final CommentMapper commentMapper;
 
     @Transactional
-    public void saveComment(Comment comment)
+    public void saveComment(CommentCreateCommand command)
     {
-        commentMapper.save(comment);
+        commentMapper.save(Comment.from(command));
     }
 
     public Map<Long, List<Comment>> getComments(List<Long> answerIds)

@@ -6,7 +6,7 @@
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
 
-function signOut()
+async function signOut()
 {
     const form = document.createElement('form');
     form.method = 'POST';
@@ -15,7 +15,7 @@ function signOut()
     form.submit();
 }
 
-function withdraw()
+async function withdraw()
 {
 
     const form = document.createElement('form');

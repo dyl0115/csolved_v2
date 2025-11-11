@@ -14,7 +14,7 @@ import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.domain.comment.controller.form.CommentCreateForm;
+import store.csolved.csolved.domain.comment.controller.request.CommentCreateRequest;
 import store.csolved.csolved.utils.filter.FilterInfo;
 import store.csolved.csolved.utils.filter.Filtering;
 import store.csolved.csolved.utils.login.LoginUser;
@@ -71,9 +71,6 @@ public class CommunityController
         model.addAttribute("post", result.getCommunity());
         model.addAttribute("bookmarked", result.isBookmarked());
         model.addAttribute("answersWithComments", result.getAnswersWithComments());
-
-        model.addAttribute("answerCreateForm", AnswerCreateRequest.empty());
-        model.addAttribute("commentCreateForm", CommentCreateForm.empty());
 
         return VIEWS_COMMUNITY_DETAIL;
     }

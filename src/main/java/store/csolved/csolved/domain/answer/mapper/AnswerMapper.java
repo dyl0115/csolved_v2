@@ -17,18 +17,8 @@ public interface AnswerMapper
     void increaseAnswerCount(Long postId);
 
     void decreaseAnswerCount(Long postId);
-
-//    Long getScore(Long answerId, Long userId);
-
-//    void saveScore(Long answerId, Long score);
-//
-//    void saveVoter(Long answerId, Long userId, Long score);
-//
-//    void updateVoter(Long answerId, Long userId, Long score);
-
+    
     boolean existComments(Long answerId);
-
-    void hardDeleteScores(Long answerId);
 
     void softDelete(Long answerId);
 
