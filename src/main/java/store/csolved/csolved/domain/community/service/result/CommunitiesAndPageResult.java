@@ -3,7 +3,7 @@ package store.csolved.csolved.domain.community.service.result;
 import lombok.Builder;
 import lombok.Getter;
 import store.csolved.csolved.domain.community.mapper.entity.Community;
-import store.csolved.csolved.utils.page.Pagination;
+import store.csolved.csolved.global.utils.page.Pagination;
 
 import java.util.List;
 

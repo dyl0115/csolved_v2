@@ -9,8 +9,8 @@ import store.csolved.csolved.domain.notice.service.NoticeService;
 import store.csolved.csolved.domain.notice.service.command.NoticeCreateCommand;
 import store.csolved.csolved.domain.notice.service.command.NoticeUpdateCommand;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.login.LoginUser;
+import store.csolved.csolved.global.utils.login.LoginRequest;
+import store.csolved.csolved.global.utils.login.LoginUser;
 
 @RequestMapping("/api/notice")
 @RequiredArgsConstructor

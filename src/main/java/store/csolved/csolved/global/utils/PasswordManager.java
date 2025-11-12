@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils;
+package store.csolved.csolved.global.utils;
 
 
 import org.springframework.security.crypto.bcrypt.BCrypt;

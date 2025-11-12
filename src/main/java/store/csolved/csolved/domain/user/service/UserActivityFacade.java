@@ -2,15 +2,14 @@ package store.csolved.csolved.domain.user.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import store.csolved.csolved.common.Post;
 import store.csolved.csolved.domain.bookmark.PostCard;
 import store.csolved.csolved.domain.bookmark.mapper.BookmarkMapper;
 import store.csolved.csolved.domain.post.service.PostService;
 import store.csolved.csolved.domain.user.controller.view_model.BookmarksAndPageVM;
 import store.csolved.csolved.domain.user.controller.view_model.RepliedPostsAndPageVM;
 import store.csolved.csolved.domain.user.controller.view_model.UserPostsAndPageVM;
-import store.csolved.csolved.utils.page.Pagination;
-import store.csolved.csolved.utils.page.PaginationManager;
+import store.csolved.csolved.global.utils.page.Pagination;
+import store.csolved.csolved.global.utils.page.PaginationManager;
 
 import java.util.List;
 

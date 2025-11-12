@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils.search;
+package store.csolved.csolved.global.utils.search;
 
 public enum SearchType
 {

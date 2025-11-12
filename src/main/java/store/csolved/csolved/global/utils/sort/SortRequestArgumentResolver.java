@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils.sort;
+package store.csolved.csolved.global.utils.sort;
 
 import jakarta.annotation.PostConstruct;
 import org.springframework.core.MethodParameter;

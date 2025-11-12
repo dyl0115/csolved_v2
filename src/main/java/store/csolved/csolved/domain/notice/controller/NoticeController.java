@@ -8,10 +8,10 @@ import store.csolved.csolved.domain.notice.service.NoticeService;
 import store.csolved.csolved.domain.notice.service.result.NoticeResult;
 import store.csolved.csolved.domain.notice.service.result.NoticeWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.notice.service.result.NoticesAndPageResult;
-import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.page.PageInfo;
-import store.csolved.csolved.utils.search.SearchInfo;
-import store.csolved.csolved.utils.search.Searching;
+import store.csolved.csolved.global.utils.login.LoginRequest;
+import store.csolved.csolved.global.utils.page.PageInfo;
+import store.csolved.csolved.global.utils.search.SearchInfo;
+import store.csolved.csolved.global.utils.search.Searching;
 
 @RequiredArgsConstructor
 @Controller

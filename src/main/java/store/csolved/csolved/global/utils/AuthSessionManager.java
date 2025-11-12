@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils;
+package store.csolved.csolved.global.utils;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

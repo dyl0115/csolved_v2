@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils.filter;
+package store.csolved.csolved.global.utils.filter;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;

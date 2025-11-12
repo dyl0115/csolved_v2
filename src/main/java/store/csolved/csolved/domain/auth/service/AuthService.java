@@ -6,12 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import store.csolved.csolved.domain.auth.service.command.SignInCommand;
 import store.csolved.csolved.domain.auth.service.command.SignUpCommand;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.domain.auth.controller.request.SignUpRequest;
 import store.csolved.csolved.domain.user.mapper.UserMapper;
 import store.csolved.csolved.global.exception.CsolvedException;
 import store.csolved.csolved.global.exception.ExceptionCode;
-import store.csolved.csolved.utils.PasswordManager;
-import store.csolved.csolved.utils.AuthSessionManager;
+import store.csolved.csolved.global.utils.PasswordManager;
+import store.csolved.csolved.global.utils.AuthSessionManager;
 
 import java.util.Objects;
 

@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils.login;
+package store.csolved.csolved.global.utils.login;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;

@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils.login;
+package store.csolved.csolved.global.utils.login;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,7 +8,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.utils.AuthSessionManager;
+import store.csolved.csolved.global.utils.AuthSessionManager;
 
 
 @RequiredArgsConstructor

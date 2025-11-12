@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.domain.user.service.UserActivityFacade;
-import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.login.LoginUser;
-import store.csolved.csolved.utils.page.PageInfo;
+import store.csolved.csolved.global.utils.login.LoginRequest;
+import store.csolved.csolved.global.utils.login.LoginUser;
+import store.csolved.csolved.global.utils.page.PageInfo;
 
 @RequestMapping("/bookmark")
 @RequiredArgsConstructor

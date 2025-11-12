@@ -19,11 +19,11 @@ import store.csolved.csolved.domain.community.service.result.CommunityWithAnswer
 import store.csolved.csolved.domain.tag.service.TagService;
 import store.csolved.csolved.global.exception.CsolvedException;
 import store.csolved.csolved.global.exception.ExceptionCode;
-import store.csolved.csolved.utils.filter.Filtering;
-import store.csolved.csolved.utils.page.Pagination;
-import store.csolved.csolved.utils.page.PaginationManager;
-import store.csolved.csolved.utils.search.Searching;
-import store.csolved.csolved.utils.sort.Sorting;
+import store.csolved.csolved.global.utils.filter.Filtering;
+import store.csolved.csolved.global.utils.page.Pagination;
+import store.csolved.csolved.global.utils.page.PaginationManager;
+import store.csolved.csolved.global.utils.search.Searching;
+import store.csolved.csolved.global.utils.sort.Sorting;
 
 import java.util.List;
 import java.util.Map;

@@ -2,7 +2,7 @@ package store.csolved.csolved.domain.bookmark.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import store.csolved.csolved.domain.bookmark.PostCard;
-import store.csolved.csolved.utils.page.Pagination;
+import store.csolved.csolved.global.utils.page.Pagination;
 
 import java.util.List;
 

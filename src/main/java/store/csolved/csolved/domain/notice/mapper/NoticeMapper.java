@@ -3,8 +3,8 @@ package store.csolved.csolved.domain.notice.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import store.csolved.csolved.domain.notice.mapper.entity.Notice;
-import store.csolved.csolved.utils.page.Pagination;
-import store.csolved.csolved.utils.search.Searching;
+import store.csolved.csolved.global.utils.page.Pagination;
+import store.csolved.csolved.global.utils.search.Searching;
 
 import java.util.List;
 

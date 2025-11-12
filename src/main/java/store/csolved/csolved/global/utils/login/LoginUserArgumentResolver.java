@@ -1,4 +1,4 @@
-package store.csolved.csolved.utils.login;
+package store.csolved.csolved.global.utils.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -8,7 +8,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.utils.AuthSessionManager;
+import store.csolved.csolved.global.utils.AuthSessionManager;
 
 @RequiredArgsConstructor
 @Component

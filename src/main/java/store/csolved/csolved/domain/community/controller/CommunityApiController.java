@@ -2,19 +2,14 @@ package store.csolved.csolved.domain.community.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.community.controller.request.CommunityCreateRequest;
 import store.csolved.csolved.domain.community.controller.request.CommunityUpdateRequest;
 import store.csolved.csolved.domain.community.service.CommunityService;
 import store.csolved.csolved.domain.community.service.command.CommunityCreateCommand;
 import store.csolved.csolved.domain.community.service.command.CommunityUpdateCommand;
-import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.login.LoginUser;
-import store.csolved.csolved.domain.community.service.CommunityFacade;
+import store.csolved.csolved.global.utils.login.LoginRequest;
+import store.csolved.csolved.global.utils.login.LoginUser;
 import store.csolved.csolved.domain.user.User;
 
 @RequestMapping("/api/community")

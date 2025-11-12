@@ -12,12 +12,12 @@ import store.csolved.csolved.domain.user.controller.view_model.BookmarksAndPageV
 import store.csolved.csolved.domain.user.controller.view_model.RepliedPostsAndPageVM;
 import store.csolved.csolved.domain.user.controller.view_model.UserPostsAndPageVM;
 import store.csolved.csolved.domain.user.service.UserActivityFacade;
-import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.login.LoginUser;
+import store.csolved.csolved.global.utils.login.LoginRequest;
+import store.csolved.csolved.global.utils.login.LoginUser;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.domain.user.controller.form.UserProfileForm;
 import store.csolved.csolved.domain.user.service.UserProfileService;
-import store.csolved.csolved.utils.page.PageInfo;
+import store.csolved.csolved.global.utils.page.PageInfo;
 import store.csolved.csolved.validator.UpdateProfileValidator;
 
 import java.io.IOException;

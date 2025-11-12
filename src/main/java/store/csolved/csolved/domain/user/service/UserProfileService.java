@@ -8,7 +8,7 @@ import store.csolved.csolved.domain.user.controller.form.UserProfileForm;
 import store.csolved.csolved.domain.file.service.FileService;
 import store.csolved.csolved.global.exception.CsolvedException;
 import store.csolved.csolved.global.exception.ExceptionCode;
-import store.csolved.csolved.utils.AuthSessionManager;
+import store.csolved.csolved.global.utils.AuthSessionManager;
 
 import java.io.IOException;
 

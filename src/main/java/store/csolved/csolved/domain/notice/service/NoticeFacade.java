@@ -11,9 +11,9 @@ import store.csolved.csolved.domain.notice.mapper.entity.Notice;
 import store.csolved.csolved.domain.notice.controller.request.NoticeCreateRequest;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeDetailVM;
 import store.csolved.csolved.domain.notice.controller.view_model.NoticeListVM;
-import store.csolved.csolved.utils.page.Pagination;
-import store.csolved.csolved.utils.page.PaginationManager;
-import store.csolved.csolved.utils.search.Searching;
+import store.csolved.csolved.global.utils.page.Pagination;
+import store.csolved.csolved.global.utils.page.PaginationManager;
+import store.csolved.csolved.global.utils.search.Searching;
 
 import java.util.List;
 import java.util.Map;

@@ -12,15 +12,15 @@ import store.csolved.csolved.domain.community.service.result.CommunitiesAndPageR
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.user.User;
-import store.csolved.csolved.utils.login.LoginRequest;
-import store.csolved.csolved.utils.filter.FilterInfo;
-import store.csolved.csolved.utils.filter.Filtering;
-import store.csolved.csolved.utils.login.LoginUser;
-import store.csolved.csolved.utils.page.PageInfo;
-import store.csolved.csolved.utils.search.SearchInfo;
-import store.csolved.csolved.utils.search.Searching;
-import store.csolved.csolved.utils.sort.SortInfo;
-import store.csolved.csolved.utils.sort.Sorting;
+import store.csolved.csolved.global.utils.login.LoginRequest;
+import store.csolved.csolved.global.utils.filter.FilterInfo;
+import store.csolved.csolved.global.utils.filter.Filtering;
+import store.csolved.csolved.global.utils.login.LoginUser;
+import store.csolved.csolved.global.utils.page.PageInfo;
+import store.csolved.csolved.global.utils.search.SearchInfo;
+import store.csolved.csolved.global.utils.search.Searching;
+import store.csolved.csolved.global.utils.sort.SortInfo;
+import store.csolved.csolved.global.utils.sort.Sorting;
 
 import java.util.List;
 
