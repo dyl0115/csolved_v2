@@ -26,7 +26,7 @@ import static store.csolved.csolved.domain.notice.controller.NoticeController.*;
 public class CommentApiController
 {
     private final CommentService commentService;
-    
+
     @LoginRequest
     @PostMapping
     public void saveComment(@Valid @RequestBody CommentCreateRequest request)

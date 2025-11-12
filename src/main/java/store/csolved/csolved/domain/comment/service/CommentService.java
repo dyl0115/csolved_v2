@@ -6,7 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
 import store.csolved.csolved.domain.comment.service.command.CommentCreateCommand;
-import store.csolved.csolved.exception.AccessDeniedException;
+import store.csolved.csolved.global.exception.CsolvedException;
+import store.csolved.csolved.global.exception.ExceptionCode;
 
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class CommentService
         Comment comment = commentMapper.getComment(commentId);
         if (!Objects.equals(comment.getAuthorId(), userId))
         {
-            throw new AccessDeniedException("댓글 삭제 권한이 없습니다.");
+            throw new CsolvedException(ExceptionCode.ACCESS_DENIED);
         }
         commentMapper.delete(commentId);
     }

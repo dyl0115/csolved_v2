@@ -5,8 +5,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import store.csolved.csolved.domain.user.User;
 import store.csolved.csolved.domain.user.controller.form.UserProfileForm;
-import store.csolved.csolved.exception.ImageUploadException;
 import store.csolved.csolved.domain.file.service.FileService;
+import store.csolved.csolved.global.exception.CsolvedException;
+import store.csolved.csolved.global.exception.ExceptionCode;
 import store.csolved.csolved.utils.AuthSessionManager;
 
 import java.io.IOException;
@@ -28,10 +29,12 @@ public class UserProfileService
         if (!profileImage.isEmpty())
         {
             String profileUrl = s3Service.uploadImage(profileImage);
+
             if (profileUrl == null)
             {
-                throw new ImageUploadException("이미지 저장 실패");
+                throw new CsolvedException(ExceptionCode.IMAGE_UPLOAD_FAILED);
             }
+
             userService.updateProfile(form.getUserId(), profileUrl);
         }
         userService.updateNickname(form.getUserId(), form.getNickname());
