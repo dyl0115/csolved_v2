@@ -31,9 +31,4 @@ public class BookmarkService
     {
         return bookmarkMapper.getBookmarks(userId, page);
     }
-
-    public boolean hasBookmarked(Long userId, Long postId)
-    {
-        return bookmarkMapper.hasBookmarked(userId, postId);
-    }
 }

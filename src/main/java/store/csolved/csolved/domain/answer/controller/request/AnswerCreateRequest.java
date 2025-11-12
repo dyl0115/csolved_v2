@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.csolved.csolved.domain.answer.mapper.entity.Answer;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Builder

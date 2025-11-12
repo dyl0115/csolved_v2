@@ -1,4 +1,4 @@
-package store.csolved.csolved.domain.answer.mapper.entity;
+package store.csolved.csolved.domain.answer.mapper.param;
 
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -11,18 +11,16 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Answer extends BaseEntity
+public class AnswerCreateParam extends BaseEntity
 {
     private Long postId;
     private Long authorId;
-    private String authorProfileImage;
-    private String authorNickname;
     private boolean anonymous;
     private String content;
 
-    public static Answer from(AnswerCreateCommand command)
+    public static AnswerCreateParam from(AnswerCreateCommand command)
     {
-        return Answer.builder()
+        return AnswerCreateParam.builder()
                 .postId(command.getPostId())
                 .authorId(command.getAuthorId())
                 .anonymous(command.getAnonymous())

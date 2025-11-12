@@ -3,7 +3,6 @@ package store.csolved.csolved.domain.answer.service.command;
 import lombok.Builder;
 import lombok.Getter;
 import store.csolved.csolved.domain.answer.controller.request.AnswerCreateRequest;
-import store.csolved.csolved.domain.answer.mapper.entity.Answer;
 
 import java.time.LocalDateTime;
 

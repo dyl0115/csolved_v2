@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import store.csolved.csolved.domain.category.Category;
 import store.csolved.csolved.domain.category.service.CategoryService;
 import store.csolved.csolved.domain.community.service.CommunityService;
-import store.csolved.csolved.domain.community.service.result.CommunitiesAndPageResult;
+import store.csolved.csolved.domain.community.service.command.CommunitySearchCommand;
+import store.csolved.csolved.domain.community.service.result.CommunitiesWithPaginationResult;
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.user.User;
@@ -47,7 +48,7 @@ public class CommunityController
                            @SearchInfo Searching search,
                            Model model)
     {
-        CommunitiesAndPageResult communitiesAndPage = communityService.getPostsAndPage(pageNumber, sort, filter, search);
+        CommunitiesWithPaginationResult communitiesAndPage = communityService.getCommunitiesAndPage(CommunitySearchCommand.from(pageNumber, sort, filter, search));
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
 
         model.addAttribute("page", communitiesAndPage.getPage());

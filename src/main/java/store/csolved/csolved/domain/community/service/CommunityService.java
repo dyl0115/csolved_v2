@@ -3,33 +3,32 @@ package store.csolved.csolved.domain.community.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.csolved.csolved.domain.answer.mapper.entity.Answer;
-import store.csolved.csolved.domain.answer.AnswerWithComments;
+import store.csolved.csolved.domain.answer.mapper.record.AnswerDetailRecord;
+import store.csolved.csolved.domain.answer.service.result.AnswerWithCommentsResult;
 import store.csolved.csolved.domain.answer.mapper.AnswerMapper;
-import store.csolved.csolved.domain.bookmark.service.BookmarkService;
-import store.csolved.csolved.domain.comment.Comment;
+import store.csolved.csolved.domain.bookmark.mapper.BookmarkMapper;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
-import store.csolved.csolved.domain.community.mapper.entity.Community;
+import store.csolved.csolved.domain.comment.mapper.record.CommentDetailRecord;
+import store.csolved.csolved.domain.community.mapper.param.CommunityCountParam;
+import store.csolved.csolved.domain.community.mapper.param.CommunityCreateParam;
+import store.csolved.csolved.domain.community.mapper.param.CommunitySearchParam;
+import store.csolved.csolved.domain.community.mapper.param.CommunityUpdateParam;
+import store.csolved.csolved.domain.community.mapper.record.CommunityRecord;
 import store.csolved.csolved.domain.community.mapper.CommunityMapper;
 import store.csolved.csolved.domain.community.service.command.CommunityCreateCommand;
+import store.csolved.csolved.domain.community.service.command.CommunitySearchCommand;
 import store.csolved.csolved.domain.community.service.command.CommunityUpdateCommand;
-import store.csolved.csolved.domain.community.service.result.CommunitiesAndPageResult;
+import store.csolved.csolved.domain.community.service.result.CommunitiesWithPaginationResult;
 import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.community.service.result.CommunityWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.tag.service.TagService;
 import store.csolved.csolved.global.exception.CsolvedException;
 import store.csolved.csolved.global.exception.ExceptionCode;
-import store.csolved.csolved.global.utils.filter.Filtering;
 import store.csolved.csolved.global.utils.page.Pagination;
-import store.csolved.csolved.global.utils.page.PaginationManager;
-import store.csolved.csolved.global.utils.search.Searching;
-import store.csolved.csolved.global.utils.sort.Sorting;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static store.csolved.csolved.common.PostType.COMMUNITY;
 
 @RequiredArgsConstructor
 @Service
@@ -38,24 +37,23 @@ public class CommunityService
     private final CommunityMapper communityMapper;
     private final AnswerMapper answerMapper;
     private final CommentMapper commentMapper;
-    private final BookmarkService bookmarkService;
-    private final PaginationManager paginationManager;
-
+    private final BookmarkMapper bookmarkMapper;
     private final TagService tagService;
+
 
     @Transactional
     public void create(CommunityCreateCommand command)
     {
-        Community post = Community.from(command);
-        communityMapper.saveCommunity(COMMUNITY.getCode(), post);
-        tagService.saveTags(post.getId(), command.getTags());
+        CommunityRecord community = CommunityRecord.from(command);
+        communityMapper.saveCommunity(CommunityCreateParam.from(command));
+        tagService.saveTags(community.getId(), command.getTags());
     }
 
     @Transactional
     public void update(Long communityId, CommunityUpdateCommand command)
     {
-        Community post = Community.from(command);
-        communityMapper.updateCommunity(communityId, post);
+        CommunityRecord community = CommunityRecord.from(command);
+        communityMapper.updateCommunity(community.getId(), CommunityUpdateParam.from(command));
         tagService.updateTags(communityId, command.getTags());
     }
 
@@ -65,58 +63,30 @@ public class CommunityService
         communityMapper.deleteCommunity(postId);
     }
 
-    public Long countPosts(Filtering filter, Searching search)
+    public Long countCommunities(CommunitySearchCommand command)
     {
-        return communityMapper.countCommunities(
-                COMMUNITY.getCode(),
-                filter.getFilterType(),
-                filter.getFilterValue(),
-                search.getSearchType(),
-                search.getKeyword());
+        return communityMapper.countCommunities(CommunityCountParam.from(command));
     }
 
     public CommunityResult getCommunity(Long communityId)
     {
-        Community community = communityMapper.getCommunity(communityId);
+        CommunityRecord community = communityMapper.getCommunity(communityId);
         return CommunityResult.from(community);
     }
 
     public CommunityWithAnswersAndCommentsResult getCommunityWithAnswersAndComments(Long userId, Long communityId)
     {
-        Community community = communityMapper.getCommunity(communityId);
-        boolean bookmarked = bookmarkService.hasBookmarked(userId, communityId);
-        List<AnswerWithComments> answersWithComments = getAnswersWithComments(communityId);
+        CommunityRecord community = communityMapper.getCommunity(communityId);
+        boolean bookmarked = bookmarkMapper.hasBookmarked(userId, communityId);
+        List<AnswerWithCommentsResult> answersWithComments = getAnswersWithComments(communityId);
         return CommunityWithAnswersAndCommentsResult.from(community, bookmarked, answersWithComments);
     }
 
-    public CommunitiesAndPageResult getPostsAndPage(Long pageNumber,
-                                                    Sorting sort,
-                                                    Filtering filter,
-                                                    Searching search)
+    public CommunitiesWithPaginationResult getCommunitiesAndPage(CommunitySearchCommand command)
     {
-
-        Long totalPage = countPosts(filter, search);
-
-        Pagination page = paginationManager.createPagination(pageNumber, totalPage);
-
-        List<Community> communities = communityMapper.getCommunities(
-                COMMUNITY.getCode(),
-                page.getOffset(),
-                page.getSize(),
-                sort.name(),
-                filter.getFilterType(),
-                filter.getFilterValue(),
-                search.getSearchType(),
-                search.getKeyword());
-
-        return CommunitiesAndPageResult.from(communities, page);
-    }
-
-    @Transactional
-    public Community viewCommunity(Long communityId)
-    {
-        communityMapper.increaseView(communityId);
-        return communityMapper.getCommunity(communityId);
+        Pagination pagination = Pagination.from(command.getRequestPageNumber(), countCommunities(command));
+        List<CommunityRecord> communities = communityMapper.getCommunities(CommunitySearchParam.from(command, pagination));
+        return CommunitiesWithPaginationResult.from(communities, pagination);
     }
 
     @Transactional
@@ -131,24 +101,24 @@ public class CommunityService
         communityMapper.increaseLikes(communityId);
     }
 
-    private List<AnswerWithComments> getAnswersWithComments(Long communityId)
+    private List<AnswerWithCommentsResult> getAnswersWithComments(Long communityId)
     {
-        List<Answer> answers = answerMapper.getAnswers(communityId);
-        Map<Long, List<Comment>> answerWithCommentsMap = mapCommentsToAnswer(extractIds(answers));
-        return AnswerWithComments.from(answers, answerWithCommentsMap);
+        List<AnswerDetailRecord> answers = answerMapper.getAnswers(communityId);
+        Map<Long, List<CommentDetailRecord>> answerWithCommentsMap = mapAnswerIdToComments(extractIds(answers));
+        return AnswerWithCommentsResult.from(answers, answerWithCommentsMap);
     }
 
-    private Map<Long, List<Comment>> mapCommentsToAnswer(List<Long> answerIds)
+    private Map<Long, List<CommentDetailRecord>> mapAnswerIdToComments(List<Long> answerIds)
     {
-        List<Comment> comments = commentMapper.getComments(answerIds);
+        List<CommentDetailRecord> comments = commentMapper.getComments(answerIds);
         return comments.stream()
-                .collect(Collectors.groupingBy(Comment::getAnswerId));
+                .collect(Collectors.groupingBy(CommentDetailRecord::getAnswerId));
     }
 
-    private List<Long> extractIds(List<Answer> answers)
+    private List<Long> extractIds(List<AnswerDetailRecord> answers)
     {
         return answers.stream()
-                .map(Answer::getId)
+                .map(AnswerDetailRecord::getId)
                 .toList();
     }
 }

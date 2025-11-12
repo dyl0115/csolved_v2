@@ -26,6 +26,6 @@ public class AnswerApiController
     @DeleteMapping("/{answerId}")
     public void deleteAnswer(@PathVariable Long answerId)
     {
-        answerService.delete(answerId);
+        answerService.deleteAnswer(answerId);
     }
 }

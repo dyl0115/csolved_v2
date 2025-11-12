@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import store.csolved.csolved.domain.comment.Comment;
+import store.csolved.csolved.domain.comment.mapper.param.CommentCreateParam;
 
 @Builder
 @Data
@@ -26,9 +26,9 @@ public class CommentCreateRequest
                 .build();
     }
 
-    public Comment toComment()
+    public CommentCreateParam toComment()
     {
-        return Comment.builder()
+        return CommentCreateParam.builder()
                 .postId(postId)
                 .answerId(answerId)
                 .authorId(authorId)

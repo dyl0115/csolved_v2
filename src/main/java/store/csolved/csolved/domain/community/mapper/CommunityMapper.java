@@ -1,39 +1,33 @@
 package store.csolved.csolved.domain.community.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.csolved.csolved.domain.community.mapper.entity.Community;
+import org.apache.ibatis.annotations.Param;
+import store.csolved.csolved.domain.community.mapper.param.CommunityCountParam;
+import store.csolved.csolved.domain.community.mapper.param.CommunityCreateParam;
+import store.csolved.csolved.domain.community.mapper.param.CommunitySearchParam;
+import store.csolved.csolved.domain.community.mapper.param.CommunityUpdateParam;
+import store.csolved.csolved.domain.community.mapper.record.CommunityRecord;
 
 import java.util.List;
 
 @Mapper
 public interface CommunityMapper
 {
-    void saveCommunity(int postType, Community community);
+    void saveCommunity(@Param("param") CommunityCreateParam param);
 
-    void updateCommunity(Long communityId, Community community);
+    void updateCommunity(Long communityId, @Param("param") CommunityUpdateParam param);
+
+    // 게시글 개수 조회
+    Long countCommunities(@Param("param") CommunityCountParam param);
 
     // 질문글들 조회
-    List<Community> getCommunities(int postType,
-                                   Long offset,
-                                   Long size,
-                                   String sortType,
-                                   String filterType,
-                                   Long filterValue,
-                                   String searchType,
-                                   String searchKeyword);
+    List<CommunityRecord> getCommunities(@Param("param") CommunitySearchParam param);
 
     // 질문글 조회
-    Community getCommunity(Long communityId);
+    CommunityRecord getCommunity(Long communityId);
 
     // 논리적으로 게시글을 삭제
     void deleteCommunity(Long communityId);
-
-    // 게시글 개수 조회
-    Long countCommunities(int postType,
-                          String filterType,
-                          Long filterValue,
-                          String searchType,
-                          String searchKeyword);
 
     // 질문-좋아요 테이블에 저장된 유저인지 체크
     boolean hasUserLiked(Long communityId, Long authorId);

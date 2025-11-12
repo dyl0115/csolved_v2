@@ -7,12 +7,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum PostType
 {
-    NOTICE(0, "공지사항"),
-    COMMUNITY(1, "커뮤니티"),
-    QUESTION(2, "면접질문"),
-    CODE_REVIEW(3, "코드리뷰"),
-    SUCCESS(4, "합격수기");
+    NOTICE(0L, "공지사항"),
+    COMMUNITY(1L, "커뮤니티"),
+    QUESTION(2L, "면접질문"),
+    CODE_REVIEW(3L, "코드리뷰"),
+    SUCCESS(4L, "합격수기");
 
-    private final int code;
+    private final Long code;
     private final String description;
 }

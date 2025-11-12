@@ -2,7 +2,7 @@ package store.csolved.csolved.domain.community.service.result;
 
 import lombok.Builder;
 import lombok.Getter;
-import store.csolved.csolved.domain.community.mapper.entity.Community;
+import store.csolved.csolved.domain.community.mapper.record.CommunityRecord;
 import store.csolved.csolved.domain.tag.Tag;
 
 import java.util.List;
@@ -26,7 +26,7 @@ public class CommunityResult
     private String categoryName;
     private String tags;
 
-    public static CommunityResult from(Community community)
+    public static CommunityResult from(CommunityRecord community)
     {
         return CommunityResult.builder()
                 .id(community.getId())

@@ -2,8 +2,8 @@ package store.csolved.csolved.domain.community.service.result;
 
 import lombok.Builder;
 import lombok.Getter;
-import store.csolved.csolved.domain.answer.AnswerWithComments;
-import store.csolved.csolved.domain.community.mapper.entity.Community;
+import store.csolved.csolved.domain.answer.service.result.AnswerWithCommentsResult;
+import store.csolved.csolved.domain.community.mapper.record.CommunityRecord;
 
 import java.util.List;
 
@@ -11,12 +11,12 @@ import java.util.List;
 @Builder
 public class CommunityWithAnswersAndCommentsResult
 {
-    private Community community;
+    private CommunityRecord community;
     private boolean bookmarked;
-    private List<AnswerWithComments> answersWithComments;
+    private List<AnswerWithCommentsResult> answersWithComments;
 
 
-    public static CommunityWithAnswersAndCommentsResult from(Community community, boolean bookmarked, List<AnswerWithComments> answersWithComments)
+    public static CommunityWithAnswersAndCommentsResult from(CommunityRecord community, boolean bookmarked, List<AnswerWithCommentsResult> answersWithComments)
     {
         return CommunityWithAnswersAndCommentsResult.builder()
                 .community(community)

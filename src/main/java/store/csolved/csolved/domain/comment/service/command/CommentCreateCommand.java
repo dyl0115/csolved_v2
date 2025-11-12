@@ -1,11 +1,7 @@
 package store.csolved.csolved.domain.comment.service.command;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.controller.request.CommentCreateRequest;
 
 @Getter

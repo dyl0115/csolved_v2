@@ -3,9 +3,11 @@ package store.csolved.csolved.domain.comment.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.csolved.csolved.domain.comment.Comment;
+import store.csolved.csolved.domain.comment.mapper.param.CommentCreateParam;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
+import store.csolved.csolved.domain.comment.mapper.record.CommentDetailRecord;
 import store.csolved.csolved.domain.comment.service.command.CommentCreateCommand;
+import store.csolved.csolved.domain.comment.service.result.CommentDetailResult;
 import store.csolved.csolved.global.exception.CsolvedException;
 import store.csolved.csolved.global.exception.ExceptionCode;
 
@@ -23,20 +25,21 @@ public class CommentService
     @Transactional
     public void saveComment(CommentCreateCommand command)
     {
-        commentMapper.save(Comment.from(command));
+        commentMapper.save(CommentCreateParam.from(command));
     }
 
-    public Map<Long, List<Comment>> getComments(List<Long> answerIds)
+    public Map<Long, List<CommentDetailResult>> getComments(List<Long> answerIds)
     {
-        List<Comment> comments = commentMapper.getComments(answerIds);
+        List<CommentDetailRecord> comments = commentMapper.getComments(answerIds);
         return comments.stream()
-                .collect(Collectors.groupingBy(Comment::getAnswerId));
+                .map(CommentDetailResult::from)
+                .collect(Collectors.groupingBy(CommentDetailResult::getAnswerId));
     }
 
     @Transactional
     public void delete(Long userId, Long commentId)
     {
-        Comment comment = commentMapper.getComment(commentId);
+        CommentDetailRecord comment = commentMapper.getComment(commentId);
         if (!Objects.equals(comment.getAuthorId(), userId))
         {
             throw new CsolvedException(ExceptionCode.ACCESS_DENIED);

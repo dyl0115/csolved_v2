@@ -12,8 +12,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Component
 public class PageRequestArgumentResolver implements HandlerMethodArgumentResolver
 {
-//    private static final String PAGE_PARAMETER_NAME = "page";
-
     @Override
     public boolean supportsParameter(MethodParameter parameter)
     {

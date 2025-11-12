@@ -6,12 +6,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import store.csolved.csolved.domain.community.mapper.entity.Community;
 import store.csolved.csolved.domain.tag.Tag;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Builder

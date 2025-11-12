@@ -2,8 +2,6 @@ package store.csolved.csolved.domain.notice.service.result;
 
 import lombok.Builder;
 import lombok.Getter;
-import store.csolved.csolved.domain.community.mapper.entity.Community;
-import store.csolved.csolved.domain.community.service.result.CommunityResult;
 import store.csolved.csolved.domain.notice.mapper.entity.Notice;
 
 @Getter

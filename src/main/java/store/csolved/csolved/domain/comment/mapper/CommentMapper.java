@@ -1,18 +1,19 @@
 package store.csolved.csolved.domain.comment.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.csolved.csolved.domain.comment.Comment;
+import store.csolved.csolved.domain.comment.mapper.param.CommentCreateParam;
+import store.csolved.csolved.domain.comment.mapper.record.CommentDetailRecord;
 
 import java.util.List;
 
 @Mapper
 public interface CommentMapper
 {
-    void save(Comment comment);
+    void save(CommentCreateParam comment);
 
-    List<Comment> getComments(List<Long> answerIds);
+    List<CommentDetailRecord> getComments(List<Long> answerIds);
 
-    Comment getComment(Long commentId);
+    CommentDetailRecord getComment(Long commentId);
 
     void delete(Long commentId);
 }

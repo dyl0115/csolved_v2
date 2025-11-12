@@ -16,8 +16,8 @@ public class Pagination
     private final Long offset;
     private final Long size;
 
-    public static Pagination create(Long requestPage,
-                                    Long totalRecordsCount)
+    public static Pagination from(Long requestPage,
+                                  Long totalRecordsCount)
     {
         Long totalPage = createTotalPage(totalRecordsCount);
         Long currentPage = createCurrentPage(requestPage, totalPage);

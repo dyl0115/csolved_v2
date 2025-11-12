@@ -11,13 +11,13 @@ import java.util.List;
 @Mapper
 public interface NoticeMapper
 {
-    void saveNotice(int postType, Notice notice);
+    void saveNotice(Long postType, Notice notice);
 
     void updateNotice(Long noticeId, Notice notice);
 
-    Long countNotices(@Param("postType") int postType, @Param("search") Searching search);
+    Long countNotices(@Param("postType") Long postType, @Param("search") Searching search);
 
-    List<Notice> getNotices(int postType,
+    List<Notice> getNotices(Long postType,
                             @Param("page") Pagination page,
                             @Param("search") Searching search);
 

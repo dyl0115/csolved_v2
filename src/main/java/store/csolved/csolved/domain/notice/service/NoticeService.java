@@ -3,11 +3,11 @@ package store.csolved.csolved.domain.notice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.csolved.csolved.domain.answer.AnswerWithComments;
+import store.csolved.csolved.domain.answer.mapper.record.AnswerDetailRecord;
+import store.csolved.csolved.domain.answer.service.result.AnswerWithCommentsResult;
 import store.csolved.csolved.domain.answer.mapper.AnswerMapper;
-import store.csolved.csolved.domain.answer.mapper.entity.Answer;
-import store.csolved.csolved.domain.comment.Comment;
 import store.csolved.csolved.domain.comment.mapper.CommentMapper;
+import store.csolved.csolved.domain.comment.mapper.record.CommentDetailRecord;
 import store.csolved.csolved.domain.notice.mapper.entity.Notice;
 import store.csolved.csolved.domain.notice.mapper.NoticeMapper;
 import store.csolved.csolved.domain.notice.service.command.NoticeCreateCommand;
@@ -15,8 +15,9 @@ import store.csolved.csolved.domain.notice.service.command.NoticeUpdateCommand;
 import store.csolved.csolved.domain.notice.service.result.NoticeResult;
 import store.csolved.csolved.domain.notice.service.result.NoticeWithAnswersAndCommentsResult;
 import store.csolved.csolved.domain.notice.service.result.NoticesAndPageResult;
+import store.csolved.csolved.global.exception.CsolvedException;
+import store.csolved.csolved.global.exception.ExceptionCode;
 import store.csolved.csolved.global.utils.page.Pagination;
-import store.csolved.csolved.global.utils.page.PaginationManager;
 import store.csolved.csolved.global.utils.search.Searching;
 
 import java.util.List;
@@ -29,7 +30,7 @@ import static store.csolved.csolved.common.PostType.NOTICE;
 @Service
 public class NoticeService
 {
-    private final PaginationManager paginationManager;
+    //    private final PaginationManager paginationManager;
     private final NoticeMapper noticeMapper;
     private final AnswerMapper answerMapper;
     private final CommentMapper commentMapper;
@@ -60,7 +61,7 @@ public class NoticeService
     {
 
         Long totalPage = countNotices(search);
-        Pagination page = paginationManager.createPagination(pageNumber, totalPage);
+        Pagination page = Pagination.from(pageNumber, totalPage);
         List<Notice> notices = noticeMapper.getNotices(NOTICE.getCode(), page, search);
 
         return NoticesAndPageResult.from(notices, page);
@@ -86,43 +87,42 @@ public class NoticeService
     }
 
     @Transactional
-    public boolean addLike(Long noticeId, Long userId)
+    public void addLike(Long noticeId, Long userId)
     {
         if (noticeMapper.hasUserLiked(noticeId, userId))
         {
-            return false;
+            throw new CsolvedException(ExceptionCode.ALREADY_LIKED);
         }
 
         noticeMapper.addUserLike(noticeId, userId);
         noticeMapper.increaseLikes(noticeId);
-        return true;
     }
 
     public NoticeWithAnswersAndCommentsResult getNoticeWithAnswersAndComments(Long noticeId)
     {
         Notice notice = noticeMapper.getNotice(noticeId);
-        List<AnswerWithComments> answersWithComments = getAnswersWithComments(noticeId);
+        List<AnswerWithCommentsResult> answersWithComments = getAnswersWithComments(noticeId);
         return NoticeWithAnswersAndCommentsResult.from(notice, answersWithComments);
     }
 
-    private List<AnswerWithComments> getAnswersWithComments(Long noticeId)
+    private List<AnswerWithCommentsResult> getAnswersWithComments(Long noticeId)
     {
-        List<Answer> answers = answerMapper.getAnswers(noticeId);
-        Map<Long, List<Comment>> answerWithCommentsMap = mapCommentsToAnswer(extractIds(answers));
-        return AnswerWithComments.from(answers, answerWithCommentsMap);
+        List<AnswerDetailRecord> answers = answerMapper.getAnswers(noticeId);
+        Map<Long, List<CommentDetailRecord>> answerWithCommentsMap = mapCommentsToAnswer(extractIds(answers));
+        return AnswerWithCommentsResult.from(answers, answerWithCommentsMap);
     }
 
-    private Map<Long, List<Comment>> mapCommentsToAnswer(List<Long> answerIds)
+    private Map<Long, List<CommentDetailRecord>> mapCommentsToAnswer(List<Long> answerIds)
     {
-        List<Comment> comments = commentMapper.getComments(answerIds);
+        List<CommentDetailRecord> comments = commentMapper.getComments(answerIds);
         return comments.stream()
-                .collect(Collectors.groupingBy(Comment::getAnswerId));
+                .collect(Collectors.groupingBy(CommentDetailRecord::getAnswerId));
     }
 
-    private List<Long> extractIds(List<Answer> answers)
+    private List<Long> extractIds(List<AnswerDetailRecord> answers)
     {
         return answers.stream()
-                .map(Answer::getId)
+                .map(AnswerDetailRecord::getId)
                 .toList();
     }
 }

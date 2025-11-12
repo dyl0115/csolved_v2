@@ -4,7 +4,7 @@
 
 <mapper namespace="store.csolved.csolved.domain.community.mapper.CommunityMapper">
 
-    <resultMap id="communityResultMap" type="store.csolved.csolved.domain.community.mapper.entity.Community">
+    <resultMap id="communityResultMap" type="store.csolved.csolved.domain.community.mapper.record.CommunityRecord">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
@@ -24,32 +24,41 @@
         </collection>
     </resultMap>
 
-    <insert id="saveCommunity" useGeneratedKeys="true" keyProperty="community.id">
-        insert into posts(post_type, user_id, anonymous, title,
-                          content, category_id)
-        values (#{postType}, #{community.authorId}, #{community.anonymous},
-                #{community.title}, #{community.content},
-                #{community.categoryId});
+    <insert id="saveCommunity"
+            useGeneratedKeys="true"
+            keyProperty="community.id">
+        INSERT INTO POSTS(post_type,
+                          user_id,
+                          anonymous,
+                          title,
+                          content,
+                          category_id)
+        VALUES (#{param.postType},
+                #{param.authorId},
+                #{param.anonymous},
+                #{param.title},
+                #{param.content},
+                #{param.categoryId});
     </insert>
 
     <update id="updateCommunity">
-        update posts
-        set anonymous   = #{community.anonymous},
-            title       = #{community.title},
-            content     = #{community.content},
-            category_id = #{community.categoryId},
+        UPDATE POSTS
+        SET anonymous   = #{param.anonymous},
+            title       = #{param.title},
+            content     = #{param.content},
+            category_id = #{param.categoryId},
             modified_at = current_timestamp
-        where id = #{communityId};
+        WHERE id = #{communityId};
     </update>
 
     <update id="deleteCommunity">
-        update posts
-        set deleted_at = current_timestamp
-        where id = #{communityId};
+        UPDATE POSTS
+        SET deleted_at = current_timestamp
+        WHERE id = #{communityId};
     </update>
 
     <select id="getCommunity" resultMap="communityResultMap">
-        select p.id           id,
+        SELECT p.id           id,
                p.title        title,
                p.anonymous    anonymous,
                p.content      content,
@@ -64,12 +73,12 @@
                c.name         category_name,
                t.id           tag_id,
                t.name         tag_name
-        from posts p
+        FROM POSTS p
                  left join users u on p.user_id = u.id
                  left join category c on p.category_id = c.id
                  left join post_tags pt on p.id = pt.post_id
                  left join tags t on t.id = pt.tag_id
-        where p.id = #{communityId};
+        WHERE p.id = #{communityId};
     </select>
 
     <select id="getCommunities" resultMap="communityResultMap">
@@ -106,23 +115,26 @@
         FROM posts p
         LEFT JOIN users u on u.id = p.user_id
         WHERE p.deleted_at IS NULL
-        AND p.post_type = #{postType}
-        <if test="filterType == 'CATEGORY' and filterValue != null and filterValue != 0">
-            AND p.category_id = #{filterValue}
+        AND p.post_type = #{param.postType}
+        <if test="param.filterType == 'CATEGORY' and param.filterValue != null and param.filterValue != 0">
+            AND p.category_id = #{param.filterValue}
         </if>
-        <if test="searchType == 'TITLE' and searchKeyword != null and searchKeyword != ''">
-            AND p.title LIKE concat('%', #{searchKeyword}, '%')
+        <if test="param.searchType == 'TITLE' and param.searchKeyword != null and param.searchKeyword != ''">
+            AND p.title LIKE concat('%', #{param.searchKeyword}, '%')
         </if>
-        <if test="searchType == 'AUTHOR' and searchKeyword != null and searchKeyword != ''">
-            AND u.nickname LIKE concat('%',#{searchKeyword},'%')
-            AND p.anonymous IS FALSE
+        <if test="param.searchType == 'AUTHOR' and param.searchKeyword != null and param.searchKeyword != ''">
+            AND u.nickname LIKE concat('%',#{param.searchKeyword},'%')
+            AND p.anonymous = FALSE
         </if>
         ORDER BY
-        <if test="sortType == 'RECENT'">p.created_at DESC</if>
-        <if test="sortType == 'VIEWS'">p.views DESC</if>
-        <if test="sortType == 'LIKES'">p.likes DESC</if>
-        <if test="sortType == 'ANSWERS'">p.answer_count DESC</if>
-        LIMIT #{offset}, #{size}
+        <choose>
+            <when test="param.sortType == 'RECENT'">p.created_at DESC</when>
+            <when test="param.sortType == 'VIEWS'">p.views DESC</when>
+            <when test="param.sortType == 'LIKES'">p.likes DESC</when>
+            <when test="param.sortType == 'ANSWERS'">p.answer_count DESC</when>
+            <otherwise>p.created_at DESC</otherwise>
+        </choose>
+        LIMIT #{param.pageOffset}, #{param.pageSize}
         ) sub
         LEFT JOIN category c ON c.id = sub.category_id
         LEFT JOIN post_tags pt ON pt.post_id = sub.post_id
@@ -130,21 +142,21 @@
     </select>
 
     <select id="countCommunities">
-        select count(p.id)
-        from posts p
-        left join category c on p.category_id = c.id
-        left join users u on p.user_id = u.id
-        where p.deleted_at is null and p.post_type = #{postType}
-        <if test="filterType == 'CATEGORY' and filterValue != null and filterValue != 0">
-            and p.category_id = #{filterValue}
+        SELECT count(p.id)
+        FROM posts p
+        LEFT JOIN category c ON p.category_id = c.id
+        LEFT JOIN users u ON p.user_id = u.id
+        WHERE p.deleted_at IS NULL AND p.post_type = #{param.postType}
+        <if test="param.filterType == 'CATEGORY' and param.filterValue != null and param.filterValue != 0">
+            AND p.category_id = #{param.filterValue}
         </if>
         <choose>
-            <when test="searchType == 'TITLE' and searchKeyword != null and searchKeyword != ''">
-                and p.title like concat('%', #{searchKeyword}, '%')
+            <when test="param.searchType == 'TITLE' and param.searchKeyword != null and param.searchKeyword != ''">
+                AND p.title LIKE concat('%', #{param.searchKeyword}, '%')
             </when>
-            <when test="searchType == 'AUTHOR' and searchKeyword != null and searchKeyword != ''">
-                and u.nickname like concat('%',#{searchKeyword},'%')
-                and p.anonymous is false
+            <when test="param.searchType == 'AUTHOR' and param.searchKeyword != null and param.searchKeyword != ''">
+                AND u.nickname LIKE concat('%',#{param.searchKeyword},'%')
+                AND p.anonymous IS FALSE
             </when>
         </choose>
     </select>
