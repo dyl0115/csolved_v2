@@ -1,30 +1,41 @@
 package store.csolved.csolved.domain.community.mapper.param;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import store.csolved.csolved.common.Post;
 import store.csolved.csolved.domain.community.service.command.CommunityCreateCommand;
 import store.csolved.csolved.domain.tag.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static store.csolved.csolved.common.PostType.COMMUNITY;
 
-@Getter
-@SuperBuilder
-@NoArgsConstructor
+@Data
+@Builder
 @AllArgsConstructor
-public class CommunityCreateParam extends Post
+@NoArgsConstructor
+public class CommunityCreateParam
 {
+    private Long id;
+    private String postType;
+    private String title;
+    private boolean anonymous;
+    private Long authorId;
+    private String authorNickname;
+    private String content;
+    private Long views;
+    private Long likes;
+    private Long answerCount;
     private Long categoryId;
     private String categoryName;
     private List<Tag> tags;
+    private LocalDateTime createdAt;
 
     public static CommunityCreateParam from(CommunityCreateCommand command)
     {
         return CommunityCreateParam.builder()
+                .postType(COMMUNITY.getCode().toString())
                 .title(command.getTitle())
                 .content(command.getContent())
                 .authorId(command.getAuthorId())

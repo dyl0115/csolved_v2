@@ -26,7 +26,7 @@
 
     <insert id="saveCommunity"
             useGeneratedKeys="true"
-            keyProperty="community.id">
+            keyProperty="id">
         INSERT INTO POSTS(post_type,
                           user_id,
                           anonymous,

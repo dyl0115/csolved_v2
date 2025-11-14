@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/auth")
-public class AuthViewController
+public class AuthController
 {
     public final static String VIEWS_SIGN_IN_FORM = "/views/auth/signIn";
     public final static String VIEWS_SIGN_UP_FORM = "/views/auth/signUp";

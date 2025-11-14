@@ -44,16 +44,16 @@ public class CommunityService
     @Transactional
     public void create(CommunityCreateCommand command)
     {
-        CommunityRecord community = CommunityRecord.from(command);
-        communityMapper.saveCommunity(CommunityCreateParam.from(command));
+        CommunityCreateParam community = CommunityCreateParam.from(command);
+        communityMapper.saveCommunity(community);
         tagService.saveTags(community.getId(), command.getTags());
     }
 
     @Transactional
     public void update(Long communityId, CommunityUpdateCommand command)
     {
-        CommunityRecord community = CommunityRecord.from(command);
-        communityMapper.updateCommunity(community.getId(), CommunityUpdateParam.from(command));
+        CommunityUpdateParam community = CommunityUpdateParam.from(command);
+        communityMapper.updateCommunity(community.getId(), community);
         tagService.updateTags(communityId, command.getTags());
     }
 

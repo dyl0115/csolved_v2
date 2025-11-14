@@ -4,30 +4,33 @@ import lombok.Builder;
 import lombok.Getter;
 import store.csolved.csolved.domain.comment.mapper.record.CommentDetailRecord;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Builder
 public class CommentDetailResult
 {
-    private Long postId;
+    private Long id;
     private Long answerId;
     private Long authorId;
     private String authorProfileImage;
     private String authorNickname;
     private boolean anonymous;
     private String content;
+    private LocalDateTime createdAt;
 
     public static CommentDetailResult from(CommentDetailRecord record)
     {
         return CommentDetailResult.builder()
-                .postId(record.getPostId())
+                .id(record.getId())
                 .answerId(record.getAnswerId())
                 .authorId(record.getAuthorId())
                 .authorProfileImage(record.getAuthorProfileImage())
                 .authorNickname(record.getAuthorNickname())
                 .anonymous(record.isAnonymous())
                 .content(record.getContent())
+                .createdAt(record.getCreatedAt())
                 .build();
     }
 

@@ -42,11 +42,11 @@ public class CommunityController
 
     @LoginRequest
     @GetMapping("/communities")
-    public String getPosts(@PageInfo Long pageNumber,
-                           @SortInfo Sorting sort,
-                           @FilterInfo Filtering filter,
-                           @SearchInfo Searching search,
-                           Model model)
+    public String getCommunities(@PageInfo Long pageNumber,
+                                 @SortInfo Sorting sort,
+                                 @FilterInfo Filtering filter,
+                                 @SearchInfo Searching search,
+                                 Model model)
     {
         CommunitiesWithPaginationResult communitiesAndPage = communityService.getCommunitiesAndPage(CommunitySearchCommand.from(pageNumber, sort, filter, search));
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());

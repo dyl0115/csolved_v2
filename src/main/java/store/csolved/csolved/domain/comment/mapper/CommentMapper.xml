@@ -12,19 +12,19 @@
     </insert>
 
     <select id="getComments">
-        select
-        c.answer_id answer_id,
+        SELECT
         c.id id,
+        c.answer_id answer_id,
         c.author_id author_id,
         u.profile_image author_profile_image,
         u.nickname author_nickname,
         c.anonymous anonymous,
         c.content content,
         c.created_at created_at
-        from comments c
-        left join users u on c.author_id = u.id
+        FROM comments c
+        LEFT JOIN users u ON c.author_id = u.id
         <if test="answerIds != null and answerIds.size() > 0">
-            where c.answer_id in
+            WHERE c.answer_id IN
             <foreach collection="answerIds" item="answerId" open="(" separator="," close=")">
                 #{answerId}
             </foreach>
