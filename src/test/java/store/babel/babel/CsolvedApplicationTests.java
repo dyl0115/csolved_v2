@@ -1,0 +1,13 @@
+package store.babel.babel;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class CsolvedApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
