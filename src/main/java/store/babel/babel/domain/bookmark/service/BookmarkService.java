@@ -3,11 +3,8 @@ package store.babel.babel.domain.bookmark.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.bookmark.PostCard;
 import store.babel.babel.domain.bookmark.mapper.BookmarkMapper;
-import store.babel.babel.global.utils.page.Pagination;
 
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -25,10 +22,5 @@ public class BookmarkService
     public void delete(Long userId, Long postId)
     {
         bookmarkMapper.deleteBookmark(userId, postId);
-    }
-
-    public List<PostCard> getBookmarks(Long userId, Pagination page)
-    {
-        return bookmarkMapper.getBookmarks(userId, page);
     }
 }

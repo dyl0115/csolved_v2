@@ -7,6 +7,7 @@ import store.babel.babel.domain.community.mapper.param.CommunityCreateParam;
 import store.babel.babel.domain.community.mapper.param.CommunitySearchParam;
 import store.babel.babel.domain.community.mapper.param.CommunityUpdateParam;
 import store.babel.babel.domain.community.mapper.record.CommunityRecord;
+import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
 
@@ -40,4 +41,20 @@ public interface CommunityMapper
 
     // 질문 테이블의 Views 1증가
     void increaseView(Long communityId);
+
+    // 댓글 단 게시글 리스트 조회
+    List<CommunityRecord> getAnsweredCommunities(@Param("userId") Long userId,
+                                                 @Param("page") Pagination page);
+
+    // 댓글 단 게시글 개수 조회
+    Long countAnsweredCommunities(Long userId);
+
+    // 작성한 게시글 리스트 조회
+    List<CommunityRecord> getUserCommunities(Long userId, Pagination page);
+
+    //    작성한 게시글 개수 조회
+    Long countUserCommunities(Long userId);
+
+    //    북마크한 게시글 조회
+    List<CommunityRecord> getBookmarkedCommunities(Long userId, Pagination page);
 }

@@ -184,4 +184,122 @@
         set views = views + 1
         where id = #{communityId};
     </update>
+
+    <select id="getAnsweredCommunities" resultMap="communityResultMap">
+        SELECT p.id           id,
+               p.post_type    post_type,
+               p.id           post_id,
+               p.title        title,
+               p.anonymous    anonymous,
+               p.user_id      author_id,
+               u.nickname     author_nickname,
+               c.id           category_id,
+               c.name         category_name,
+               p.views        views,
+               p.likes        likes,
+               p.answer_count answer_count,
+               t.id           tag_id,
+               t.name         tag_name
+        FROM (SELECT DISTINCT post_id
+              FROM ((SELECT a.post_id
+                     FROM answers a
+                     WHERE author_id = #{userId}
+                       AND deleted_at IS NULL)
+                    UNION
+                    (SELECT c.post_id
+                     FROM comments c
+                     WHERE author_id = #{userId}
+                       AND deleted_at IS NULL)) AS user_activities
+              ORDER BY post_id
+              LIMIT #{page.offset}, #{page.size}) AS paginated_posts
+                 JOIN posts p ON p.id = paginated_posts.post_id
+                 JOIN users u ON u.id = p.user_id
+                 JOIN category c ON c.id = p.category_id
+                 LEFT JOIN post_tags pt ON pt.post_id = p.id
+                 LEFT JOIN tags t ON t.id = pt.tag_id;
+    </select>
+
+    <select id="countAnsweredCommunities">
+        SELECT COUNT(*)
+        FROM ((SELECT a.post_id
+               FROM answers a
+               WHERE author_id = #{userId}
+                 AND deleted_at IS NULL)
+              UNION
+              (SELECT c.post_id
+               FROM comments c
+               WHERE author_id = #{userId}
+                 AND deleted_at IS NULL)) reply_count;
+    </select>
+
+    <select id="getUserCommunities" resultMap="communityResultMap">
+        SELECT up.id           id,
+               up.post_type    post_type,
+               up.id           post_id,
+               up.title        title,
+               up.anonymous    anonymous,
+               up.author_id    author_id,
+               u.nickname      author_nickname,
+               up.category_id  category_id,
+               c.name          category_name,
+               up.views        views,
+               up.likes        likes,
+               up.answer_count answer_count,
+               t.id            tag_id,
+               t.name          tag_name
+        from (select p.id           id,
+                     p.post_type    post_type,
+                     p.title        title,
+                     p.anonymous    anonymous,
+                     p.user_id      author_id,
+                     p.category_id  category_id,
+                     p.views        views,
+                     p.likes        likes,
+                     p.answer_count answer_count
+              from posts p
+              where p.user_id = #{userId}
+                and p.deleted_at is null
+              limit #{page.offset}, #{page.size}) up
+                 left join users u on up.author_id = u.id
+                 left join category c on up.category_id = c.id
+                 left join post_tags pt on pt.post_id = up.id
+                 left join tags t on t.id = pt.tag_id
+        order by up.id desc;
+    </select>
+
+    <select id="countUserCommunities">
+        select count(p.id)
+        from posts p
+        where p.user_id = #{userId}
+          and deleted_at is null;
+    </select>
+
+    <select id="getBookmarkedCommunities" resultMap="communityResultMap">
+        select sub.id         id,
+               sub.post_id    post_id,
+               p.post_type    post_type,
+               p.title        title,
+               p.anonymous    anonymous,
+               sub.author_id  author_id,
+               u.nickname     author_nickname,
+               c.id           category_id,
+               c.name         category_name,
+               p.views        views,
+               p.likes        likes,
+               p.answer_count answer_count,
+               t.id           tag_id,
+               t.name         tag_name
+        from (select b.id      id,
+                     b.post_id post_id,
+                     b.user_id author_id
+              from bookmarks b
+              where b.user_id = #{userId}
+              order by b.created_at desc
+              limit #{page.offset}, #{page.size}) sub
+                 left join posts p on p.id = sub.post_id
+                 left join users u on u.id = sub.author_id
+                 left join category c on c.id = p.category_id
+                 left join post_tags pt on p.id = pt.post_id
+                 left join tags t on pt.tag_id = t.id;
+    </select>
 </mapper>

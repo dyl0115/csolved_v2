@@ -11,7 +11,7 @@ import store.babel.babel.global.utils.login.LoginUser;
 @RequestMapping("/api/bookmark")
 @RequiredArgsConstructor
 @RestController
-public class BookmarkRestController
+public class BookmarkApiController
 {
     private final BookmarkService bookmarkService;
 
