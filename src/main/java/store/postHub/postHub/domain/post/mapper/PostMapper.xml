@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="store.postHub.postHub.domain.post.mapper.PostMapper">
+
+    <resultMap id="postCardResultMap" type="store.postHub.postHub.domain.bookmark.PostCard">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="postType" column="post_type"/>
+        <result property="title" column="title"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="categoryId" column="categoryId"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="answerCount" column="answer_count"/>
+        <collection property="tags" ofType="store.postHub.postHub.domain.tag.Tag">
+            <id property="id" column="tag_id"/>
+            <result property="name" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getRepliedPosts" resultMap="postCardResultMap">
+        SELECT p.id           id,
+               p.post_type    post_type,
+               p.id           post_id,
+               p.title        title,
+               p.anonymous    anonymous,
+               p.user_id      author_id,
+               u.nickname     author_nickname,
+               c.id           category_id,
+               c.name         category_name,
+               p.views        views,
+               p.likes        likes,
+               p.answer_count answer_count,
+               t.id           tag_id,
+               t.name         tag_name
+        FROM (SELECT DISTINCT post_id
+              FROM ((SELECT a.post_id
+                     FROM answers a
+                     WHERE author_id = #{userId}
+                       AND deleted_at IS NULL)
+                    UNION
+                    (SELECT c.post_id
+                     FROM comments c
+                     WHERE author_id = #{userId}
+                       AND deleted_at IS NULL)) AS user_activities
+              ORDER BY post_id
+              LIMIT #{page.offset}, #{page.size}) AS paginated_posts
+                 JOIN posts p ON p.id = paginated_posts.post_id
+                 JOIN users u ON u.id = p.user_id
+                 JOIN category c ON c.id = p.category_id
+                 LEFT JOIN post_tags pt ON pt.post_id = p.id
+                 LEFT JOIN tags t ON t.id = pt.tag_id;
+    </select>
+
+    <select id="getUserPosts" resultMap="postCardResultMap">
+        SELECT up.id           id,
+               up.post_type    post_type,
+               up.id           post_id,
+               up.title        title,
+               up.anonymous    anonymous,
+               up.author_id    author_id,
+               u.nickname      author_nickname,
+               up.category_id  category_id,
+               c.name          category_name,
+               up.views        views,
+               up.likes        likes,
+               up.answer_count answer_count,
+               t.id            tag_id,
+               t.name          tag_name
+        from (select p.id           id,
+                     p.post_type    post_type,
+                     p.title        title,
+                     p.anonymous    anonymous,
+                     p.user_id      author_id,
+                     p.category_id  category_id,
+                     p.views        views,
+                     p.likes        likes,
+                     p.answer_count answer_count
+              from posts p
+              where p.user_id = #{userId}
+                and p.deleted_at is null
+              limit #{page.offset}, #{page.size}) up
+                 left join users u on up.author_id = u.id
+                 left join category c on up.category_id = c.id
+                 left join post_tags pt on pt.post_id = up.id
+                 left join tags t on t.id = pt.tag_id
+        order by up.id desc;
+    </select>
+
+    <select id="countRepliedPosts">
+        SELECT COUNT(*)
+        FROM ((SELECT a.post_id
+               FROM answers a
+               WHERE author_id = #{userId}
+                 AND deleted_at IS NULL)
+              UNION
+              (SELECT c.post_id
+               FROM comments c
+               WHERE author_id = #{userId}
+                 AND deleted_at IS NULL)) reply_count;
+    </select>
+
+    <select id="countUserPosts">
+        select count(p.id)
+        from posts p
+        where p.user_id = #{userId}
+          and deleted_at is null;
+    </select>
+</mapper>
