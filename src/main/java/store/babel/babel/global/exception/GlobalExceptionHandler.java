@@ -13,8 +13,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler
 {
-    @ExceptionHandler(CsolvedException.class)
-    public ResponseEntity<ExceptionResponse> handleCsovledException(CsolvedException exception)
+    @ExceptionHandler(BabelException.class)
+    public ResponseEntity<ExceptionResponse> handleCsovledException(BabelException exception)
     {
         ExceptionResponse exceptionResponse
                 = ExceptionResponse.from(exception.getCode());

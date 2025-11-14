@@ -536,8 +536,7 @@
                 try
                 {
                     const response = await fetch(`/users/activity/userPosts?userPostPage=${pageNumber}`);
-                    const html = await response.text();
-                    document.getElementById('userPostList').outerHTML = html;
+                    document.getElementById('userPostList').outerHTML = await response.text();
 
                     // 탭 상태 복원
                     switchTab('posts');
@@ -556,8 +555,7 @@
                 try
                 {
                     const response = await fetch(`/users/activity/repliedPosts?repliedPostPage=${pageNumber}`);
-                    const html = await response.text();
-                    document.getElementById('repliedPostList').outerHTML = html;
+                    document.getElementById('repliedPostList').outerHTML = await response.text();
 
                     // 탭 상태 복원
                     switchTab('comments');

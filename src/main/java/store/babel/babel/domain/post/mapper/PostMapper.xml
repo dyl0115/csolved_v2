@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="store.babel.babel.domain.community.mapper.CommunityMapper">
+<mapper namespace="store.babel.babel.domain.post.mapper.PostMapper">
 
-    <resultMap id="communityResultMap" type="store.babel.babel.domain.community.mapper.record.CommunityRecord">
+    <resultMap id="communityResultMap" type="store.babel.babel.domain.post.dto.Post">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>

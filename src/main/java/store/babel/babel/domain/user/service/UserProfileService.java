@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import store.babel.babel.domain.user.User;
 import store.babel.babel.domain.user.controller.form.UserProfileForm;
 import store.babel.babel.domain.file.service.FileService;
-import store.babel.babel.global.exception.CsolvedException;
+import store.babel.babel.global.exception.BabelException;
 import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.utils.AuthSessionManager;
 
@@ -32,7 +32,7 @@ public class UserProfileService
 
             if (profileUrl == null)
             {
-                throw new CsolvedException(ExceptionCode.IMAGE_UPLOAD_FAILED);
+                throw new BabelException(ExceptionCode.IMAGE_UPLOAD_FAILED);
             }
 
             userService.updateProfile(form.getUserId(), profileUrl);

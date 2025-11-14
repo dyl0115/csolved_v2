@@ -1,8 +1,8 @@
-package store.babel.babel.domain.community.service.command;
+package store.babel.babel.domain.post.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import store.babel.babel.domain.community.controller.request.CommunityUpdateRequest;
+import store.babel.babel.domain.post.controller.dto.PostUpdateRequest;
 import store.babel.babel.domain.tag.Tag;
 
 import java.util.Arrays;
@@ -10,8 +10,9 @@ import java.util.List;
 
 @Getter
 @Builder
-public class CommunityUpdateCommand
+public class PostUpdateCommand
 {
+    private Long id;
     private String title;
     private String content;
     private Long authorId;
@@ -19,9 +20,9 @@ public class CommunityUpdateCommand
     private Long categoryId;
     private List<Tag> tags;
 
-    public static CommunityUpdateCommand from(CommunityUpdateRequest request)
+    public static PostUpdateCommand from(PostUpdateRequest request)
     {
-        return CommunityUpdateCommand.builder()
+        return PostUpdateCommand.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
                 .authorId(request.getAuthorId())

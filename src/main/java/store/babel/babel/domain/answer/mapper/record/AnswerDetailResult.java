@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerDetailRecord extends BaseEntity
+public class AnswerDetailResult extends BaseEntity
 {
     private Long postId;
     private Long authorId;
@@ -22,9 +22,9 @@ public class AnswerDetailRecord extends BaseEntity
     private boolean anonymous;
     private String content;
 
-    public static AnswerDetailRecord from(AnswerCreateCommand command)
+    public static AnswerDetailResult from(AnswerCreateCommand command)
     {
-        return AnswerDetailRecord.builder()
+        return AnswerDetailResult.builder()
                 .postId(command.getPostId())
                 .authorId(command.getAuthorId())
                 .anonymous(command.getAnonymous())

@@ -1,4 +1,4 @@
-package store.babel.babel.domain.community.controller.request;
+package store.babel.babel.domain.post.controller.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class CommunityCreateRequest
+public class PostCreateRequest
 {
     @NotBlank(message = "제목을 입력해주세요.")
     @Size(min = 2, max = 50, message = "제목은 최소 2글자에서 50자까지 가능합니다.")
@@ -30,5 +30,4 @@ public class CommunityCreateRequest
 
     @NotEmpty(message = "태그는 반드시 하나 이상 있어야 합니다.")
     private String tags;
-
 }

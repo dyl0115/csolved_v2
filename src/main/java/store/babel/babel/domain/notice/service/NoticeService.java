@@ -3,11 +3,10 @@ package store.babel.babel.domain.notice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.answer.mapper.record.AnswerDetailRecord;
-import store.babel.babel.domain.answer.service.result.AnswerWithCommentsResult;
+import store.babel.babel.domain.answer.service.result.AnswerDetailResult;
 import store.babel.babel.domain.answer.mapper.AnswerMapper;
 import store.babel.babel.domain.comment.mapper.CommentMapper;
-import store.babel.babel.domain.comment.mapper.record.CommentDetailRecord;
+import store.babel.babel.domain.comment.mapper.record.CommentResult;
 import store.babel.babel.domain.notice.mapper.entity.Notice;
 import store.babel.babel.domain.notice.mapper.NoticeMapper;
 import store.babel.babel.domain.notice.service.command.NoticeCreateCommand;
@@ -15,7 +14,7 @@ import store.babel.babel.domain.notice.service.command.NoticeUpdateCommand;
 import store.babel.babel.domain.notice.service.result.NoticeResult;
 import store.babel.babel.domain.notice.service.result.NoticeWithAnswersAndCommentsResult;
 import store.babel.babel.domain.notice.service.result.NoticesAndPageResult;
-import store.babel.babel.global.exception.CsolvedException;
+import store.babel.babel.global.exception.BabelException;
 import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.utils.page.Pagination;
 import store.babel.babel.global.utils.search.Searching;
@@ -91,7 +90,7 @@ public class NoticeService
     {
         if (noticeMapper.hasUserLiked(noticeId, userId))
         {
-            throw new CsolvedException(ExceptionCode.ALREADY_LIKED);
+            throw new BabelException(ExceptionCode.ALREADY_LIKED);
         }
 
         noticeMapper.addUserLike(noticeId, userId);
@@ -101,28 +100,28 @@ public class NoticeService
     public NoticeWithAnswersAndCommentsResult getNoticeWithAnswersAndComments(Long noticeId)
     {
         Notice notice = noticeMapper.getNotice(noticeId);
-        List<AnswerWithCommentsResult> answersWithComments = getAnswersWithComments(noticeId);
+        List<AnswerDetailResult> answersWithComments = getAnswersWithComments(noticeId);
         return NoticeWithAnswersAndCommentsResult.from(notice, answersWithComments);
     }
 
-    private List<AnswerWithCommentsResult> getAnswersWithComments(Long noticeId)
+    private List<AnswerDetailResult> getAnswersWithComments(Long noticeId)
     {
-        List<AnswerDetailRecord> answers = answerMapper.getAnswers(noticeId);
-        Map<Long, List<CommentDetailRecord>> answerWithCommentsMap = mapCommentsToAnswer(extractIds(answers));
-        return AnswerWithCommentsResult.from(answers, answerWithCommentsMap);
+        List<store.babel.babel.domain.answer.mapper.record.AnswerDetailResult> answers = answerMapper.getAnswers(noticeId);
+        Map<Long, List<CommentResult>> answerWithCommentsMap = mapCommentsToAnswer(extractIds(answers));
+        return AnswerDetailResult.from(answers, answerWithCommentsMap);
     }
 
-    private Map<Long, List<CommentDetailRecord>> mapCommentsToAnswer(List<Long> answerIds)
+    private Map<Long, List<CommentResult>> mapCommentsToAnswer(List<Long> answerIds)
     {
-        List<CommentDetailRecord> comments = commentMapper.getComments(answerIds);
+        List<CommentResult> comments = commentMapper.getComments(answerIds);
         return comments.stream()
-                .collect(Collectors.groupingBy(CommentDetailRecord::getAnswerId));
+                .collect(Collectors.groupingBy(CommentResult::getAnswerId));
     }
 
-    private List<Long> extractIds(List<AnswerDetailRecord> answers)
+    private List<Long> extractIds(List<store.babel.babel.domain.answer.mapper.record.AnswerDetailResult> answers)
     {
         return answers.stream()
-                .map(AnswerDetailRecord::getId)
+                .map(store.babel.babel.domain.answer.mapper.record.AnswerDetailResult::getId)
                 .toList();
     }
 }

@@ -2,9 +2,7 @@ package store.babel.babel.domain.answer.service.result;
 
 import lombok.Builder;
 import lombok.Getter;
-import store.babel.babel.domain.answer.mapper.record.AnswerDetailRecord;
-import store.babel.babel.domain.comment.mapper.record.CommentDetailRecord;
-import store.babel.babel.domain.comment.service.result.CommentDetailResult;
+import store.babel.babel.domain.comment.mapper.record.CommentResult;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -13,7 +11,7 @@ import java.util.Map;
 
 @Getter
 @Builder
-public class AnswerWithCommentsResult
+public class AnswerDetailResult
 {
     private Long id;
     private Long authorId;
@@ -22,20 +20,20 @@ public class AnswerWithCommentsResult
     private boolean anonymous;
     private String content;
     private LocalDateTime createdAt;
-    private List<CommentDetailResult> comments;
+    private List<CommentResult> comments;
 
-    public static List<AnswerWithCommentsResult> from(List<AnswerDetailRecord> answerDetailRecords,
-                                                      Map<Long, List<CommentDetailRecord>> answerCommentListMap)
+    public static List<AnswerDetailResult> from(List<store.babel.babel.domain.answer.mapper.record.AnswerDetailResult> answerDetailRecords,
+                                                Map<Long, List<CommentResult>> answerCommentListMap)
     {
         return answerDetailRecords.stream()
                 .map(record -> groupAnswerWithComments(record, answerCommentListMap.getOrDefault(record.getId(), Collections.emptyList())))
                 .toList();
     }
 
-    private static AnswerWithCommentsResult groupAnswerWithComments(AnswerDetailRecord answerDetailRecord,
-                                                                    List<CommentDetailRecord> comments)
+    private static AnswerDetailResult groupAnswerWithComments(store.babel.babel.domain.answer.mapper.record.AnswerDetailResult answerDetailRecord,
+                                                              List<CommentResult> comments)
     {
-        return AnswerWithCommentsResult.builder()
+        return AnswerDetailResult.builder()
                 .id(answerDetailRecord.getId())
                 .authorId(answerDetailRecord.getAuthorId())
                 .authorProfileImage(answerDetailRecord.getAuthorProfileImage())
@@ -43,7 +41,7 @@ public class AnswerWithCommentsResult
                 .anonymous(answerDetailRecord.isAnonymous())
                 .content(answerDetailRecord.getContent())
                 .createdAt(answerDetailRecord.getCreatedAt())
-                .comments(CommentDetailResult.from(comments))
+                .comments(comments)
                 .build();
     }
 }

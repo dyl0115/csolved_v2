@@ -2,7 +2,7 @@ package store.babel.babel.domain.comment.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import store.babel.babel.domain.comment.mapper.param.CommentCreateParam;
-import store.babel.babel.domain.comment.mapper.record.CommentDetailRecord;
+import store.babel.babel.domain.comment.mapper.record.CommentResult;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ public interface CommentMapper
 {
     void save(CommentCreateParam comment);
 
-    List<CommentDetailRecord> getComments(List<Long> answerIds);
+    List<CommentResult> getComments(List<Long> answerIds);
 
-    CommentDetailRecord getComment(Long commentId);
+    CommentResult getComment(Long commentId);
 
     void delete(Long commentId);
 }

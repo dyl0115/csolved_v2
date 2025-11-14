@@ -10,13 +10,13 @@ import store.babel.babel.common.BaseEntity;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category extends BaseEntity
+public class CategoryResult extends BaseEntity
 {
     private String name;
 
-    public static Category create(String name)
+    public static CategoryResult create(String name)
     {
-        return Category.builder()
+        return CategoryResult.builder()
                 .name(name)
                 .build();
     }

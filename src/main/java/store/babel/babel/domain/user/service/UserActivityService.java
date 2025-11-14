@@ -3,8 +3,8 @@ package store.babel.babel.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import store.babel.babel.domain.bookmark.mapper.BookmarkMapper;
-import store.babel.babel.domain.community.mapper.CommunityMapper;
-import store.babel.babel.domain.community.mapper.record.CommunityRecord;
+import store.babel.babel.domain.post.mapper.PostMapper;
+import store.babel.babel.domain.post.dto.Post;
 import store.babel.babel.domain.user.controller.view_model.BookmarkedCommunitiesWithPaginationResult;
 import store.babel.babel.domain.user.controller.view_model.AnsweredCommunitiesWithPaginationResult;
 import store.babel.babel.domain.user.controller.view_model.UserCommunitiesWithPaginationResult;
@@ -17,7 +17,7 @@ import java.util.List;
 public class UserActivityService
 {
     private final BookmarkMapper bookmarkMapper;
-    private final CommunityMapper communityMapper;
+    private final PostMapper communityMapper;
 
     public BookmarkedCommunitiesWithPaginationResult getBookmarkedCommunitiesWithPagination(Long userId,
                                                                                             Long pageNumber)
@@ -29,7 +29,7 @@ public class UserActivityService
         Pagination bookmarksPage = Pagination.from(pageNumber, total);
 
         // 페이지 정보를 사용하여 DB에서 필요한 북마크만 조회.
-        List<CommunityRecord> bookmarks = communityMapper.getBookmarkedCommunities(userId, bookmarksPage);
+        List<Post> bookmarks = communityMapper.getBookmarkedCommunities(userId, bookmarksPage);
 
 
         return BookmarkedCommunitiesWithPaginationResult.from(bookmarks, bookmarksPage);
@@ -45,7 +45,7 @@ public class UserActivityService
         Pagination page = Pagination.from(pageNumber, total);
 
         // 페이지 정보를 사용하여 회원의 댓글과 대댓글과 관련된 게시글들을 조회
-        List<CommunityRecord> posts = communityMapper.getAnsweredCommunities(userId, page);
+        List<Post> posts = communityMapper.getAnsweredCommunities(userId, page);
 
         return AnsweredCommunitiesWithPaginationResult.from(posts, page);
     }
@@ -60,7 +60,7 @@ public class UserActivityService
         Pagination page = Pagination.from(pageNumber, total);
 
         // 페이지 정보를 사용하여 회원의 게시글들을 조회
-        List<CommunityRecord> posts = communityMapper.getUserCommunities(userId, page);
+        List<Post> posts = communityMapper.getUserCommunities(userId, page);
 
         return UserCommunitiesWithPaginationResult.from(posts, page);
     }

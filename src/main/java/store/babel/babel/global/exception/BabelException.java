@@ -3,11 +3,11 @@ package store.babel.babel.global.exception;
 import lombok.Data;
 
 @Data
-public class CsolvedException extends RuntimeException
+public class BabelException extends RuntimeException
 {
     private ExceptionCode code;
 
-    public CsolvedException(ExceptionCode exceptionCode)
+    public BabelException(ExceptionCode exceptionCode)
     {
         this.code = exceptionCode;
     }

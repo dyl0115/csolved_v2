@@ -7,7 +7,7 @@ import store.babel.babel.domain.auth.service.command.SignInCommand;
 import store.babel.babel.domain.auth.service.command.SignUpCommand;
 import store.babel.babel.domain.user.User;
 import store.babel.babel.domain.user.mapper.UserMapper;
-import store.babel.babel.global.exception.CsolvedException;
+import store.babel.babel.global.exception.BabelException;
 import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.utils.PasswordManager;
 import store.babel.babel.global.utils.AuthSessionManager;
@@ -27,17 +27,17 @@ public class AuthService
     {
         if (userMapper.existsByEmail(command.getEmail()))
         {
-            throw new CsolvedException(ExceptionCode.DUPLICATE_EMAIL);
+            throw new BabelException(ExceptionCode.DUPLICATE_EMAIL);
         }
 
         if (userMapper.existsByNickname(command.getNickname()))
         {
-            throw new CsolvedException(ExceptionCode.DUPLICATE_NICKNAME);
+            throw new BabelException(ExceptionCode.DUPLICATE_NICKNAME);
         }
 
         if (!Objects.equals(command.getPassword(), command.getPasswordConfirm()))
         {
-            throw new CsolvedException(ExceptionCode.PASSWORD_MISMATCH);
+            throw new BabelException(ExceptionCode.PASSWORD_MISMATCH);
         }
 
 
@@ -51,14 +51,14 @@ public class AuthService
 
         if (user == null)
         {
-            throw new CsolvedException(ExceptionCode.USER_NOT_FOUND);
+            throw new BabelException(ExceptionCode.USER_NOT_FOUND);
         }
 
         String storedPassword = userMapper.findPasswordByEmail(command.getEmail());
 
         if (storedPassword == null || !passwordManager.verifyPassword(command.getPassword(), storedPassword))
         {
-            throw new CsolvedException(ExceptionCode.INVALID_PASSWORD);
+            throw new BabelException(ExceptionCode.INVALID_PASSWORD);
         }
 
         authSessionManager.setLoginUser(user);

@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class CommentDetailRecord
+public class CommentResult
 {
     private Long id;
     private Long answerId;
