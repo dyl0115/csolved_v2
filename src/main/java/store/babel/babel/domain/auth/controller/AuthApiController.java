@@ -4,17 +4,17 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import store.babel.babel.domain.auth.controller.response.SignInResponse;
-import store.babel.babel.domain.auth.controller.response.SignOutResponse;
-import store.babel.babel.domain.auth.controller.response.SignUpResponse;
+import store.babel.babel.domain.auth.controller.dto.SignInResponse;
+import store.babel.babel.domain.auth.controller.dto.SignOutResponse;
+import store.babel.babel.domain.auth.controller.dto.SignUpResponse;
 import store.babel.babel.domain.auth.service.command.SignInCommand;
 import store.babel.babel.domain.auth.service.command.SignUpCommand;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.domain.auth.service.AuthService;
 import store.babel.babel.global.utils.login.LoginUser;
 import store.babel.babel.domain.user.User;
-import store.babel.babel.domain.auth.controller.request.SignInRequest;
-import store.babel.babel.domain.auth.controller.request.SignUpRequest;
+import store.babel.babel.domain.auth.controller.dto.SignInRequest;
+import store.babel.babel.domain.auth.controller.dto.SignUpRequest;
 
 @RequiredArgsConstructor
 @RestController

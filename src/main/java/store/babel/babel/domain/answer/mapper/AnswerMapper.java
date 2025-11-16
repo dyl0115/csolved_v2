@@ -1,19 +1,19 @@
 package store.babel.babel.domain.answer.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.babel.babel.domain.answer.mapper.param.AnswerCreateParam;
-import store.babel.babel.domain.answer.mapper.record.AnswerDetailResult;
+import store.babel.babel.domain.answer.dto.AnswerCreateCommand;
+import store.babel.babel.domain.answer.dto.Answer;
 
 import java.util.List;
 
 @Mapper
 public interface AnswerMapper
 {
-    Long saveAnswer(AnswerCreateParam answer);
+    void saveAnswer(AnswerCreateCommand command);
 
-    List<AnswerDetailResult> getAnswers(Long postId);
+    List<Answer> getAnswers(Long postId);
 
-    AnswerCreateParam getAnswer(Long answerId);
+    AnswerCreateCommand getAnswer(Long answerId);
 
     void increaseAnswerCount(Long postId);
 

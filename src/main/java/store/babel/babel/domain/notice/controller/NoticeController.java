@@ -4,14 +4,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import store.babel.babel.domain.answer.dto.AnswerWithComments;
+import store.babel.babel.domain.answer.service.AnswerService;
+import store.babel.babel.domain.notice.dto.*;
 import store.babel.babel.domain.notice.service.NoticeService;
-import store.babel.babel.domain.notice.service.result.NoticeResult;
-import store.babel.babel.domain.notice.service.result.NoticeWithAnswersAndCommentsResult;
-import store.babel.babel.domain.notice.service.result.NoticesAndPageResult;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.page.PageInfo;
+import store.babel.babel.global.utils.page.Pagination;
 import store.babel.babel.global.utils.search.SearchInfo;
 import store.babel.babel.global.utils.search.Searching;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -23,16 +26,20 @@ public class NoticeController
     public final static String VIEWS_NOTICE_DETAIL = "/views/notice/detail";
 
     private final NoticeService noticeService;
+    private final AnswerService answerService;
 
     @LoginRequest
     @GetMapping("/notices")
-    public String getNotices(@PageInfo Long pageNumber,
-                             @SearchInfo Searching search,
-                             Model model)
+    public String getNoticeCards(@PageInfo Long pageNumber,
+                                 @SearchInfo Searching search,
+                                 Model model)
     {
-        NoticesAndPageResult noticesAndPage = noticeService.getNoticesAndPage(pageNumber, search);
-        model.addAttribute("notices", noticesAndPage.getNotices());
-        model.addAttribute("page", noticesAndPage.getPage());
+        NoticeSearchQuery query = NoticeSearchQuery.from(pageNumber, search);
+        Pagination pagination = Pagination.from(pageNumber, noticeService.countNotices(query));
+        List<NoticeCard> noticeCards = noticeService.getNoticeCards(query, pagination);
+
+        model.addAttribute("notices", noticeCards);
+        model.addAttribute("pagination", pagination);
 
         return VIEWS_NOTICE_LIST;
     }
@@ -42,10 +49,11 @@ public class NoticeController
     public String getNotice(@PathVariable Long noticeId,
                             Model model)
     {
-        NoticeWithAnswersAndCommentsResult result = noticeService.getNoticeWithAnswersAndComments(noticeId);
+        Notice notice = noticeService.getNotice(noticeId);
+        List<AnswerWithComments> answersWithComments = answerService.getAnswersWithComments(noticeId);
 
-        model.addAttribute("notice", result.getNotice());
-        model.addAttribute("answersWithComments", result.getAnswersWithComments());
+        model.addAttribute("notice", notice);
+        model.addAttribute("answersWithComments", answersWithComments);
 
         return VIEWS_NOTICE_DETAIL;
     }
@@ -63,7 +71,7 @@ public class NoticeController
     public String getNoticeUpdateForm(@PathVariable Long noticeId,
                                       Model model)
     {
-        NoticeResult result = noticeService.getNotice(noticeId);
+        Notice result = noticeService.getNotice(noticeId);
         model.addAttribute("notice", result);
         return VIEWS_NOTICE_UPDATE_FORM;
     }

@@ -4,7 +4,7 @@
 
 <mapper namespace="store.babel.babel.domain.notice.mapper.NoticeMapper">
 
-    <resultMap id="noticeResultMap" type="store.babel.babel.domain.notice.mapper.entity.Notice">
+    <resultMap id="noticeResultMap" type="store.babel.babel.domain.notice.dto.Notice">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
@@ -18,55 +18,71 @@
         <result property="modifiedAt" column="modified_at"/>
     </resultMap>
 
+    <resultMap id="noticeCardResultMap" type="store.babel.babel.domain.notice.dto.NoticeCard">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="answerCount" column="answer_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+    </resultMap>
+
     <insert id="saveNotice">
-        insert into posts(post_type, user_id, anonymous,
-                          title, content)
-        values (#{postType}, #{notice.authorId},
-                #{notice.anonymous}, #{notice.title},
-                #{notice.content});
+        INSERT INTO posts(post_type,
+                          user_id,
+                          anonymous,
+                          title,
+                          content)
+        VALUES (#{postType},
+                #{authorId},
+                #{anonymous},
+                #{title},
+                #{content});
     </insert>
 
     <update id="updateNotice">
-        update posts
-        set anonymous   = #{notice.anonymous},
-            title       = #{notice.title},
-            content     = #{notice.content},
+        UPDATE posts
+        SET anonymous   = #{anonymous},
+            title       = #{title},
+            content     = #{content},
             modified_at = current_timestamp
-        where id = #{noticeId};
+        WHERE id = #{noticeId};
     </update>
 
     <update id="deleteNotice">
-        update posts
-        set deleted_at = current_timestamp
-        where id = #{noticeId};
+        UPDATE posts
+        SET deleted_at = current_timestamp
+        WHERE id = #{noticeId};
     </update>
 
     <select id="getNotice" resultMap="noticeResultMap">
-        select p.id           id,
-               p.post_type    post_type,
+        SELECT p.id           id,
                p.title        title,
+               u.id           author_id,
+               u.nickname     author_nickname,
                p.anonymous    anonymous,
                p.content      content,
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
                p.created_at   created_at,
-               p.modified_at  modified_at,
-               u.id           author_id,
-               u.nickname     author_nickname
-        from posts p
-                 left join users u on p.user_id = u.id
-        where p.id = #{noticeId};
+               p.modified_at  modified_at
+        FROM posts p
+                 LEFT JOIN users u ON p.user_id = u.id
+        WHERE p.id = #{noticeId};
     </select>
 
-    <select id="getNotices" resultMap="noticeResultMap">
+    <select id="getNoticeCards" resultMap="noticeCardResultMap">
         SELECT
         p.id id,
         p.title title,
         p.anonymous anonymous,
         p.user_id author_id,
         u.nickname author_nickname,
-        p.content content,
         p.views views,
         p.likes likes,
         p.answer_count answer_count,
@@ -75,26 +91,26 @@
         FROM posts p
         LEFT JOIN users u on u.id = p.user_id
         WHERE p.deleted_at IS NULL
-        AND p.post_type = #{postType}
-        <if test="search.searchType == 'TITLE' and
-                  search.searchKeyword != null and
-                  search.searchKeyword != ''">
-            AND p.title LIKE concat('%', #{search.searchKeyword}, '%')
+        AND p.post_type = #{query.postType}
+        <if test="query.searchType == 'TITLE' and
+                  query.searchKeyword != null and
+                  query.searchKeyword != ''">
+            AND p.title LIKE concat('%', #{query.searchKeyword}, '%')
         </if>
         ORDER BY
-        p.created_at desc
-        LIMIT #{page.offset}, #{page.size}
+        p.created_at DESC
+        LIMIT #{pagination.offset}, #{pagination.size}
     </select>
 
     <select id="countNotices">
-        select count(p.id)
-        from posts p
-        where p.deleted_at is null
-        and p.post_type = #{postType}
-        <if test="search.searchType == 'TITLE' and
-                  search.searchKeyword != null and
-                  search.searchKeyword != ''">
-            and p.title like concat('%', #{search.searchKeyword}, '%')
+        SELECT count(p.id)
+        FROM posts p
+        WHERE p.deleted_at IS NULL
+        AND p.post_type = #{postType}
+        <if test="searchType == 'TITLE' and
+                  searchKeyword != null and
+                 searchKeyword != ''">
+            AND p.title LIKE concat('%', #{searchKeyword}, '%')
         </if>
     </select>
 

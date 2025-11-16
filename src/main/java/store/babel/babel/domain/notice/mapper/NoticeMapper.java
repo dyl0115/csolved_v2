@@ -2,7 +2,8 @@ package store.babel.babel.domain.notice.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import store.babel.babel.domain.notice.mapper.entity.Notice;
+import store.babel.babel.domain.notice.dto.*;
+import store.babel.babel.domain.notice.service.NoticeService;
 import store.babel.babel.global.utils.page.Pagination;
 import store.babel.babel.global.utils.search.Searching;
 
@@ -11,15 +12,14 @@ import java.util.List;
 @Mapper
 public interface NoticeMapper
 {
-    void saveNotice(Long postType, Notice notice);
+    void saveNotice(NoticeCreateCommand command);
 
-    void updateNotice(Long noticeId, Notice notice);
+    void updateNotice(NoticeUpdateCommand command);
 
-    Long countNotices(@Param("postType") Long postType, @Param("search") Searching search);
+    Long countNotices(NoticeSearchQuery query);
 
-    List<Notice> getNotices(Long postType,
-                            @Param("page") Pagination page,
-                            @Param("search") Searching search);
+    List<NoticeCard> getNoticeCards(@Param("query") NoticeSearchQuery query,
+                                    @Param("pagination") Pagination pagination);
 
     Notice getNotice(Long noticeId);
 

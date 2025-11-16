@@ -1,17 +1,17 @@
 package store.babel.babel.domain.comment.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.babel.babel.domain.comment.mapper.param.CommentCreateParam;
-import store.babel.babel.domain.comment.mapper.record.CommentResult;
+import store.babel.babel.domain.comment.dto.CommentCreateCommand;
+import store.babel.babel.domain.comment.dto.Comment;
 
 import java.util.List;
 
 @Mapper
 public interface CommentMapper
 {
-    void save(CommentCreateParam comment);
+    void save(CommentCreateCommand comment);
 
-    List<CommentResult> getComments(List<Long> answerIds);
+    List<Comment> getComments(List<Long> answerIds);
 
     Long getAuthorId(Long commentId);
 

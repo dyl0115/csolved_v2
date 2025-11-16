@@ -2,7 +2,7 @@ package store.babel.babel.domain.auth.service.command;
 
 import lombok.Builder;
 import lombok.Data;
-import store.babel.babel.domain.auth.controller.request.SignInRequest;
+import store.babel.babel.domain.auth.controller.dto.SignInRequest;
 
 @Data
 @Builder

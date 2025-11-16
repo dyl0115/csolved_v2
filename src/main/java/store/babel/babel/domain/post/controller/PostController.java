@@ -5,8 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.answer.service.AnswerService;
-import store.babel.babel.domain.answer.service.result.AnswerDetailResult;
-import store.babel.babel.domain.category.CategoryResult;
+import store.babel.babel.domain.answer.dto.AnswerWithComments;
+import store.babel.babel.domain.category.dto.Category;
 import store.babel.babel.domain.category.service.CategoryService;
 import store.babel.babel.domain.post.dto.Post;
 import store.babel.babel.domain.post.dto.PostCard;
@@ -53,7 +53,7 @@ public class PostController
         PostSearchQuery query = PostSearchQuery.from(pageNumber, sort, filter, search);
 
         Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
-        List<CategoryResult> categories
+        List<Category> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
         List<PostCard> postCards = postService.getPostCards(query, pagination);
 
@@ -74,7 +74,7 @@ public class PostController
         if (skipView == null) postService.increaseView(postId);
 
         Post post = postService.getPost(postId, user.getId());
-        List<AnswerDetailResult> answers = answerService.getAnswersWithComments(postId);
+        List<AnswerWithComments> answers = answerService.getAnswersWithComments(postId);
 
         model.addAttribute("post", post);
         model.addAttribute("answers", answers);
@@ -86,7 +86,7 @@ public class PostController
     @GetMapping("/createForm")
     public String getCreateForm(Model model)
     {
-        List<CategoryResult> categories
+        List<Category> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
 
         model.addAttribute("categories", categories);
@@ -100,7 +100,7 @@ public class PostController
                                 @PathVariable Long postId,
                                 Model model)
     {
-        List<CategoryResult> categories
+        List<Category> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
         Post post = postService.getPost(postId, user.getId());
 

@@ -9,7 +9,7 @@
     </head>
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
         
         <div class="container mx-auto px-4 py-8"
              th:with="notice=${notice},
@@ -21,6 +21,13 @@
                         <!-- 게시글 -->
                         <div class="p-6 post-content-container">
                             <div class="mb-6">
+                                
+                                <div id="notice-id"
+                                     class="hidden"
+                                     th:text="${notice.id}">
+                                    게시글 아이디
+                                </div>
+                                
                                 <!-- 제목 -->
                                 <h3 class="text-2xl font-bold text-gray-800 mb-3"
                                     th:text="${notice.title}">
@@ -141,7 +148,7 @@
                                             익명으로 댓글 달기
                                         </label>
                                     </div>
-                                    <button type="submit"
+                                    <button type="button"
                                             class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
                                             onclick="submitAnswer()">
                                         <i data-lucide="send" class="w-4 h-4"></i>
@@ -332,33 +339,30 @@
                             <h3 class="font-semibold">검색</h3>
                         </div>
                         <div class="p-4">
-                            <form method="get"
-                                  action="/communities">
-                                <input type="hidden"
-                                       name="page"
-                                       value="1"/>
-                                <div class="space-y-3">
-                                    <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                            name="searchType">
-                                        <option value="title">
-                                            제목
-                                        </option>
-                                        <option value="author">
-                                            글쓴이
-                                        </option>
-                                    </select>
-                                    <div class="flex space-x-2">
-                                        <input class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                               name="searchKeyword"
-                                               type="text"
-                                               placeholder="검색어 입력"/>
-                                        <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-                                                type="submit">
-                                            <i data-lucide="search" class="w-5 h-5"></i>
-                                        </button>
-                                    </div>
+                            <input type="hidden"
+                                   name="page"
+                                   value="1"/>
+                            <div class="space-y-3">
+                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                        name="searchType">
+                                    <option value="title">
+                                        제목
+                                    </option>
+                                    <option value="author">
+                                        글쓴이
+                                    </option>
+                                </select>
+                                <div class="flex space-x-2">
+                                    <input class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                           name="searchKeyword"
+                                           type="text"
+                                           placeholder="검색어 입력"/>
+                                    <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                                            type="submit">
+                                        <i data-lucide="search" class="w-5 h-5"></i>
+                                    </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                     </div>
                     
@@ -402,7 +406,7 @@
 
         async function submitComment(answerId)
         {
-            const noticeId = '[[${notice.id}]]';
+            const noticeId = document.getElementById('notice-id').textContent;
             const requestUrl = `/api/comment`;
             const redirectUrl = `/notice/${noticeId}?skipView=true`;
             const commentAuthorId = document.getElementById(`comment-author${answerId}`).value;
@@ -447,7 +451,8 @@
 
         async function submitAnswer()
         {
-            const noticeId = '[[${notice.id}]]';
+            const noticeId = document.getElementById('notice-id').textContent;
+            ;
             const requestUrl = `/api/answer`;
             const redirectUrl = `/notice/${noticeId}?skipView=true`;
             const answerAuthorId = document.getElementById('answer-author-id').value;
@@ -491,7 +496,8 @@
 
         async function deleteComment(commentId)
         {
-            const noticeId = '[[${notice.id}]]';
+            const noticeId = document.getElementById('notice-id').textContent;
+
             const requestUrl = `/api/comment/${commentId}`;
             const redirectUrl = `/notice/${noticeId}?skipView=true`;
 
@@ -522,7 +528,7 @@
 
         async function deleteAnswer(answerId)
         {
-            const noticeId = '[[${notice.id}]]';
+            const noticeId = document.getElementById('notice-id').textContent;
             const requestUrl = `/api/answer/${answerId}`;
             const redirectUrl = `/notice/${noticeId}?skipView=true`;
 
@@ -554,7 +560,7 @@
 
         async function deleteNotice()
         {
-            const noticeId = '[[${notice.id}]]';
+            const noticeId = document.getElementById('notice-id').textContent;
             const url = `/api/notice/${noticeId}`;
             const redirectUrl = '/notices?page=1';
 
@@ -589,8 +595,8 @@
 
         async function addLike()
         {
-            const noticeId = '[[${notice.id}]]';
-            const requestUrl = `/api/community/${noticeId}/likes`;
+            const noticeId = document.getElementById('notice-id').textContent;
+            const requestUrl = `/api/notice/${noticeId}/likes`;
             const likeButton = document.getElementById('like-button');
             const likeCount = document.getElementById('like-count');
             let likeCountInt = parseInt(likeCount.textContent, 10) || 0;

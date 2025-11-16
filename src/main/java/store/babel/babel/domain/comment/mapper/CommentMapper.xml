@@ -5,10 +5,16 @@
 <mapper namespace="store.babel.babel.domain.comment.mapper.CommentMapper">
 
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
-        insert into comments(post_id, answer_id, author_id,
-                             anonymous, content)
-        values (#{postId}, #{answerId}, #{authorId},
-                #{anonymous}, #{content});
+        INSERT INTO comments(post_id,
+                             answer_id,
+                             author_id,
+                             anonymous,
+                             content)
+        VALUES (#{postId},
+                #{answerId},
+                #{authorId},
+                #{anonymous},
+                #{content});
     </insert>
 
     <select id="getComments">

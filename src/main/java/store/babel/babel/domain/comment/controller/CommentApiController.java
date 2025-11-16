@@ -3,10 +3,10 @@ package store.babel.babel.domain.comment.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import store.babel.babel.domain.comment.service.command.CommentCreateCommand;
+import store.babel.babel.domain.comment.dto.CommentCreateCommand;
 import store.babel.babel.domain.user.User;
 import store.babel.babel.global.utils.login.LoginRequest;
-import store.babel.babel.domain.comment.controller.request.CommentCreateRequest;
+import store.babel.babel.domain.comment.controller.dto.CommentCreateRequest;
 import store.babel.babel.domain.comment.service.CommentService;
 import store.babel.babel.global.utils.login.LoginUser;
 

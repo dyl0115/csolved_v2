@@ -4,10 +4,16 @@
 
 <mapper namespace="store.babel.babel.domain.answer.mapper.AnswerMapper">
     <insert id="saveAnswer" useGeneratedKeys="true" keyProperty="id">
-        insert into answers(post_id, author_id, anonymous,
-                            content, created_at)
-        values (#{postId}, #{authorId}, #{anonymous},
-                #{content}, #{createdAt});
+        INSERT INTO answers(post_id,
+                            author_id,
+                            anonymous,
+                            content,
+                            created_at)
+        VALUES (#{postId},
+                #{authorId},
+                #{anonymous},
+                #{content},
+                #{createdAt});
     </insert>
 
     <select id="getAnswers">

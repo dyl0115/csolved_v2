@@ -39,9 +39,9 @@ public class PostService
         postMapper.deletePost(postId);
     }
 
-    public Long countPosts(PostSearchQuery command)
+    public Long countPosts(PostSearchQuery query)
     {
-        return postMapper.countPosts(command);
+        return postMapper.countPosts(query);
     }
 
     public Post getPost(Long postId, Long userId)

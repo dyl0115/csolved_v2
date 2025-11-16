@@ -1,26 +1,36 @@
-class ImageProcessor {
-    constructor(maxSize = 256, quality = 0.8) {
+class ImageProcessor
+{
+    constructor(maxSize = 256, quality = 0.8)
+    {
         this.maxSize = maxSize;
         this.quality = quality;
     }
 
-    async processImage(file) {
-        try {
+    async processImage(file)
+    {
+        try
+        {
             const resizedBlob = await this.resize(file);
             const optimizedImage = await this.compress(resizedBlob);
             return optimizedImage;
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.error('이미지 처리 중 오류 발생:', error);
             throw error;
         }
     }
 
-    resize(file) {
-        return new Promise((resolve) => {
+    resize(file)
+    {
+        return new Promise((resolve) =>
+        {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = (e) =>
+            {
                 const img = new Image();
-                img.onload = () => {
+                img.onload = () =>
+                {
                     const {width, height} = this.calculateDimensions(img);
                     const canvas = document.createElement('canvas');
                     canvas.width = width;
@@ -37,15 +47,20 @@ class ImageProcessor {
         });
     }
 
-    calculateDimensions(img) {
+    calculateDimensions(img)
+    {
         let {width, height} = img;
-        if (width > height) {
-            if (width > this.maxSize) {
+        if (width > height)
+        {
+            if (width > this.maxSize)
+            {
                 height *= this.maxSize / width;
                 width = this.maxSize;
             }
-        } else {
-            if (height > this.maxSize) {
+        } else
+        {
+            if (height > this.maxSize)
+            {
                 width *= this.maxSize / height;
                 height = this.maxSize;
             }
@@ -53,10 +68,13 @@ class ImageProcessor {
         return {width: Math.round(width), height: Math.round(height)};
     }
 
-    compress(blob) {
-        return new Promise((resolve) => {
+    compress(blob)
+    {
+        return new Promise((resolve) =>
+        {
             const img = new Image();
-            img.onload = () => {
+            img.onload = () =>
+            {
                 const canvas = document.createElement('canvas');
                 canvas.width = img.width;
                 canvas.height = img.height;
@@ -64,7 +82,8 @@ class ImageProcessor {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0);
 
-                canvas.toBlob((compressedBlob) => {
+                canvas.toBlob((compressedBlob) =>
+                {
                     resolve({
                         blob: compressedBlob,
                         dataUrl: canvas.toDataURL('image/jpeg', this.quality)
@@ -78,9 +97,12 @@ class ImageProcessor {
     }
 }
 
-async function handleImageSelect(input) {
-    if (input.files && input.files[0]) {
-        try {
+async function handleImageSelect(input)
+{
+    if (input.files && input.files[0])
+    {
+        try
+        {
             const processor = new ImageProcessor();
             const result = await processor.processImage(input.files[0]);
 
@@ -98,14 +120,17 @@ async function handleImageSelect(input) {
             dataTransfer.items.add(newFile);
             input.files = dataTransfer.files;
 
-        } catch (error) {
+        }
+        catch (error)
+        {
             console.error('이미지 처리 실패:', error);
             alert('이미지 처리 중 오류가 발생했습니다.');
         }
     }
 }
 
-function updateProfile() {
+function updateProfile()
+{
     // form 데이터 가져오기
     const form = document.querySelector('form');
     const formData = new FormData(form);
@@ -115,14 +140,17 @@ function updateProfile() {
         method: 'POST',
         body: formData
     })
-        .then(response => {
-            if (response.ok) {
+        .then(response =>
+        {
+            if (response.ok)
+            {
                 // 성공 시 모달 표시
                 const modal = new bootstrap.Modal(document.getElementById('profileUpdateConfirmModal'));
                 modal.show();
             }
         })
-        .catch(error => {
+        .catch(error =>
+        {
             console.error('Error:', error);
         });
 }

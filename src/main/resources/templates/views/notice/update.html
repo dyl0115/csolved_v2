@@ -16,7 +16,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
         
         <div class="max-w-5xl mx-auto py-8 px-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -135,10 +135,11 @@
             const authorId = document.getElementById('authorId').value;
             const anonymous = document.getElementById('anonymousToggle').checked;
             const content = document.getElementById('content').value;
-            const requestUrl = `/api/notice/${noticeId}`;
+            const requestUrl = `/api/notice`;
             const redirectUrl = `/notice/${noticeId}`;
 
             const request = {
+                id: noticeId,
                 title: title,
                 authorId: parseInt(authorId),
                 anonymous: anonymous,
