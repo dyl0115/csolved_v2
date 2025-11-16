@@ -31,10 +31,10 @@
         </if>
     </select>
 
-    <select id="getComment">
-        select *
-        from comments
-        where id = #{commentId};
+    <select id="getAuthorId">
+        SELECT c.author_id
+        FROM comments c
+        WHERE id = #{commentId};
     </select>
 
     <delete id="delete">

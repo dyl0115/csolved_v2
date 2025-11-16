@@ -111,7 +111,10 @@
                                 <!-- 작성시간 -->
                                 <div class="flex items-center space-x-1">
                                     <i data-lucide="clock" class="w-4 h-4"></i>
-                                    <span class="timeago" th:data-date="${post.createdAt}">1시간 전</span>
+                                    <span class="timeago"
+                                          th:data-date="${post.createdAt}">
+                                        1시간 전
+                                    </span>
                                 </div>
                                 
                                 <!-- 수정여부 -->
@@ -226,6 +229,7 @@
         });
     </script>
     
+    <script src="/js/timeago.js"></script>
     <script src="/js/navigation.js"></script>
     <script src="/js/pagination.js"></script>
     <script src="/js/list-layout.js"></script>

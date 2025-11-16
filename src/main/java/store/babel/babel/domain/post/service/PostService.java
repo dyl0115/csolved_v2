@@ -55,6 +55,12 @@ public class PostService
     }
 
     @Transactional
+    public void increaseView(Long postId)
+    {
+        postMapper.increaseView(postId);
+    }
+
+    @Transactional
     public void addLike(Long postId, Long userId)
     {
         if (postMapper.hasUserLiked(postId, userId))

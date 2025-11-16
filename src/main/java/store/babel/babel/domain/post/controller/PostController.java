@@ -68,8 +68,11 @@ public class PostController
     @GetMapping("/{postId}")
     public String getPost(@LoginUser User user,
                           @PathVariable Long postId,
+                          @RequestParam(required = false) Boolean skipView,
                           Model model)
     {
+        if (skipView == null) postService.increaseView(postId);
+
         Post post = postService.getPost(postId, user.getId());
         List<AnswerDetailResult> answers = answerService.getAnswersWithComments(postId);
 

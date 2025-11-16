@@ -190,24 +190,24 @@
         select exists(select 1
                       from post_likes
                       where user_id = #{authorId}
-                        and post_id = #{communityId});
+                        and post_id = #{postId});
     </select>
 
     <update id="increaseLikes">
         update posts
         set likes = likes + 1
-        where id = #{communityId};
+        where id = #{postId};
     </update>
 
     <insert id="addUserLike">
         insert into post_likes(post_id, user_id)
-        values (#{communityId}, #{authorId});
+        values (#{postId}, #{authorId});
     </insert>
 
     <update id="increaseView">
         update posts
         set views = views + 1
-        where id = #{communityId};
+        where id = #{postId};
     </update>
 
     <select id="getAnsweredPosts" resultMap="postCardResultMap">

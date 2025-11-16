@@ -9,7 +9,6 @@ import store.babel.babel.domain.answer.service.command.AnswerCreateCommand;
 import store.babel.babel.domain.answer.service.result.AnswerDetailResult;
 import store.babel.babel.domain.comment.mapper.CommentMapper;
 import store.babel.babel.domain.comment.mapper.record.CommentResult;
-import store.babel.babel.domain.post.dto.PostWithAnswers;
 
 import java.util.List;
 import java.util.Map;

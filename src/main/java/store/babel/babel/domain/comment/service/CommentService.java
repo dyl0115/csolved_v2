@@ -27,18 +27,10 @@ public class CommentService
         commentMapper.save(CommentCreateParam.from(command));
     }
 
-    public Map<Long, List<CommentResult>> getComments(List<Long> answerIds)
-    {
-        List<CommentResult> comments = commentMapper.getComments(answerIds);
-        return comments.stream()
-                .collect(Collectors.groupingBy(CommentResult::getAnswerId));
-    }
-
     @Transactional
     public void delete(Long userId, Long commentId)
     {
-        CommentResult comment = commentMapper.getComment(commentId);
-        if (!Objects.equals(comment.getAuthorId(), userId))
+        if (!Objects.equals(commentMapper.getAuthorId(commentId), userId))
         {
             throw new BabelException(ExceptionCode.ACCESS_DENIED);
         }
