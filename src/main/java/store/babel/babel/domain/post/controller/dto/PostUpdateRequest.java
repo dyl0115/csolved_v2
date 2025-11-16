@@ -11,6 +11,9 @@ import lombok.Getter;
 @Builder
 public class PostUpdateRequest
 {
+    @NotNull
+    private Long id;
+
     @NotBlank(message = "제목을 입력해주세요.")
     @Size(min = 2, max = 50, message = "제목은 최소 2글자에서 50자까지 가능합니다.")
     private String title;
@@ -29,5 +32,5 @@ public class PostUpdateRequest
 
     @NotEmpty(message = "태그는 반드시 하나 이상 있어야 합니다.")
     private String tags;
-    
+
 }

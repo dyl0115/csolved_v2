@@ -16,7 +16,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
         
         <div class="max-w-5xl mx-auto py-8 px-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -32,10 +32,12 @@
                 <div class="p-6">
                     <!-- 카테고리 -->
                     <div class="mb-6">
+                        
                         <label for="postId" class="hidden">
-                            게시글 아이디
+                            <input class="hidden" id="postId"
+                                   th:value="${post.id}">
                         </label>
-                        <input class="hidden" id="postId" th:value="${post.id}">
+                        
                         
                         <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">
                             <div class="flex items-center gap-2">
@@ -77,7 +79,10 @@
                     </div>
                     
                     <!-- 사용자 -->
-                    <input type="hidden" id="authorId" name="authorId" th:value="${user.id}"/>
+                    <input type="hidden"
+                           id="authorId"
+                           name="authorId"
+                           th:value="${user.id}"/>
                     
                     <!-- 익명/실명 토글 -->
                     <div class="mb-6">
@@ -108,7 +113,9 @@
                              id="tags-container">
                             
                             <!-- 실제 태그가 전송되는 영역-->
-                            <input type="hidden" id="tag-hidden-input" th:value="${post.tags}">
+                            <input type="hidden"
+                                   id="tag-hidden-input"
+                                   th:value="${post.tagString}">
                             
                             <!-- 사용자가 태그를 입력하는 영역 -->
                             <input
@@ -185,9 +192,10 @@
             const anonymous = document.getElementById('anonymousToggle').checked;
             const tags = document.getElementById('tag-hidden-input').value;
             const content = document.getElementById('content').value;
-            const redirectUrl = `/community/${postId}`;
+            const redirectUrl = `/post/${postId}`;
 
             const request = {
+                id: parseInt(postId),
                 categoryId: parseInt(categoryId),
                 title: title,
                 authorId: parseInt(authorId),
@@ -198,7 +206,7 @@
 
             try
             {
-                const response = await fetch(`/api/community/${postId}`, {
+                const response = await fetch(`/api/post`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

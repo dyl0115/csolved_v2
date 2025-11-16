@@ -53,28 +53,28 @@
                           title,
                           content,
                           category_id)
-        VALUES (#{param.postType},
-                #{param.authorId},
-                #{param.anonymous},
-                #{param.title},
-                #{param.content},
-                #{param.categoryId});
+        VALUES (#{postType},
+                #{authorId},
+                #{anonymous},
+                #{title},
+                #{content},
+                #{categoryId});
     </insert>
 
     <update id="updatePost">
         UPDATE POSTS
-        SET anonymous   = #{param.anonymous},
-            title       = #{param.title},
-            content     = #{param.content},
-            category_id = #{param.categoryId},
+        SET anonymous   = #{anonymous},
+            title       = #{title},
+            content     = #{content},
+            category_id = #{categoryId},
             modified_at = current_timestamp
-        WHERE id = #{communityId};
+        WHERE id = #{id};
     </update>
 
     <update id="deletePost">
         UPDATE POSTS
         SET deleted_at = current_timestamp
-        WHERE id = #{communityId};
+        WHERE id = #{id};
     </update>
 
     <select id="getPost" resultMap="postResultMap">

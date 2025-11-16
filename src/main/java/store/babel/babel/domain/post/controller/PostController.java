@@ -4,19 +4,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import store.babel.babel.domain.answer.service.AnswerService;
+import store.babel.babel.domain.answer.service.result.AnswerDetailResult;
 import store.babel.babel.domain.category.CategoryResult;
 import store.babel.babel.domain.category.service.CategoryService;
 import store.babel.babel.domain.post.dto.Post;
+import store.babel.babel.domain.post.dto.PostCard;
 import store.babel.babel.domain.post.service.PostService;
 import store.babel.babel.domain.post.dto.PostSearchQuery;
-import store.babel.babel.domain.post.dto.PostCardsWithPage;
-import store.babel.babel.domain.post.dto.PostWithAnswers;
 import store.babel.babel.domain.user.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.filter.FilterInfo;
 import store.babel.babel.global.utils.filter.Filtering;
 import store.babel.babel.global.utils.login.LoginUser;
 import store.babel.babel.global.utils.page.PageInfo;
+import store.babel.babel.global.utils.page.Pagination;
 import store.babel.babel.global.utils.search.SearchInfo;
 import store.babel.babel.global.utils.search.Searching;
 import store.babel.babel.global.utils.sort.SortInfo;
@@ -37,24 +39,27 @@ public class PostController
     public final static String VIEWS_POST_DETAIL = "/views/post/detail";
 
     private final PostService postService;
+    private final AnswerService answerService;
     private final CategoryService categoryService;
 
     @LoginRequest
     @GetMapping("/list")
-    public String getPosts(@PageInfo Long pageNumber,
-                           @SortInfo Sorting sort,
-                           @FilterInfo Filtering filter,
-                           @SearchInfo Searching search,
-                           Model model)
+    public String getPostCards(@PageInfo Long pageNumber,
+                               @SortInfo Sorting sort,
+                               @FilterInfo Filtering filter,
+                               @SearchInfo Searching search,
+                               Model model)
     {
-        PostCardsWithPage postsAndPagination
-                = postService.getPostCardsAndPage(PostSearchQuery.from(pageNumber, sort, filter, search));
+        PostSearchQuery query = PostSearchQuery.from(pageNumber, sort, filter, search);
+
+        Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
         List<CategoryResult> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
+        List<PostCard> postCards = postService.getPostCards(query, pagination);
 
-        model.addAttribute("posts", postsAndPagination.getPostCards());
-        model.addAttribute("pagination", postsAndPagination.getPagination());
+        model.addAttribute("pagination", pagination);
         model.addAttribute("categories", categories);
+        model.addAttribute("postCards", postCards);
 
         return VIEWS_POST_LIST;
     }
@@ -65,9 +70,11 @@ public class PostController
                           @PathVariable Long postId,
                           Model model)
     {
-        PostWithAnswers postWithAnswers
-                = postService.getPostDetailWithAnswersAndComments(user.getId(), postId);
-        model.addAttribute("postWithAnswers", postWithAnswers);
+        Post post = postService.getPost(postId, user.getId());
+        List<AnswerDetailResult> answers = answerService.getAnswersWithComments(postId);
+
+        model.addAttribute("post", post);
+        model.addAttribute("answers", answers);
 
         return VIEWS_POST_DETAIL;
     }
@@ -78,7 +85,9 @@ public class PostController
     {
         List<CategoryResult> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
+
         model.addAttribute("categories", categories);
+
         return VIEWS_POST_CREATE_FORM;
     }
 
@@ -90,7 +99,7 @@ public class PostController
     {
         List<CategoryResult> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
-        Post post = postService.getPostDetail(postId, user.getId());
+        Post post = postService.getPost(postId, user.getId());
 
         model.addAttribute("categories", categories);
         model.addAttribute("post", post);

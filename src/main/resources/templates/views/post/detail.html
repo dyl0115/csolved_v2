@@ -11,10 +11,7 @@
         <!-- 네비게이션 -->
         <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
         
-        <div class="container mx-auto px-4 py-8"
-             th:with="post=${postWithAnswers.post},
-                      answersWithComments=${postWithAnswers.answersWithComments}">
-            
+        <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div class="lg:col-span-3">
                     <div class="bg-white rounded-lg shadow-md mb-4">
@@ -92,7 +89,7 @@
                                 <div class="flex items-center space-x-2">
                                     <a class="inline-flex items-center space-x-1 px-3 py-1.5 text-sm border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition"
                                        th:if="${post.authorId == user.id}"
-                                       th:href="@{/community/{id}/updateForm(id=${post.id})}">
+                                       th:href="@{/post/{id}/updateForm(id=${post.id})}">
                                         <i data-lucide="edit" class="w-4 h-4"></i>
                                         <span>수정</span>
                                     </a>
@@ -119,10 +116,10 @@
                     <div class="flex flex-wrap gap-3 mb-6">
                         <!-- 좋아요 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-sm
-                        disabled:bg-gray-400
-               disabled:cursor-not-allowed
-               disabled:opacity-60
-               disabled:shadow-none"
+                                        disabled:bg-gray-400
+                                        disabled:cursor-not-allowed
+                                        disabled:opacity-60
+                                        disabled:shadow-none"
                                 id="like-button"
                                 onclick="addLike()">
                             <i data-lucide="heart" class="w-5 h-5"></i>
@@ -203,8 +200,7 @@
                     <!-- 댓글 리스트 -->
                     <div class="mb-6"
                          id="answer-list"
-                         th:fragment="answer-list"
-                         th:with="answers=${answersWithComments}">
+                         th:fragment="answer-list">
                         <div class="bg-white rounded-lg shadow-md">
                             <div class="p-6">
                                 <!-- 댓글이 없는 경우 메시지 보여주기 -->
@@ -381,7 +377,7 @@
                         </div>
                         <div class="p-4">
                             <form method="get"
-                                  action="/communities">
+                                  action="/post/list">
                                 <input type="hidden"
                                        name="page"
                                        value="1"/>
@@ -452,7 +448,7 @@
         {
             const postId = document.getElementById('postId').textContent;
             const createCommentUrl = `/api/comment`;
-            const getPostRedirectUrl = `/community/${postId}?skipView=true`;
+            const getPostRedirectUrl = `/post/${postId}?skipView=true`;
             const commentAuthorId = document.getElementById(`comment-author${answerId}`).value;
             const commentContent = document.getElementById(`comment-content${answerId}`).value;
             const commentAnonymous = document.getElementById(`comment-anonymous${answerId}`).checked;
@@ -497,7 +493,7 @@
         {
             const postId = document.getElementById('postId').textContent;
             const createAnswerUrl = `/api/answer`;
-            const getPostRedirectUrl = `/community/${postId}?skipView=true`;
+            const getPostRedirectUrl = `/post/${postId}?skipView=true`;
             const answerAuthorId = document.getElementById('answer-author-id').value;
             const answerAnonymous = document.getElementById('answer-anonymous').checked;
             const answerContent = document.getElementById('answer-content').value;
@@ -539,9 +535,9 @@
 
         async function deleteComment(commentId)
         {
-            const communityId = document.getElementById('postId').textContent;
+            const postId = document.getElementById('postId').textContent;
             const requestUrl = `/api/comment/${commentId}`;
-            const redirectUrl = `/community/${communityId}?skipView=true`;
+            const redirectUrl = `/post/${postId}?skipView=true`;
 
             if (confirm('댓글을 삭제하시겠습니까?'))
             {
@@ -572,7 +568,7 @@
         {
             const postId = document.getElementById('postId').textContent;
             const requestUrl = `/api/answer/${answerId}`;
-            const redirectUrl = `/community/${postId}?skipView=true`;
+            const redirectUrl = `/post/${postId}?skipView=true`;
 
             if (confirm('댓글을 삭제하시겠습니까?'))
             {
@@ -602,7 +598,7 @@
         async function deletePost()
         {
             const postId = document.getElementById('postId').textContent;
-            const url = `/api/community/${postId}`;
+            const url = `/api/post/${postId}`;
 
             if (confirm("게시글을 삭제하겠습니까?"))
             {
@@ -618,7 +614,7 @@
                     if (response.ok)
                     {
                         alert("삭제가 완료되었습니다.");
-                        window.location.href = '/communities?page=1';
+                        window.location.href = '/post/list?page=1';
                     } else
                     {
                         const errorData = await response.json();
@@ -642,7 +638,7 @@
 
             try
             {
-                const response = await fetch(`/api/community/${postId}/likes`, {
+                const response = await fetch(`/api/post/${postId}/likes`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

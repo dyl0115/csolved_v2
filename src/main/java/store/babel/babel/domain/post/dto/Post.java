@@ -8,6 +8,7 @@ import store.babel.babel.domain.tag.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @SuperBuilder
@@ -29,6 +30,15 @@ public class Post
     private Long categoryId;
     private String categoryName;
     private List<Tag> tags;
+    private String tagString;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+
+    public Post stringifyTags()
+    {
+        this.tagString = tags.stream()
+                .map(Tag::getName)
+                .collect(Collectors.joining(","));
+        return this;
+    }
 }

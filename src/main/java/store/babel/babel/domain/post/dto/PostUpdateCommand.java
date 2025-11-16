@@ -23,6 +23,7 @@ public class PostUpdateCommand
     public static PostUpdateCommand from(PostUpdateRequest request)
     {
         return PostUpdateCommand.builder()
+                .id(request.getId())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .authorId(request.getAuthorId())

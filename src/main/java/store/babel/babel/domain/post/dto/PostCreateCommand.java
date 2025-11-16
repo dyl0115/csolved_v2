@@ -8,11 +8,14 @@ import store.babel.babel.domain.tag.Tag;
 import java.util.Arrays;
 import java.util.List;
 
+import static store.babel.babel.common.PostType.COMMUNITY;
+
 @Getter
 @Builder
 public class PostCreateCommand
 {
     private Long id;
+    private Long postType;
     private String title;
     private String content;
     private Long authorId;
@@ -23,6 +26,7 @@ public class PostCreateCommand
     public static PostCreateCommand from(PostCreateRequest request)
     {
         return PostCreateCommand.builder()
+                .postType(COMMUNITY.getCode())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .authorId(request.getAuthorId())
