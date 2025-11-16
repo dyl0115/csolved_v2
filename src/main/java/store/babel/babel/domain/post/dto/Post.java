@@ -24,6 +24,7 @@ public class Post
     private String content;
     private Long views;
     private Long likes;
+    private boolean bookmarked;
     private Long answerCount;
     private Long categoryId;
     private String categoryName;

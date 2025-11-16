@@ -48,25 +48,22 @@ public class PostService
     {
         postMapper.deletePost(postId);
     }
-
-    // 여기부터
+    
     public Long countPosts(PostSearchQuery command)
     {
         return postMapper.countPosts(command);
     }
 
-
-    public Post getPostDetail(Long postId)
+    public Post getPostDetail(Long postId, Long userId)
     {
-        return postMapper.getPost(postId);
+        return postMapper.getPost(postId, userId);
     }
 
-    public PostWithAnswers getPostDetailWithAnswersAndComments(Long userId, Long postId)
+    public PostWithAnswers getPostDetailWithAnswersAndComments(Long postId, Long userId)
     {
-        Post post = postMapper.getPost(postId);
-        boolean bookmarked = bookmarkMapper.hasBookmarked(userId, postId);
+        Post post = postMapper.getPost(postId, userId);
         List<AnswerDetailResult> answersWithComments = getAnswersWithComments(postId);
-        return PostWithAnswers.from(post, bookmarked, answersWithComments);
+        return PostWithAnswers.from(post, answersWithComments);
     }
 
     public PostCardsWithPage getPostCardsAndPage(PostSearchQuery command)

@@ -54,7 +54,6 @@ public class PostController
 
         model.addAttribute("posts", postsAndPagination.getPostCards());
         model.addAttribute("pagination", postsAndPagination.getPagination());
-        System.out.println("crr page: " + postsAndPagination.getPagination().getCurrentPage());
         model.addAttribute("categories", categories);
 
         return VIEWS_POST_LIST;
@@ -66,9 +65,10 @@ public class PostController
                           @PathVariable Long postId,
                           Model model)
     {
-        PostWithAnswers post
+        PostWithAnswers postWithAnswers
                 = postService.getPostDetailWithAnswersAndComments(user.getId(), postId);
-        model.addAttribute("post", post.getPost());
+        model.addAttribute("postWithAnswers", postWithAnswers);
+
         return VIEWS_POST_DETAIL;
     }
 
@@ -83,13 +83,14 @@ public class PostController
     }
 
     @LoginRequest
-    @GetMapping("/{communityId}/updateForm")
-    public String getUpdateForm(@PathVariable Long communityId,
+    @GetMapping("/{postId}/updateForm")
+    public String getUpdateForm(@LoginUser User user,
+                                @PathVariable Long postId,
                                 Model model)
     {
         List<CategoryResult> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
-        Post post = postService.getPostDetail(communityId);
+        Post post = postService.getPostDetail(postId, user.getId());
 
         model.addAttribute("categories", categories);
         model.addAttribute("post", post);

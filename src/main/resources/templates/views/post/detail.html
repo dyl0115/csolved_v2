@@ -9,12 +9,11 @@
     </head>
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
         
         <div class="container mx-auto px-4 py-8"
-             th:with="post=${post},
-                      bookmarked=${bookmarked},
-                      answersWithComments=${answersWithComments}">
+             th:with="post=${postWithAnswers.post},
+                      answersWithComments=${postWithAnswers.answersWithComments}">
             
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div class="lg:col-span-3">
@@ -22,6 +21,13 @@
                         <!-- 게시글 -->
                         <div class="p-6 post-content-container">
                             <div class="mb-6">
+                                
+                                <div class="hidden"
+                                     id="postId"
+                                     th:text="${post.id}">
+                                    게시글 아이디
+                                </div>
+                                
                                 <!-- 제목 -->
                                 <h3 class="text-2xl font-bold text-gray-800 mb-3"
                                     th:text="${post.title}">
@@ -139,15 +145,14 @@
                         <!-- 북마크 버튼 -->
                         <button id="bookmark-button"
                                 class="inline-flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition shadow-sm"
-                                th:bookmarked="${bookmarked}"
                                 onclick="toggleBookmark()">
                             <i id="bookmark-icon"
                                data-lucide="bookmark"
-                               th:attr="data-lucide=${bookmarked ? 'bookmark-x' : 'bookmark'}"
+                               th:attr="data-lucide=${post.bookmarked ? 'bookmark-x' : 'bookmark'}"
                                class="w-5 h-5">
                             </i>
                             <span id="bookmark-text"
-                                  th:text="${bookmarked ? '북마크 취소' : '북마크'}">
+                                  th:text="${post.bookmarked ? '북마크 취소' : '북마크'}">
                                 북마크
                             </span>
                         </button>
@@ -445,7 +450,7 @@
 
         async function submitComment(answerId)
         {
-            const postId = '[[${post.id}]]';
+            const postId = document.getElementById('postId').textContent;
             const createCommentUrl = `/api/comment`;
             const getPostRedirectUrl = `/community/${postId}?skipView=true`;
             const commentAuthorId = document.getElementById(`comment-author${answerId}`).value;
@@ -490,7 +495,7 @@
 
         async function submitAnswer()
         {
-            const postId = '[[${post.id}]]';
+            const postId = document.getElementById('postId').textContent;
             const createAnswerUrl = `/api/answer`;
             const getPostRedirectUrl = `/community/${postId}?skipView=true`;
             const answerAuthorId = document.getElementById('answer-author-id').value;
@@ -534,7 +539,7 @@
 
         async function deleteComment(commentId)
         {
-            const communityId = '[[${post.id}]]';
+            const communityId = document.getElementById('postId').textContent;
             const requestUrl = `/api/comment/${commentId}`;
             const redirectUrl = `/community/${communityId}?skipView=true`;
 
@@ -565,7 +570,7 @@
 
         async function deleteAnswer(answerId)
         {
-            const postId = '[[${post.id}]]';
+            const postId = document.getElementById('postId').textContent;
             const requestUrl = `/api/answer/${answerId}`;
             const redirectUrl = `/community/${postId}?skipView=true`;
 
@@ -596,7 +601,7 @@
 
         async function deletePost()
         {
-            const postId = '[[${post.id}]]';
+            const postId = document.getElementById('postId').textContent;
             const url = `/api/community/${postId}`;
 
             if (confirm("게시글을 삭제하겠습니까?"))
@@ -630,7 +635,7 @@
 
         async function addLike()
         {
-            const postId = '[[${post.id}]]';
+            const postId = document.getElementById('postId').textContent;
             const likeButton = document.getElementById('like-button');
             const likeCount = document.getElementById('like-count');
             let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
@@ -664,7 +669,7 @@
 
         async function toggleBookmark()
         {
-            const postId = '[[${post.id}]]';
+            const postId = document.getElementById('postId').textContent;
             const bookmarkButton = document.getElementById('bookmark-button');
             const bookmarked = bookmarkButton.getAttribute('bookmarked') === 'true';
             const bookmarkIcon = document.getElementById('bookmark-icon');

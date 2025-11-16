@@ -11,15 +11,12 @@ import java.util.List;
 public class PostWithAnswers
 {
     private Post post;
-    private boolean bookmarked;
     private List<AnswerDetailResult> answersWithComments;
 
-
-    public static PostWithAnswers from(Post post, boolean bookmarked, List<AnswerDetailResult> answersWithComments)
+    public static PostWithAnswers from(Post post, List<AnswerDetailResult> answersWithComments)
     {
         return PostWithAnswers.builder()
                 .post(post)
-                .bookmarked(bookmarked)
                 .answersWithComments(answersWithComments)
                 .build();
     }

@@ -22,7 +22,7 @@ public interface PostMapper
                                 @Param("page") Pagination pagination);
 
     // 질문글 조회
-    Post getPost(Long communityId);
+    Post getPost(Long postId, Long userId);
 
     // 논리적으로 게시글을 삭제
     void deletePost(Long communityId);

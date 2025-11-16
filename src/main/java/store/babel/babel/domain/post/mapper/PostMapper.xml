@@ -16,6 +16,7 @@
         <result property="views" column="views"/>
         <result property="likes" column="likes"/>
         <result property="answerCount" column="answer_count"/>
+        <result property="bookmarked" column="bookmarked"/>
         <result property="createdAt" column="created_at"/>
         <result property="modifiedAt" column="modified_at"/>
         <collection property="tags" ofType="store.babel.babel.domain.tag.Tag">
@@ -77,27 +78,31 @@
     </update>
 
     <select id="getPost" resultMap="postResultMap">
-        SELECT p.id           id,
-               p.title        title,
-               p.anonymous    anonymous,
-               p.content      content,
-               p.views        views,
-               p.likes        likes,
-               p.answer_count answer_count,
-               p.created_at   created_at,
-               p.modified_at  modified_at,
-               u.id           author_id,
-               u.nickname     author_nickname,
-               c.id           category_id,
-               c.name         category_name,
-               t.id           tag_id,
-               t.name         tag_name
+        SELECT p.id                                   id,
+               p.title                                title,
+               p.anonymous                            anonymous,
+               p.content                              content,
+               p.views                                views,
+               p.likes                                likes,
+               p.answer_count                         answer_count,
+               p.created_at                           created_at,
+               p.modified_at                          modified_at,
+               u.id                                   author_id,
+               u.nickname                             author_nickname,
+               c.id                                   category_id,
+               c.name                                 category_name,
+               t.id                                   tag_id,
+               t.name                                 tag_name,
+               EXISTS(SELECT 1
+                      FROM bookmarks b
+                      WHERE b.post_id = p.id
+                        AND b.user_id = #{userId}) AS bookmarked
         FROM POSTS p
-                 left join users u on p.user_id = u.id
-                 left join category c on p.category_id = c.id
-                 left join post_tags pt on p.id = pt.post_id
-                 left join tags t on t.id = pt.tag_id
-        WHERE p.id = #{communityId};
+                 LEFT JOIN users u ON p.user_id = u.id
+                 LEFT JOIN category c ON p.category_id = c.id
+                 LEFT JOIN post_tags pt ON p.id = pt.post_id
+                 LEFT JOIN tags t ON t.id = pt.tag_id
+        WHERE p.id = #{postId};
     </select>
 
     <select id="getPostCards" resultMap="postCardResultMap">
