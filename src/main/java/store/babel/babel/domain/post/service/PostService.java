@@ -49,10 +49,12 @@ public class PostService
         postMapper.deletePost(postId);
     }
 
+    // 여기부터
     public Long countPosts(PostSearchQuery command)
     {
         return postMapper.countPosts(command);
     }
+
 
     public Post getPostDetail(Long postId)
     {
@@ -67,11 +69,11 @@ public class PostService
         return PostWithAnswers.from(post, bookmarked, answersWithComments);
     }
 
-    public PostCardWithPage getPostCardsAndPage(PostSearchQuery command)
+    public PostCardsWithPage getPostCardsAndPage(PostSearchQuery command)
     {
         Pagination pagination = Pagination.from(command.getPageNumber(), countPosts(command));
         List<PostCard> posts = postMapper.getPostCards(command, pagination);
-        return PostCardWithPage.from(posts, pagination);
+        return PostCardsWithPage.from(posts, pagination);
     }
 
     @Transactional

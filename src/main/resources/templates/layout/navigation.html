@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <!-- 헤더 네비게이션만 프래그먼트로 -->
-    <nav th:fragment="default-nav(user)" class="bg-gray-900 text-white shadow-lg">
+    <nav th:fragment="navigation(user)" class="bg-gray-900 text-white shadow-lg">
         <div class="container mx-auto px-4">
             <div class="flex items-center justify-between h-16">
                 <!-- Logo -->
@@ -117,9 +116,4 @@
             </div>
         </div>
     </nav>
-    
-    <script th:fragment="default-nav-scripts">
-    
-    
-    </script>
 </html>

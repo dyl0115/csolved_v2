@@ -15,10 +15,11 @@ public interface PostMapper
     void updatePost(PostUpdateCommand command);
 
     // 게시글 개수 조회
-    Long countPosts(PostSearchQuery command);
+    Long countPosts(PostSearchQuery query);
 
     // 질문글들 조회
-    List<PostCard> getPostCards(PostSearchQuery command, Pagination pagination);
+    List<PostCard> getPostCards(@Param("query") PostSearchQuery query,
+                                @Param("page") Pagination pagination);
 
     // 질문글 조회
     Post getPost(Long communityId);

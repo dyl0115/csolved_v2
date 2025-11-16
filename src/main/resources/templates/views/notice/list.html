@@ -12,7 +12,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/nav :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
         
         <!-- 게시판 배너 -->
         <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
@@ -203,7 +203,7 @@
         });
     </script>
     <!-- 네비게이션 -->
-    <script src="/js/navigation/navigation.js"></script>
+    <script src="/js/navigation.js"></script>
     <script src="/js/list-layout.js"></script>
 </html>
 

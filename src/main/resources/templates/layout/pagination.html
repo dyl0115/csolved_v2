@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <div th:fragment="pagination(pagination)"
+         th:with="currentPage=${pagination.currentPage},
+                  maxPage=${pagination.totalPage}"
+         class="mt-8 flex items-center justify-center space-x-4">
+        
+        <!-- 이전 페이지 -->
+        <button class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                th:if="${currentPage > 1}"
+                th:onclick="|goToPage(${currentPage - 1})|">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            <span>이전</span>
+        </button>
+        <button class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+                disabled
+                th:unless="${currentPage > 1}">
+            <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            <span>이전</span>
+        </button>
+        
+        <!-- 페이지 입력 -->
+        <div class="flex items-center space-x-2">
+            <input class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800"
+                   type="number"
+                   onkeyup="if(event.key === 'Enter') goToPage(this.value)"
+                   onblur="goToPage(this.value)"
+                   th:value="${currentPage}"
+                   th:min="1"
+                   th:max="${maxPage}">
+            <span class="text-gray-500" th:text="'/ ' + ${maxPage}">/ 10</span>
+        </div>
+        
+        <!-- 다음 페이지 -->
+        <button class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                th:if="${currentPage < maxPage}"
+                th:onclick="|goToPage(${currentPage + 1})|">
+            <span>다음</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+        <button class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
+                disabled
+                th:unless="${currentPage < maxPage}">
+            <span>다음</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+        </button>
+    </div>
+</html>

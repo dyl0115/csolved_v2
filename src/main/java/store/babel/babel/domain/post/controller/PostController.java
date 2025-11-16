@@ -9,7 +9,7 @@ import store.babel.babel.domain.category.service.CategoryService;
 import store.babel.babel.domain.post.dto.Post;
 import store.babel.babel.domain.post.service.PostService;
 import store.babel.babel.domain.post.dto.PostSearchQuery;
-import store.babel.babel.domain.post.dto.PostCardWithPage;
+import store.babel.babel.domain.post.dto.PostCardsWithPage;
 import store.babel.babel.domain.post.dto.PostWithAnswers;
 import store.babel.babel.domain.user.User;
 import store.babel.babel.global.utils.login.LoginRequest;
@@ -47,14 +47,14 @@ public class PostController
                            @SearchInfo Searching search,
                            Model model)
     {
-        //TODO: PostDetailResult 말고, PostSummaryResult 를 생성할 것
-        PostCardWithPage postsAndPagination
+        PostCardsWithPage postsAndPagination
                 = postService.getPostCardsAndPage(PostSearchQuery.from(pageNumber, sort, filter, search));
         List<CategoryResult> categories
                 = categoryService.getAllCategories(COMMUNITY.getCode());
 
         model.addAttribute("posts", postsAndPagination.getPostCards());
         model.addAttribute("pagination", postsAndPagination.getPagination());
+        System.out.println("crr page: " + postsAndPagination.getPagination().getCurrentPage());
         model.addAttribute("categories", categories);
 
         return VIEWS_POST_LIST;

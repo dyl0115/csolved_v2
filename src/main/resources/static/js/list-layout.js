@@ -1,6 +1,5 @@
 function sortPosts()
 {
-
     const urlParams = new URLSearchParams(window.location.search);
     const sortType = 'sortType';
 
@@ -37,11 +36,4 @@ function sortPosts()
         {
             console.error('There was a problem with the fetch operation:', error);
         });
-}
-
-function updatePage(page)
-{
-    const url = new URL(window.location.href);
-    url.searchParams.set('page', page);
-    window.location.href = url.toString();
 }

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import store.babel.babel.domain.tag.Tag;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -15,15 +16,16 @@ import java.util.List;
 public class PostCard
 {
     private Long id;
-    private String postType;
     private String title;
-    private boolean anonymous;
     private Long authorId;
     private String authorNickname;
+    private boolean anonymous;
+    private Long categoryId;
+    private String categoryName;
     private Long views;
     private Long likes;
     private Long answerCount;
-    private Long categoryId;
-    private String categoryName;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
     private List<Tag> tags;
 }

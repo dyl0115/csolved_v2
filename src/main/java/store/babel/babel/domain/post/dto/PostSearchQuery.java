@@ -14,18 +14,22 @@ public class PostSearchQuery
 {
     private Long postType;
     private Long pageNumber;
-    private Sorting sort;
-    private Filtering filter;
-    private Searching search;
+    private String sortType;
+    private String filterType;
+    private Long filterValue;
+    private String searchType;
+    private String searchKeyword;
 
     public static PostSearchQuery from(Long pageNumber, Sorting sort, Filtering filter, Searching searching)
     {
         return PostSearchQuery.builder()
                 .postType(COMMUNITY.getCode())
                 .pageNumber(pageNumber)
-                .sort(sort)
-                .filter(filter)
-                .search(searching)
+                .sortType(sort.name())
+                .filterType(filter.getFilterType())
+                .filterValue(filter.getFilterValue())
+                .searchType(searching.getSearchType())
+                .searchKeyword(searching.getSearchKeyword())
                 .build();
     }
 }

@@ -16,7 +16,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/nav :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
         
         <div class="max-w-5xl mx-auto py-8 px-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -179,5 +179,5 @@
     
     <!-- Page Utils -->
     <script src="/js/tag/tag.js"></script>
-    <script src="/js/navigation/navigation.js"></script>
+    <script src="/js/navigation.js"></script>
 </html>

@@ -33,6 +33,7 @@ public class PageRequestArgumentResolver implements HandlerMethodArgumentResolve
 
     private Long validateAndCreatePage(String pageString)
     {
+        if (pageString == null) return 1L;
         if (!pageString.matches("^[1-9]\\d*$")) return 1L;
         return Long.parseLong(pageString);
     }

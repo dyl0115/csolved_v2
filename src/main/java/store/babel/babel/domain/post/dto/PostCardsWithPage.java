@@ -8,16 +8,16 @@ import java.util.List;
 
 @Getter
 @Builder
-public class PostCardWithPage
+public class PostCardsWithPage
 {
     List<PostCard> postCards;
     Pagination pagination;
 
-    public static PostCardWithPage from(List<PostCard> postCards, Pagination page)
+    public static PostCardsWithPage from(List<PostCard> postCards, Pagination pagination)
     {
-        return PostCardWithPage.builder()
+        return PostCardsWithPage.builder()
                 .postCards(postCards)
-                .pagination(page)
+                .pagination(pagination)
                 .build();
     }
 }
