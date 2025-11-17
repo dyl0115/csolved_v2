@@ -31,7 +31,9 @@
         <result property="modifiedAt" column="modified_at"/>
     </resultMap>
 
-    <insert id="saveNotice">
+    <insert id="saveNotice"
+            useGeneratedKeys="true"
+            keyProperty="id">
         INSERT INTO posts(post_type,
                           user_id,
                           anonymous,

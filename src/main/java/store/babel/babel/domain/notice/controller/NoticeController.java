@@ -47,8 +47,11 @@ public class NoticeController
     @LoginRequest
     @GetMapping("/notice/{noticeId}")
     public String getNotice(@PathVariable Long noticeId,
+                            @RequestParam(required = false) Boolean skipView,
                             Model model)
     {
+        if (skipView == null) noticeService.increaseView(noticeId);
+
         Notice notice = noticeService.getNotice(noticeId);
         List<AnswerWithComments> answersWithComments = answerService.getAnswersWithComments(noticeId);
 

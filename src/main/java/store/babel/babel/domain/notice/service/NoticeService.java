@@ -66,4 +66,10 @@ public class NoticeService
         noticeMapper.addUserLike(noticeId, userId);
         noticeMapper.increaseLikes(noticeId);
     }
+
+    @Transactional
+    public void increaseView(Long noticeId)
+    {
+        noticeMapper.increaseView(noticeId);
+    }
 }

@@ -10,6 +10,7 @@ import static store.babel.babel.domain.post.dto.PostType.NOTICE;
 @Builder
 public class NoticeCreateCommand
 {
+    private Long id;
     private Long postType;
     private String title;
     private String content;

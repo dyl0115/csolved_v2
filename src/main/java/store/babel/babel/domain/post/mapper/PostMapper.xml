@@ -62,7 +62,7 @@
     </insert>
 
     <update id="updatePost">
-        UPDATE POSTS
+        UPDATE posts
         SET anonymous   = #{anonymous},
             title       = #{title},
             content     = #{content},
@@ -72,7 +72,7 @@
     </update>
 
     <update id="deletePost">
-        UPDATE POSTS
+        UPDATE posts
         SET deleted_at = current_timestamp
         WHERE id = #{id};
     </update>
@@ -102,7 +102,8 @@
                  LEFT JOIN category c ON p.category_id = c.id
                  LEFT JOIN post_tags pt ON p.id = pt.post_id
                  LEFT JOIN tags t ON t.id = pt.tag_id
-        WHERE p.id = #{postId};
+        WHERE p.id = #{postId}
+          AND p.deleted_at IS NULL;
     </select>
 
     <select id="getPostCards" resultMap="postCardResultMap">

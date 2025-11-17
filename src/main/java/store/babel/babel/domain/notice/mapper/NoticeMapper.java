@@ -18,8 +18,7 @@ public interface NoticeMapper
 
     Long countNotices(NoticeSearchQuery query);
 
-    List<NoticeCard> getNoticeCards(@Param("query") NoticeSearchQuery query,
-                                    @Param("pagination") Pagination pagination);
+    List<NoticeCard> getNoticeCards(NoticeSearchQuery query, Pagination pagination);
 
     Notice getNotice(Long noticeId);
 
