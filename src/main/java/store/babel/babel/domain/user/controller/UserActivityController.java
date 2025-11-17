@@ -20,10 +20,10 @@ import java.util.List;
 @Controller
 public class UserActivityController
 {
-    public static final String VIEWS_USER_ACTIVITY = "/views/user-profile/activity";
-    public static final String FRAGMENT_REPLIED_POST_LIST = "/views/user-profile/activity :: repliedPostList";
-    public static final String FRAGMENT_USER_POST_LIST = "/views/user-profile/activity :: userPostList";
-    private static final String FRAGMENT_BOOKMARK_LIST = "/views/user-profile/activity :: bookmarkList";
+    public static final String VIEWS_USER_ACTIVITY = "/views/user/activity";
+    public static final String FRAGMENT_REPLIED_POST_LIST = "/views/user/activity :: repliedPostList";
+    public static final String FRAGMENT_USER_POST_LIST = "/views/user/activity :: userPostList";
+    private static final String FRAGMENT_BOOKMARK_LIST = "/views/user/activity :: bookmarkList";
 
     private final BookmarkService bookmarkService;
     private final PostService postService;
