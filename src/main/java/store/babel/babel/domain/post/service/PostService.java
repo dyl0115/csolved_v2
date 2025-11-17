@@ -44,9 +44,34 @@ public class PostService
         return postMapper.countPosts(query);
     }
 
+    public Long countAnsweredPosts(Long userId)
+    {
+        return postMapper.countAnsweredPosts(userId);
+    }
+
+    public Long countUserPosts(Long userId)
+    {
+        return postMapper.countUserPosts(userId);
+    }
+
     public Post getPost(Long postId, Long userId)
     {
         return postMapper.getPost(postId, userId).stringifyTags();
+    }
+
+    public List<PostCard> getBookmarkedPostCards(Long userId, Pagination pagination)
+    {
+        return postMapper.getBookmarkedPosts(userId, pagination);
+    }
+
+    public List<PostCard> getAnsweredPostCards(Long userId, Pagination pagination)
+    {
+        return postMapper.getAnsweredPosts(userId, pagination);
+    }
+
+    public List<PostCard> getUserPostCards(Long userId, Pagination pagination)
+    {
+        return postMapper.getUserPosts(userId, pagination);
     }
 
     public List<PostCard> getPostCards(PostSearchQuery query, Pagination pagination)

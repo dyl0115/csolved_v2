@@ -53,8 +53,9 @@ public class PostController
         PostSearchQuery query = PostSearchQuery.from(pageNumber, sort, filter, search);
 
         Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
-        List<Category> categories
-                = categoryService.getAllCategories(COMMUNITY.getCode());
+        System.out.println("pagination: offset=" + pagination.getOffset() + " size=" + pagination.getSize());
+        System.out.println("pagination: totalPage= " + pagination.getTotalPage() + " currentPage=" + pagination.getCurrentPage());
+        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
         List<PostCard> postCards = postService.getPostCards(query, pagination);
 
         model.addAttribute("pagination", pagination);

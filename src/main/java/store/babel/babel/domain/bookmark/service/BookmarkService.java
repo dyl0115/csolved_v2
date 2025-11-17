@@ -23,4 +23,9 @@ public class BookmarkService
     {
         bookmarkMapper.deleteBookmark(userId, postId);
     }
+
+    public Long countBookmarks(Long userId)
+    {
+        return bookmarkMapper.countBookmarks(userId);
+    }
 }

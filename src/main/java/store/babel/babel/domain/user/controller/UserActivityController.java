@@ -4,16 +4,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import store.babel.babel.domain.user.controller.view_model.BookmarkedCommunitiesWithPaginationResult;
-import store.babel.babel.domain.user.controller.view_model.AnsweredCommunitiesWithPaginationResult;
-import store.babel.babel.domain.user.controller.view_model.UserCommunitiesWithPaginationResult;
-import store.babel.babel.domain.user.service.UserActivityService;
+import store.babel.babel.domain.bookmark.service.BookmarkService;
+import store.babel.babel.domain.post.dto.PostCard;
+import store.babel.babel.domain.post.service.PostService;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
 import store.babel.babel.domain.user.User;
 import store.babel.babel.global.utils.page.PageInfo;
+import store.babel.babel.global.utils.page.Pagination;
 
-@RequestMapping("/users/activity")
+import java.util.List;
+
+@RequestMapping("/user/activity")
 @RequiredArgsConstructor
 @Controller
 public class UserActivityController
@@ -23,62 +25,87 @@ public class UserActivityController
     public static final String FRAGMENT_USER_POST_LIST = "/views/user-profile/activity :: userPostList";
     private static final String FRAGMENT_BOOKMARK_LIST = "/views/user-profile/activity :: bookmarkList";
 
-    private final UserActivityService userActivityService;
+    private final BookmarkService bookmarkService;
+    private final PostService postService;
 
     @LoginRequest
     @GetMapping
     public String getUserActivities(@LoginUser User user,
-                                    @PageInfo(type = "bookmarkPage") Long bookmarkPageNumber,
-                                    @PageInfo(type = "repliedPostPage") Long repliedPostPageNumber,
-                                    @PageInfo(type = "userPostPage") Long userPostPageNumber,
+                                    @PageInfo(type = "bookmarkPage") Long bookmarkPage,
+                                    @PageInfo(type = "repliedPage") Long repliedPage,
+                                    @PageInfo(type = "myPostPage") Long myPostPage,
                                     Model model)
     {
-        BookmarkedCommunitiesWithPaginationResult bookmarksAndPage = userActivityService.getBookmarkedCommunitiesWithPagination(user.getId(), bookmarkPageNumber);
-        model.addAttribute("bookmarksAndPage", bookmarksAndPage);
+        Long bookmarkCount = bookmarkService.countBookmarks(user.getId());
+        Pagination pagination = Pagination.from(bookmarkPage, bookmarkCount);
+        List<PostCard> bookmarks = postService.getBookmarkedPostCards(user.getId(), pagination);
 
-        AnsweredCommunitiesWithPaginationResult repliedPostsAndPage = userActivityService.getAnsweredCommunitiesWithPagination(user.getId(), repliedPostPageNumber);
-        model.addAttribute("repliedPostsAndPage", repliedPostsAndPage);
+        model.addAttribute("bookmarks", bookmarks);
+        model.addAttribute("bookmarkPagination", pagination);
 
-        UserCommunitiesWithPaginationResult userPostsAndPage = userActivityService.getUserPostsAndPage(user.getId(), userPostPageNumber);
-        model.addAttribute("userPostsAndPage", userPostsAndPage);
+        Long repliedCount = postService.countAnsweredPosts(user.getId());
+        pagination = Pagination.from(repliedPage, repliedCount);
+        List<PostCard> replied = postService.getAnsweredPostCards(user.getId(), pagination);
+
+        model.addAttribute("replied", replied);
+        model.addAttribute("repliedPagination", pagination);
+
+
+        Long myPostCount = postService.countUserPosts(user.getId());
+        pagination = Pagination.from(myPostPage, myPostCount);
+        List<PostCard> myPosts = postService.getUserPostCards(user.getId(), pagination);
+
+        model.addAttribute("myPosts", myPosts);
+        model.addAttribute("myPostPagination", pagination);
 
         return VIEWS_USER_ACTIVITY;
     }
 
     @LoginRequest
-    @GetMapping("/bookmarkedPosts")
+    @GetMapping("/bookmark")
     public String getBookmarksAndPage(@LoginUser User user,
                                       @PageInfo(type = "bookmarkPage") Long pageNumber,
                                       Model model)
     {
-        BookmarkedCommunitiesWithPaginationResult bookmarkedCommunitiesWithPagination = userActivityService.getBookmarkedCommunitiesWithPagination(user.getId(), pageNumber);
-        model.addAttribute("bookmarksAndPage", bookmarkedCommunitiesWithPagination);
+        Long bookmarkCount = bookmarkService.countBookmarks(user.getId());
+        Pagination pagination = Pagination.from(pageNumber, bookmarkCount);
+        List<PostCard> bookmarks = postService.getBookmarkedPostCards(user.getId(), pagination);
+
+        model.addAttribute("bookmarks", bookmarks);
+        model.addAttribute("bookmarkPagination", pagination);
 
         return FRAGMENT_BOOKMARK_LIST;
     }
 
-
     @LoginRequest
-    @GetMapping("/repliedPosts")
-    public String getRepliedPost(@LoginUser User user,
-                                 @PageInfo(type = "repliedPostPage") Long repliedPostPageNumber,
-                                 Model model)
+    @GetMapping("/myPost")
+    public String getUserPosts(@LoginUser User user,
+                               @PageInfo(type = "myPostPage") Long myPostPage,
+                               Model model)
     {
-        AnsweredCommunitiesWithPaginationResult repliedPostsAndPage = userActivityService.getAnsweredCommunitiesWithPagination(user.getId(), repliedPostPageNumber);
-        model.addAttribute("repliedPostsAndPage", repliedPostsAndPage);
+        Long myPostCount = postService.countUserPosts(user.getId());
+        Pagination pagination = Pagination.from(myPostPage, myPostCount);
+        List<PostCard> myPosts = postService.getUserPostCards(user.getId(), pagination);
 
-        return FRAGMENT_REPLIED_POST_LIST;
+        model.addAttribute("myPosts", myPosts);
+        model.addAttribute("myPostPagination", pagination);
+
+        return FRAGMENT_USER_POST_LIST;
     }
 
     @LoginRequest
-    @GetMapping("/userPosts")
-    public String getUserPosts(@LoginUser User user,
-                               @PageInfo(type = "userPostPage") Long userPostPageNumber,
-                               Model model)
+    @GetMapping("/replied")
+    public String getRepliedPost(@LoginUser User user,
+                                 @PageInfo(type = "repliedPage") Long repliedPage,
+                                 Model model)
     {
-        UserCommunitiesWithPaginationResult userPostsAndPage = userActivityService.getUserPostsAndPage(user.getId(), userPostPageNumber);
-        model.addAttribute("userPostsAndPage", userPostsAndPage);
+        Long repliedCount = postService.countAnsweredPosts(user.getId());
+        Pagination pagination = Pagination.from(repliedPage, repliedCount);
+        List<PostCard> replied = postService.getAnsweredPostCards(user.getId(), pagination);
 
-        return FRAGMENT_USER_POST_LIST;
+        model.addAttribute("replied", replied);
+        model.addAttribute("repliedPagination", pagination);
+
+        return FRAGMENT_REPLIED_POST_LIST;
     }
 }

@@ -12,7 +12,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: default-nav(${user})}"></div>
+        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
         
         <!-- 페이지 배너 -->
         <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
@@ -83,8 +83,8 @@
                      role="tabpanel"
                      aria-labelledby="bookmarks-tab"
                      th:fragment="bookmarkList"
-                     th:with="bookmarks=${bookmarksAndPage.bookmarks},
-                              page=${bookmarksAndPage.page}">
+                     th:with="bookmarks=${bookmarks},
+                              bookmarkPagination=${bookmarkPagination}">
                     
                     <div th:if="${#lists.isEmpty(bookmarks)}"
                          class="bg-white rounded-lg shadow-md p-16 text-center">
@@ -96,9 +96,7 @@
                     <div class="space-y-3" th:if="${!#lists.isEmpty(bookmarks)}">
                         <a class="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-4 border border-gray-200 hover:border-gray-300"
                            th:each="bookmark: ${bookmarks}"
-                           th:with="postType=${bookmark.postType == 1 ? 'community' :
-                                               (bookmark.postType == 2 ? 'question' : 'code-review')}"
-                           th:href="@{'/'+__${postType}__+'/' + ${bookmark.id}}">
+                           th:href="@{'/post/' + ${bookmark.id}}">
                             
                             <!-- 게시글 제목 -->
                             <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1"
@@ -116,13 +114,7 @@
                                 <!-- 게시판 이름 -->
                                 <div class="flex items-center space-x-1">
                                     <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                                    <span>
-                                        <th:block th:switch="${postType}">
-                                            <span th:case="community">커뮤니티</span>
-                                            <span th:case="question">면접질문</span>
-                                            <span th:case="code-review">코드리뷰</span>
-                                        </th:block>
-                                    </span>
+                                    커뮤니티
                                 </div>
                                 
                                 <!-- 카테고리 이름 -->
@@ -161,13 +153,13 @@
                     <!-- 페이지네이션 -->
                     <div class="mt-8 flex items-center justify-center space-x-4">
                         <!-- 이전 페이지 -->
-                        <button th:if="${page.currentPage > 1}"
-                                th:onclick="|updateBookmarkList(${page.currentPage - 1})|"
+                        <button th:if="${bookmarkPagination.currentPage > 1}"
+                                th:onclick="|updateBookmarkList(${bookmarkPagination.currentPage - 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
                             <span>이전</span>
                         </button>
-                        <button th:unless="${page.currentPage > 1}"
+                        <button th:unless="${bookmarkPagination.currentPage > 1}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
@@ -177,22 +169,22 @@
                         <!-- 페이지 입력 -->
                         <div class="flex items-center space-x-2">
                             <input type="number"
-                                   th:value="${page.currentPage}"
+                                   th:value="${bookmarkPagination.currentPage}"
                                    th:min="1"
-                                   th:max="${page.totalPage}"
+                                   th:max="${bookmarkPagination.totalPage}"
                                    onchange="updateBookmarkList(this.value)"
                                    class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${page.totalPage}">/ 10</span>
+                            <span class="text-gray-500" th:text="'/ ' + ${bookmarkPagination.totalPage}">/ 10</span>
                         </div>
                         
                         <!-- 다음 페이지 -->
-                        <button th:if="${page.currentPage < page.totalPage}"
-                                th:onclick="|updateBookmarkList(${page.currentPage + 1})|"
+                        <button th:if="${bookmarkPagination.currentPage < bookmarkPagination.totalPage}"
+                                th:onclick="|updateBookmarkList(${bookmarkPagination.currentPage + 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <span>다음</span>
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
-                        <button th:unless="${page.currentPage < page.totalPage}"
+                        <button th:unless="${bookmarkPagination.currentPage < bookmarkPagination.totalPage}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <span>다음</span>
@@ -207,23 +199,20 @@
                      role="tabpanel"
                      aria-labelledby="posts-tab"
                      th:fragment="userPostList"
-                     th:with="posts=${userPostsAndPage.posts},
-                              page=${userPostsAndPage.page}">
+                     th:with="myPosts=${myPosts},
+                              myPostPagination=${myPostPagination}">
                     
-                    <div th:if="${#lists.isEmpty(posts)}"
+                    <div th:if="${#lists.isEmpty(myPosts)}"
                          class="bg-white rounded-lg shadow-md p-16 text-center">
                         <i data-lucide="file-text" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
                         <p class="text-xl font-semibold text-gray-700 mb-2">작성한 게시글이 없습니다</p>
                         <p class="text-gray-500">첫 번째 글을 작성해보세요!</p>
                     </div>
                     
-                    <div class="space-y-3" th:if="${!#lists.isEmpty(posts)}">
+                    <div class="space-y-3" th:if="${!#lists.isEmpty(myPosts)}">
                         <a class="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-4 border border-gray-200 hover:border-gray-300"
-                           th:each="post: ${posts}"
-                           th:with="postType=${
-                                          post.postType == 1 ? 'community' :
-                                          (post.postType == 2 ? 'question' : 'code-review')}"
-                           th:href="@{'/'+__${postType}__+'/' + ${post.id}}">
+                           th:each="post: ${myPosts}"
+                           th:href="@{'/post/' + ${post.id}}">
                             
                             <!-- 게시글 제목 -->
                             <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1"
@@ -241,13 +230,7 @@
                                 <!-- 게시판 이름 -->
                                 <div class="flex items-center space-x-1">
                                     <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                                    <span>
-                                        <th:block th:switch="${postType}">
-                                            <span th:case="community">커뮤니티</span>
-                                            <span th:case="question">면접질문</span>
-                                            <span th:case="code-review">코드리뷰</span>
-                                        </th:block>
-                                    </span>
+                                    커뮤니티
                                 </div>
                                 
                                 <!-- 카테고리 이름 -->
@@ -286,13 +269,13 @@
                     <!-- 페이지네이션 -->
                     <div class="mt-8 flex items-center justify-center space-x-4">
                         <!-- 이전 페이지 -->
-                        <button th:if="${page.currentPage > 1}"
-                                th:onclick="|updateUserPostList(${page.currentPage - 1})|"
+                        <button th:if="${myPostPagination.currentPage > 1}"
+                                th:onclick="|updateUserPostList(${myPostPagination.currentPage - 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
                             <span>이전</span>
                         </button>
-                        <button th:unless="${page.currentPage > 1}"
+                        <button th:unless="${myPostPagination.currentPage > 1}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
@@ -302,22 +285,22 @@
                         <!-- 페이지 입력 -->
                         <div class="flex items-center space-x-2">
                             <input type="number"
-                                   th:value="${page.currentPage}"
+                                   th:value="${myPostPagination.currentPage}"
                                    th:min="1"
-                                   th:max="${page.totalPage}"
+                                   th:max="${myPostPagination.totalPage}"
                                    onchange="updateUserPostList(this.value)"
                                    class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${page.totalPage}">/ 10</span>
+                            <span class="text-gray-500" th:text="'/ ' + ${myPostPagination.totalPage}">/ 10</span>
                         </div>
                         
                         <!-- 다음 페이지 -->
-                        <button th:if="${page.currentPage < page.totalPage}"
-                                th:onclick="|updateUserPostList(${page.currentPage + 1})|"
+                        <button th:if="${myPostPagination.currentPage < myPostPagination.totalPage}"
+                                th:onclick="|updateUserPostList(${myPostPagination.currentPage + 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <span>다음</span>
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
-                        <button th:unless="${page.currentPage < page.totalPage}"
+                        <button th:unless="${myPostPagination.currentPage < myPostPagination.totalPage}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <span>다음</span>
@@ -332,23 +315,20 @@
                      role="tabpanel"
                      aria-labelledby="comments-tab"
                      th:fragment="repliedPostList"
-                     th:with="posts=${repliedPostsAndPage.posts},
-                              page=${repliedPostsAndPage.page}">
+                     th:with="repliedPosts=${replied},
+                              repliedPagination=${repliedPagination}">
                     
-                    <div th:if="${#lists.isEmpty(posts)}"
+                    <div th:if="${#lists.isEmpty(repliedPosts)}"
                          class="bg-white rounded-lg shadow-md p-16 text-center">
                         <i data-lucide="message-circle" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
                         <p class="text-xl font-semibold text-gray-700 mb-2">작성한 댓글이 없습니다</p>
                         <p class="text-gray-500">게시글에 댓글을 남겨보세요!</p>
                     </div>
                     
-                    <div class="space-y-3" th:if="${!#lists.isEmpty(posts)}">
+                    <div class="space-y-3" th:if="${!#lists.isEmpty(repliedPosts)}">
                         <a class="block bg-white rounded-lg shadow-sm hover:shadow-md transition p-4 border border-gray-200 hover:border-gray-300"
-                           th:each="post: ${posts}"
-                           th:with="postType=${
-                                          post.postType == 1 ? 'community' :
-                                          (post.postType == 2 ? 'question' : 'code-review')}"
-                           th:href="@{'/'+__${postType}__+'/' + ${post.id}}">
+                           th:each="post: ${repliedPosts}"
+                           th:href="@{'/post/' + ${post.id}}">
                             
                             <!-- 게시글 제목 -->
                             <h3 class="text-lg font-bold text-gray-800 mb-2 line-clamp-1"
@@ -366,13 +346,7 @@
                                 <!-- 게시판 이름 -->
                                 <div class="flex items-center space-x-1">
                                     <i data-lucide="layout-grid" class="w-4 h-4"></i>
-                                    <span>
-                                        <th:block th:switch="${postType}">
-                                            <span th:case="community">커뮤니티</span>
-                                            <span th:case="question">면접질문</span>
-                                            <span th:case="code-review">코드리뷰</span>
-                                        </th:block>
-                                    </span>
+                                    커뮤니티
                                 </div>
                                 
                                 <!-- 카테고리 이름 -->
@@ -411,13 +385,13 @@
                     <!-- 페이지네이션 -->
                     <div class="mt-8 flex items-center justify-center space-x-4">
                         <!-- 이전 페이지 -->
-                        <button th:if="${page.currentPage > 1}"
-                                th:onclick="|updateRepliedPostList(${page.currentPage - 1})|"
+                        <button th:if="${repliedPagination.currentPage > 1}"
+                                th:onclick="|updateRepliedPostList(${repliedPagination.currentPage - 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
                             <span>이전</span>
                         </button>
-                        <button th:unless="${page.currentPage > 1}"
+                        <button th:unless="${repliedPagination.currentPage > 1}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <i data-lucide="chevron-left" class="w-4 h-4"></i>
@@ -427,22 +401,22 @@
                         <!-- 페이지 입력 -->
                         <div class="flex items-center space-x-2">
                             <input type="number"
-                                   th:value="${page.currentPage}"
+                                   th:value="${repliedPagination.currentPage}"
                                    th:min="1"
-                                   th:max="${page.totalPage}"
+                                   th:max="${repliedPagination.totalPage}"
                                    onchange="updateRepliedPostList(this.value)"
                                    class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${page.totalPage}">/ 10</span>
+                            <span class="text-gray-500" th:text="'/ ' + ${repliedPagination.totalPage}">/ 10</span>
                         </div>
                         
                         <!-- 다음 페이지 -->
-                        <button th:if="${page.currentPage < page.totalPage}"
-                                th:onclick="|updateRepliedPostList(${page.currentPage + 1})|"
+                        <button th:if="${repliedPagination.currentPage < repliedPagination.totalPage}"
+                                th:onclick="|updateRepliedPostList(${repliedPagination.currentPage + 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <span>다음</span>
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
-                        <button th:unless="${page.currentPage < page.totalPage}"
+                        <button th:unless="${repliedPagination.currentPage < repliedPagination.totalPage}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <span>다음</span>
@@ -516,7 +490,7 @@
             {
                 try
                 {
-                    const response = await fetch(`/users/activity/bookmarkedPosts?bookmarkPage=${pageNumber}`);
+                    const response = await fetch(`/user/activity/bookmark?bookmarkPage=${pageNumber}`);
                     document.getElementById('bookmarkList').outerHTML = await response.text();
 
                     // 탭 상태 복원
@@ -535,7 +509,7 @@
             {
                 try
                 {
-                    const response = await fetch(`/users/activity/userPosts?userPostPage=${pageNumber}`);
+                    const response = await fetch(`/user/activity/myPost?myPostPage=${pageNumber}`);
                     document.getElementById('userPostList').outerHTML = await response.text();
 
                     // 탭 상태 복원
@@ -554,7 +528,7 @@
             {
                 try
                 {
-                    const response = await fetch(`/users/activity/repliedPosts?repliedPostPage=${pageNumber}`);
+                    const response = await fetch(`/user/activity/replied?repliedPage=${pageNumber}`);
                     document.getElementById('repliedPostList').outerHTML = await response.text();
 
                     // 탭 상태 복원

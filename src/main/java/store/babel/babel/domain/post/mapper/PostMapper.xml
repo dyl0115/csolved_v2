@@ -128,7 +128,6 @@
         p.anonymous anonymous,
         p.user_id author_id,
         u.nickname author_nickname,
-        p.content content,
         p.category_id category_id,
         p.views views,
         p.likes likes,
@@ -157,7 +156,7 @@
             <when test="query.sortType == 'ANSWERS'">p.answer_count DESC</when>
             <otherwise>p.created_at DESC</otherwise>
         </choose>
-        LIMIT #{page.offset}, #{page.size}
+        LIMIT #{pagination.offset}, #{pagination.size}
         ) sub
         LEFT JOIN category c ON c.id = sub.category_id
         LEFT JOIN post_tags pt ON pt.post_id = sub.post_id
@@ -170,44 +169,42 @@
         LEFT JOIN category c ON p.category_id = c.id
         LEFT JOIN users u ON p.user_id = u.id
         WHERE p.deleted_at IS NULL AND p.post_type = #{postType}
-        <choose>
-            <when test="#{filterType} == 'CATEGORY' and #{filterValue} != null and #{filterValue} != 0">
-                AND p.category_id = #{filterValue}
-            </when>
-        </choose>
-        <choose>
-            <when test="#{searchType} == 'TITLE' and #{searchKeyword} != null and #{searchKeyword} != ''">
-                AND p.title LIKE concat('%', #{searchKeyword}, '%')
-            </when>
-            <when test="#{searchType} == 'AUTHOR' and #{searchKeyword} != null and #{searchKeyword} != ''">
-                AND u.nickname LIKE concat('%',#{searchKeyword},'%')
-                AND p.anonymous IS FALSE
-            </when>
-        </choose>
+        <if test="filterType == 'CATEGORY' and filterValue != null and filterValue != 0">
+            AND p.category_id = #{filterValue}
+        </if>
+        <if test="searchType == 'TITLE' and searchKeyword != null and searchKeyword != ''">
+            AND p.title LIKE concat('%', #{searchKeyword}, '%')
+        </if>
+        <if test="searchType == 'AUTHOR' and searchKeyword != null and searchKeyword != ''">
+            AND u.nickname LIKE concat('%',#{searchKeyword},'%')
+            AND p.anonymous IS FALSE
+        </if>
     </select>
 
     <select id="hasUserLiked">
-        select exists(select 1
-                      from post_likes
-                      where user_id = #{authorId}
-                        and post_id = #{postId});
+        SELECT exists(SELECT 1
+                      FROM post_likes
+                      WHERE user_id = #{authorId}
+                        AND post_id = #{postId});
     </select>
 
     <update id="increaseLikes">
-        update posts
-        set likes = likes + 1
-        where id = #{postId};
+        UPDATE posts
+        SET likes = likes + 1
+        WHERE id = #{postId};
     </update>
 
     <insert id="addUserLike">
-        insert into post_likes(post_id, user_id)
-        values (#{postId}, #{authorId});
+        INSERT INTO post_likes(post_id,
+                               user_id)
+        VALUES (#{postId},
+                #{authorId});
     </insert>
 
     <update id="increaseView">
-        update posts
-        set views = views + 1
-        where id = #{postId};
+        UPDATE posts
+        SET views = views + 1
+        WHERE id = #{postId};
     </update>
 
     <select id="getAnsweredPosts" resultMap="postCardResultMap">
@@ -236,7 +233,7 @@
                      WHERE author_id = #{userId}
                        AND deleted_at IS NULL)) AS user_activities
               ORDER BY post_id
-              LIMIT #{page.offset}, #{page.size}) AS paginated_posts
+              LIMIT #{pagination.offset}, #{pagination.size}) AS paginated_posts
                  JOIN posts p ON p.id = paginated_posts.post_id
                  JOIN users u ON u.id = p.user_id
                  JOIN category c ON c.id = p.category_id
@@ -272,7 +269,7 @@
                up.answer_count answer_count,
                t.id            tag_id,
                t.name          tag_name
-        from (select p.id           id,
+        FROM (SELECT p.id           id,
                      p.post_type    post_type,
                      p.title        title,
                      p.anonymous    anonymous,
@@ -281,26 +278,26 @@
                      p.views        views,
                      p.likes        likes,
                      p.answer_count answer_count
-              from posts p
-              where p.user_id = #{userId}
-                and p.deleted_at is null
-              limit #{page.offset}, #{page.size}) up
-                 left join users u on up.author_id = u.id
-                 left join category c on up.category_id = c.id
-                 left join post_tags pt on pt.post_id = up.id
-                 left join tags t on t.id = pt.tag_id
-        order by up.id desc;
+              FROM posts p
+              WHERE p.user_id = #{userId}
+                AND p.deleted_at IS NULL
+              LIMIT #{pagination.offset}, #{pagination.size}) up
+                 LEFT JOIN users u ON up.author_id = u.id
+                 LEFT JOIN category c ON up.category_id = c.id
+                 LEFT JOIN post_tags pt ON pt.post_id = up.id
+                 LEFT JOIN tags t ON t.id = pt.tag_id
+        ORDER BY up.id DESC;
     </select>
 
     <select id="countUserPosts">
-        select count(p.id)
-        from posts p
-        where p.user_id = #{userId}
-          and deleted_at is null;
+        SELECT count(p.id)
+        FROM posts p
+        WHERE p.user_id = #{userId}
+          AND deleted_at IS NULL;
     </select>
 
     <select id="getBookmarkedPosts" resultMap="postCardResultMap">
-        select sub.id         id,
+        SELECT sub.id         id,
                sub.post_id    post_id,
                p.post_type    post_type,
                p.title        title,
@@ -314,17 +311,17 @@
                p.answer_count answer_count,
                t.id           tag_id,
                t.name         tag_name
-        from (select b.id      id,
+        FROM (SELECT b.id      id,
                      b.post_id post_id,
                      b.user_id author_id
-              from bookmarks b
-              where b.user_id = #{userId}
-              order by b.created_at desc
-              limit #{page.offset}, #{page.size}) sub
-                 left join posts p on p.id = sub.post_id
-                 left join users u on u.id = sub.author_id
-                 left join category c on c.id = p.category_id
-                 left join post_tags pt on p.id = pt.post_id
-                 left join tags t on pt.tag_id = t.id;
+              FROM bookmarks b
+              WHERE b.user_id = #{userId}
+              ORDER BY b.created_at DESC
+              LIMIT #{pagination.offset}, #{pagination.size}) sub
+                 LEFT JOIN posts p ON p.id = sub.post_id
+                 LEFT JOIN users u ON u.id = sub.author_id
+                 LEFT JOIN category c ON c.id = p.category_id
+                 LEFT JOIN post_tags pt ON p.id = pt.post_id
+                 LEFT JOIN tags t ON pt.tag_id = t.id;
     </select>
 </mapper>

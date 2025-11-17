@@ -1,4 +1,4 @@
-package store.babel.babel.domain.user.controller.view_model;
+package store.babel.babel.domain.user.dto;
 
 import lombok.Builder;
 import lombok.Getter;

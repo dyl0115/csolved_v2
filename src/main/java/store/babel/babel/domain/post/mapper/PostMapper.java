@@ -1,7 +1,6 @@
 package store.babel.babel.domain.post.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import store.babel.babel.domain.post.dto.*;
 import store.babel.babel.global.utils.page.Pagination;
 
@@ -17,14 +16,13 @@ public interface PostMapper
     // 게시글 개수 조회
     Long countPosts(PostSearchQuery query);
 
-    // 질문글들 조회
-    List<PostCard> getPostCards(@Param("query") PostSearchQuery query,
-                                @Param("page") Pagination pagination);
+    // 게시글들 조회
+    List<PostCard> getPostCards(PostSearchQuery query, Pagination pagination);
 
-    // 질문글 조회
+    // 게시글 조회
     Post getPost(Long postId, Long userId);
 
-    // 논리적으로 게시글을 삭제
+    // 게시글 논리적 삭제
     void deletePost(Long postId);
 
     // 질문-좋아요 테이블에 저장된 유저인지 체크
@@ -40,18 +38,17 @@ public interface PostMapper
     void increaseView(Long postId);
 
     // 댓글 단 게시글 리스트 조회
-    List<Post> getAnsweredCommunities(@Param("userId") Long userId,
-                                      @Param("page") Pagination page);
+    List<PostCard> getAnsweredPosts(Long userId, Pagination pagination);
 
     // 댓글 단 게시글 개수 조회
-    Long countAnsweredCommunities(Long userId);
+    Long countAnsweredPosts(Long userId);
 
     // 작성한 게시글 리스트 조회
-    List<Post> getUserCommunities(Long userId, Pagination page);
+    List<PostCard> getUserPosts(Long userId, Pagination pagination);
 
     //    작성한 게시글 개수 조회
-    Long countUserCommunities(Long userId);
+    Long countUserPosts(Long userId);
 
     //    북마크한 게시글 조회
-    List<Post> getBookmarkedCommunities(Long userId, Pagination page);
+    List<PostCard> getBookmarkedPosts(Long userId, Pagination pagination);
 }
