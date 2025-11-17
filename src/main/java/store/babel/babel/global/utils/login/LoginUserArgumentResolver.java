@@ -7,7 +7,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.AuthSessionManager;
 
 @RequiredArgsConstructor

@@ -10,7 +10,7 @@ import store.babel.babel.domain.post.dto.PostCreateCommand;
 import store.babel.babel.domain.post.dto.PostUpdateCommand;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
@@ -35,9 +35,10 @@ public class PostApiController
 
     @LoginRequest
     @DeleteMapping("/{postId}")
-    public void deletePost(@PathVariable Long postId)
+    public void deletePost(@LoginUser User user,
+                           @PathVariable Long postId)
     {
-        postService.deletePost(postId);
+        postService.deletePost(postId, user.getId());
     }
 
     @LoginRequest

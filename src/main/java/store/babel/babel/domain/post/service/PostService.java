@@ -11,6 +11,7 @@ import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -29,14 +30,50 @@ public class PostService
     @Transactional
     public void updatePost(PostUpdateCommand command)
     {
+        Long authorId = postMapper.getAuthorId(command.getId());
+
+        if (authorId == null)
+        {
+            throw new BabelException(ExceptionCode.POST_NOT_FOUND);
+        }
+
+        if (!Objects.equals(command.getAuthorId(), authorId))
+        {
+            throw new BabelException(ExceptionCode.POST_UPDATE_DENIED);
+        }
+
         postMapper.updatePost(command);
         tagService.updateTags(command.getId(), command.getTags());
     }
 
     @Transactional
-    public void deletePost(Long postId)
+    public void deletePost(Long postId, Long userId)
     {
+        Long authorId = postMapper.getAuthorId(postId);
+
+        if (authorId == null)
+        {
+            throw new BabelException(ExceptionCode.POST_NOT_FOUND);
+        }
+
+        if (!Objects.equals(userId, authorId))
+        {
+            throw new BabelException(ExceptionCode.POST_UPDATE_DENIED);
+        }
+
         postMapper.deletePost(postId);
+    }
+
+    public Post getPost(Long postId, Long userId)
+    {
+        Post post = postMapper.getPost(postId, userId).stringifyTags();
+
+        if (post == null)
+        {
+            throw new BabelException(ExceptionCode.POST_NOT_FOUND);
+        }
+
+        return post;
     }
 
     public Long countPosts(PostSearchQuery query)
@@ -52,11 +89,6 @@ public class PostService
     public Long countUserPosts(Long userId)
     {
         return postMapper.countUserPosts(userId);
-    }
-
-    public Post getPost(Long postId, Long userId)
-    {
-        return postMapper.getPost(postId, userId).stringifyTags();
     }
 
     public List<PostCard> getBookmarkedPostCards(Long userId, Pagination pagination)
@@ -82,6 +114,13 @@ public class PostService
     @Transactional
     public void increaseView(Long postId)
     {
+        Long authorId = postMapper.getAuthorId(postId);
+
+        if (authorId == null)
+        {
+            throw new BabelException(ExceptionCode.POST_NOT_FOUND);
+        }
+
         postMapper.increaseView(postId);
     }
 

@@ -3,7 +3,7 @@ package store.babel.babel.global.utils;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 
 @RequiredArgsConstructor
 @Component

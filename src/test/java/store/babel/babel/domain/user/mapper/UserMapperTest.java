@@ -6,7 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

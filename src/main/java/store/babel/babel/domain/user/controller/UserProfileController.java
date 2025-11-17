@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.domain.user.controller.dto.UserProfileUpdateRequest;
 import store.babel.babel.domain.user.controller.form.UserProfileForm;
 import store.babel.babel.domain.user.service.UserProfileService;

@@ -1,7 +1,7 @@
 package store.babel.babel.domain.user.mapper;
 
 import org.apache.ibatis.annotations.*;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 
 @Mapper
 public interface UserMapper

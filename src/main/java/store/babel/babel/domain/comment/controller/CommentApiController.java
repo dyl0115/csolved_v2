@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.comment.dto.CommentCreateCommand;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.domain.comment.controller.dto.CommentCreateRequest;
 import store.babel.babel.domain.comment.service.CommentService;

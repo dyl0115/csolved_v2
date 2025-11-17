@@ -300,6 +300,12 @@
           AND deleted_at IS NULL;
     </select>
 
+    <select id="getAuthorId">
+        SELECT user_id
+        FROM posts
+        WHERE id = #{postId};
+    </select>
+
     <select id="getBookmarkedPosts" resultMap="postCardResultMap">
         SELECT sub.id         id,
                sub.post_id    post_id,

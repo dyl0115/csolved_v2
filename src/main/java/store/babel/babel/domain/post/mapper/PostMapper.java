@@ -22,6 +22,9 @@ public interface PostMapper
     // 게시글 조회
     Post getPost(Long postId, Long userId);
 
+    // 게시글 작성자 조회
+    Long getAuthorId(Long postId);
+
     // 게시글 논리적 삭제
     void deletePost(Long postId);
 

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.AuthSessionManager;
 
 

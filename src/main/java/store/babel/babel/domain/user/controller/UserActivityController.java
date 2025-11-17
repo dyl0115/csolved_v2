@@ -9,7 +9,7 @@ import store.babel.babel.domain.post.dto.PostCard;
 import store.babel.babel.domain.post.service.PostService;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.page.PageInfo;
 import store.babel.babel.global.utils.page.Pagination;
 

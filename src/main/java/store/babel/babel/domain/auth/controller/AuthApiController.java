@@ -12,7 +12,7 @@ import store.babel.babel.domain.auth.service.command.SignUpCommand;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.domain.auth.service.AuthService;
 import store.babel.babel.global.utils.login.LoginUser;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.domain.auth.controller.dto.SignInRequest;
 import store.babel.babel.domain.auth.controller.dto.SignUpRequest;
 

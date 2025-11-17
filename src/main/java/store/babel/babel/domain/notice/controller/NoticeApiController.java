@@ -8,7 +8,7 @@ import store.babel.babel.domain.notice.controller.dto.NoticeUpdateRequest;
 import store.babel.babel.domain.notice.service.NoticeService;
 import store.babel.babel.domain.notice.dto.NoticeCreateCommand;
 import store.babel.babel.domain.notice.dto.NoticeUpdateCommand;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
 

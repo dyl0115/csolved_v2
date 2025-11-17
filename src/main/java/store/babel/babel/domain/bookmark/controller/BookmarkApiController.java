@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.bookmark.service.BookmarkService;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
 

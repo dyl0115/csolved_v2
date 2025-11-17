@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import store.babel.babel.domain.auth.service.command.SignInCommand;
 import store.babel.babel.domain.auth.service.command.SignUpCommand;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.domain.user.mapper.UserMapper;
 import store.babel.babel.global.exception.BabelException;
 import store.babel.babel.global.exception.ExceptionCode;

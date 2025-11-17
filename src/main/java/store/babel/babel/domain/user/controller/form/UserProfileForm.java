@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 
 @Getter
 @Builder

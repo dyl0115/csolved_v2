@@ -3,7 +3,7 @@ package store.babel.babel.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.domain.user.controller.dto.UserProfileUpdateRequest;
 import store.babel.babel.domain.user.controller.form.UserProfileForm;
 import store.babel.babel.domain.file.service.FileService;

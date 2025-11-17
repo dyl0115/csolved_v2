@@ -3,7 +3,7 @@ package store.babel.babel.domain.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.user.User;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.domain.user.mapper.UserMapper;
 
 @RequiredArgsConstructor
