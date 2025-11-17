@@ -220,6 +220,7 @@
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
+               p.created_at   created_at,
                t.id           tag_id,
                t.name         tag_name
         FROM (SELECT DISTINCT post_id
@@ -232,7 +233,7 @@
                      FROM comments c
                      WHERE author_id = #{userId}
                        AND deleted_at IS NULL)) AS user_activities
-              ORDER BY post_id
+              ORDER BY post_id DESC
               LIMIT #{pagination.offset}, #{pagination.size}) AS paginated_posts
                  JOIN posts p ON p.id = paginated_posts.post_id
                  JOIN users u ON u.id = p.user_id
@@ -267,6 +268,7 @@
                up.views        views,
                up.likes        likes,
                up.answer_count answer_count,
+               up.created_at   created_at,
                t.id            tag_id,
                t.name          tag_name
         FROM (SELECT p.id           id,
@@ -277,16 +279,17 @@
                      p.category_id  category_id,
                      p.views        views,
                      p.likes        likes,
-                     p.answer_count answer_count
+                     p.answer_count answer_count,
+                     p.created_at   created_at
               FROM posts p
               WHERE p.user_id = #{userId}
                 AND p.deleted_at IS NULL
+              ORDER BY p.id DESC
               LIMIT #{pagination.offset}, #{pagination.size}) up
                  LEFT JOIN users u ON up.author_id = u.id
                  LEFT JOIN category c ON up.category_id = c.id
                  LEFT JOIN post_tags pt ON pt.post_id = up.id
                  LEFT JOIN tags t ON t.id = pt.tag_id
-        ORDER BY up.id DESC;
     </select>
 
     <select id="countUserPosts">
@@ -309,6 +312,7 @@
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
+               p.created_at   created_at,
                t.id           tag_id,
                t.name         tag_name
         FROM (SELECT b.id      id,
@@ -316,7 +320,7 @@
                      b.user_id author_id
               FROM bookmarks b
               WHERE b.user_id = #{userId}
-              ORDER BY b.created_at DESC
+              ORDER BY b.id DESC
               LIMIT #{pagination.offset}, #{pagination.size}) sub
                  LEFT JOIN posts p ON p.id = sub.post_id
                  LEFT JOIN users u ON u.id = sub.author_id
