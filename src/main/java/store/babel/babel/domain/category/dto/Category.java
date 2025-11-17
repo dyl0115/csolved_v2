@@ -4,15 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.babel.babel.common.BaseEntity;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category extends BaseEntity
+public class Category
 {
+    private Long id;
     private String name;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public static Category create(String name)
     {

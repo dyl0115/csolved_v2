@@ -4,21 +4,26 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import store.babel.babel.common.BaseEntity;
 import store.babel.babel.domain.auth.service.command.SignUpCommand;
+
+import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends BaseEntity
+public class User
 {
+    private Long id;
     private String profileImage;
     private String email;
     private String password;
     private String nickname;
     private String company;
     private Boolean admin;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
+    private LocalDateTime deletedAt;
 
     public static User from(SignUpCommand command, String hashedPassword)
     {

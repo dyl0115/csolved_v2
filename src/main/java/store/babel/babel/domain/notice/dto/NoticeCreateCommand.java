@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import store.babel.babel.domain.notice.controller.dto.NoticeCreateRequest;
 
-import static store.babel.babel.common.PostType.NOTICE;
+import static store.babel.babel.domain.post.dto.PostType.NOTICE;
 
 @Getter
 @Builder

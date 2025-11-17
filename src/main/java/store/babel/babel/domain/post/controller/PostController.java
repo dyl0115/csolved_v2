@@ -26,7 +26,7 @@ import store.babel.babel.global.utils.sort.Sorting;
 
 import java.util.List;
 
-import static store.babel.babel.common.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
 
 @RequiredArgsConstructor
 @Controller
@@ -53,8 +53,6 @@ public class PostController
         PostSearchQuery query = PostSearchQuery.from(pageNumber, sort, filter, search);
 
         Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
-        System.out.println("pagination: offset=" + pagination.getOffset() + " size=" + pagination.getSize());
-        System.out.println("pagination: totalPage= " + pagination.getTotalPage() + " currentPage=" + pagination.getCurrentPage());
         List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
         List<PostCard> postCards = postService.getPostCards(query, pagination);
 

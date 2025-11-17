@@ -3,23 +3,15 @@ package store.babel.babel.domain.notice.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.answer.dto.Answer;
-import store.babel.babel.domain.answer.dto.AnswerWithComments;
 import store.babel.babel.domain.answer.mapper.AnswerMapper;
 import store.babel.babel.domain.comment.mapper.CommentMapper;
-import store.babel.babel.domain.comment.dto.Comment;
 import store.babel.babel.domain.notice.dto.*;
 import store.babel.babel.domain.notice.mapper.NoticeMapper;
 import store.babel.babel.global.exception.BabelException;
 import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.utils.page.Pagination;
-import store.babel.babel.global.utils.search.Searching;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static store.babel.babel.common.PostType.NOTICE;
 
 @RequiredArgsConstructor
 @Service

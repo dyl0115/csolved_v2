@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import store.babel.babel.common.BaseEntity;
 
 import java.time.LocalDateTime;
 
@@ -12,14 +11,17 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Answer extends BaseEntity
+public class Answer
 {
+    private Long id;
     private Long postId;
     private Long authorId;
     private String authorProfileImage;
     private String authorNickname;
     private boolean anonymous;
     private String content;
+    private LocalDateTime createdAt;
+    private LocalDateTime modifiedAt;
 
     public static Answer from(AnswerCreateCommand command)
     {

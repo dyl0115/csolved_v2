@@ -6,7 +6,7 @@ import store.babel.babel.global.utils.filter.Filtering;
 import store.babel.babel.global.utils.search.Searching;
 import store.babel.babel.global.utils.sort.Sorting;
 
-import static store.babel.babel.common.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
 
 @Getter
 @Builder

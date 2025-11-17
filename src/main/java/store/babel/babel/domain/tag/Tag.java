@@ -4,15 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import store.babel.babel.common.BaseEntity;
+
+import java.time.LocalDateTime;
 
 @Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tag extends BaseEntity
+public class Tag
 {
+    private Long id;
     private String name;
+    private LocalDateTime createdAt;
 
     public static Tag from(String name)
     {

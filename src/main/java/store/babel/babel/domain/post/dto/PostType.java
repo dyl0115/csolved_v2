@@ -1,4 +1,4 @@
-package store.babel.babel.common;
+package store.babel.babel.domain.post.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

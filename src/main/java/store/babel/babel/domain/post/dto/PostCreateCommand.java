@@ -8,7 +8,7 @@ import store.babel.babel.domain.tag.Tag;
 import java.util.Arrays;
 import java.util.List;
 
-import static store.babel.babel.common.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
 
 @Getter
 @Builder
