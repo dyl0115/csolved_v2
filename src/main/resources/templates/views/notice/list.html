@@ -12,7 +12,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
+        <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
         
         <!-- 게시판 배너 -->
         <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
@@ -103,7 +103,7 @@
                     </div>
                     
                     <!-- 페이지네이션 -->
-                    <div th:replace="~{/layout/pagination::pagination(${pagination})}"></div>
+                    <div th:replace="~{/fragments/pagination::pagination(${pagination})}"></div>
                 </div>
                 
                 <!-- 사이드바 -->
@@ -150,7 +150,7 @@
             </div>
         </div>
         <!-- 푸터 -->
-        <div th:replace="~{/layout/footer :: default-footer}"></div>
+        <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', async function ()

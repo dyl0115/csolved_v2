@@ -12,7 +12,7 @@
     
     <body class="bg-gray-50">
         <!-- 네비게이션 -->
-        <div th:replace="~{/layout/navigation :: navigation(${user})}"></div>
+        <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
         
         <!-- 페이지 배너 -->
         <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
@@ -446,7 +446,7 @@
         </div>
         
         <!-- 푸터 -->
-        <div th:replace="~{/layout/footer :: default-footer}"></div>
+        <div th:replace="~{/fragments/footer :: default-footer}"></div>
         <script src="/js/timeago.js"></script>
         
         <script th:inline="javascript">
