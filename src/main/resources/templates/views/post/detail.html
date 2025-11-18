@@ -25,11 +25,55 @@
                                     게시글 아이디
                                 </div>
                                 
-                                <!-- 제목 -->
-                                <h3 class="text-2xl font-bold text-gray-800 mb-3"
-                                    th:text="${post.title}">
-                                    게시글 제목
-                                </h3>
+                                <!-- 제목과 메뉴 -->
+                                <div class="flex items-start justify-between gap-4 mb-3">
+                                    <!-- 제목 -->
+                                    <h3 class="text-2xl font-bold text-gray-800 flex-1"
+                                        th:text="${post.title}">
+                                        게시글 제목
+                                    </h3>
+                                    
+                                    <!-- 게시글 메뉴 (드롭다운) -->
+                                    <div class="relative flex-shrink-0"
+                                         th:if="${post.authorId == user.id || post.authorId != user.id}">
+                                        <!-- 메뉴 버튼 -->
+                                        <button onclick="togglePostMenu()"
+                                                class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                                id="post-menu-button">
+                                            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                                        </button>
+                                        
+                                        <!-- 드롭다운 메뉴 -->
+                                        <div id="post-menu"
+                                             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                            <div class="py-1">
+                                                <!-- 수정하기 (작성자만) -->
+                                                <a th:if="${post.authorId == user.id}"
+                                                   th:href="@{/post/{id}/updateForm(id=${post.id})}"
+                                                   class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150">
+                                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                                    <span>수정하기</span>
+                                                </a>
+                                                
+                                                <!-- 삭제하기 (작성자만) -->
+                                                <button th:if="${post.authorId == user.id}"
+                                                        onclick="deletePost()"
+                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                    <span>삭제하기</span>
+                                                </button>
+                                                
+                                                <!-- 신고하기 (작성자가 아닐 때) -->
+                                                <button th:if="${post.authorId != user.id}"
+                                                        onclick="reportPost()"
+                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150">
+                                                    <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                                    <span>신고하기</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 
                                 <!-- 태그 -->
                                 <div class="flex flex-wrap gap-2 mb-4">
@@ -83,28 +127,6 @@
                                             수정됨
                                         </span>
                                     </div>
-                                </div>
-                                
-                                <!-- 수정/삭제 버튼 -->
-                                <div class="flex items-center space-x-2">
-                                    <a class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 cursor-pointer transition-colors duration-150"
-                                       th:if="${post.authorId == user.id}"
-                                       th:href="@{/post/{id}/updateForm(id=${post.id})}">
-                                        <i data-lucide="edit" class="w-4 h-4"></i>
-                                        <span>수정하기</span>
-                                    </a>
-                                    <a class="flex items-center space-x-1 text-red-600 hover:text-red-700 cursor-pointer transition-colors duration-150"
-                                       onclick="deletePost()"
-                                       th:if="${post.authorId == user.id}">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        <span>삭제하기</span>
-                                    </a>
-                                    <a class="flex items-center space-x-1 text-orange-600 hover:text-orange-700 cursor-pointer transition-colors duration-150"
-                                       onclick=""
-                                       th:if="${post.authorId != user.id}">
-                                        <i data-lucide="siren" class="w-4 h-4"></i>
-                                        <span>신고하기</span>
-                                    </a>
                                 </div>
                             </div>
                             
@@ -433,6 +455,18 @@
         {
             initNavigation();
             lucide.createIcons();
+
+            // 메뉴 외부 클릭 시 닫기
+            document.addEventListener('click', function (event)
+            {
+                const menu = document.getElementById('post-menu');
+                const button = document.getElementById('post-menu-button');
+
+                if (menu && button && !menu.contains(event.target) && !button.contains(event.target))
+                {
+                    menu.classList.add('hidden');
+                }
+            });
         });
 
         async function toggleAnswerForm()
@@ -703,6 +737,51 @@
             {
                 console.error('Error:', error);
                 alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
+
+        function togglePostMenu()
+        {
+            const menu = document.getElementById('post-menu');
+            menu.classList.toggle('hidden');
+
+            // 아이콘 다시 렌더링
+            setTimeout(() =>
+            {
+                lucide.createIcons();
+            }, 10);
+        }
+
+        async function reportPost()
+        {
+            const postId = document.getElementById('postId').textContent;
+
+            if (confirm('이 게시글을 신고하시겠습니까?'))
+            {
+                try
+                {
+                    const response = await fetch(`/api/post/${postId}/report`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+
+                    if (response.ok)
+                    {
+                        alert('신고가 접수되었습니다.');
+                        togglePostMenu(); // 메뉴 닫기
+                    } else
+                    {
+                        const errorData = await response.json();
+                        alert(errorData.message || '신고 처리 중 오류가 발생했습니다.');
+                    }
+                }
+                catch (error)
+                {
+                    console.error('Error:', error);
+                    alert('서버와의 통신 중 오류가 발생했습니다.');
+                }
             }
         }
     </script>
