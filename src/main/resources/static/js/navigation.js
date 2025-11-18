@@ -59,6 +59,20 @@ async function withdraw()
     }
 }
 
+async function goToReportList()
+{
+    const param = {
+        page: 1,
+        size: 20,
+        sortType: 'CREATED_AT',
+        startDateTime: '1800-01-01T12:00:00',
+        // endDateTime: new Date().toISOString(),
+        endDateTime: '2050-01-01T12:00:00',
+    };
+    const queryString = new URLSearchParams(param).toString();
+    window.location.href = `/admin/report?${queryString}`;
+}
+
 function initNavigation()
 {
     // 모바일 메뉴 토글

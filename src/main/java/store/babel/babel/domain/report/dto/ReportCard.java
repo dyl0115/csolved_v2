@@ -19,5 +19,7 @@ public class ReportCard
     private String targetType;
     private Long targetId;
     private String status;
+    private String reason;
+    private String detailReason;
     private LocalDateTime createdAt;
 }

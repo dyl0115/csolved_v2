@@ -3,30 +3,30 @@ package store.babel.babel.domain.report.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.report.dto.ReportCreateCommand;
 import store.babel.babel.domain.report.dto.ReportCreateRequest;
 import store.babel.babel.domain.report.service.ReportService;
+import store.babel.babel.global.utils.login.LoginRequest;
 
 @RequestMapping("/api/report")
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class ReportApiController
 {
     private final ReportService reportService;
 
+    @LoginRequest
     @PostMapping
     public void createReport(@Valid @RequestBody ReportCreateRequest request)
     {
         reportService.createReport(ReportCreateCommand.from(request));
     }
 
-    @DeleteMapping
-    public void deleteReport(Long reportId)
+    @LoginRequest
+    @GetMapping("/{reportId}")
+    public String getDetailReason(@PathVariable("reportId") Long reportId)
     {
-        reportService.deleteReport(reportId);
+        return reportService.getDetailReason(reportId);
     }
 }

@@ -22,11 +22,11 @@ public class ReportSearchRequest
     @Max(100)
     private int size;
 
-    private String sort = "CREATED_AT";
+    private ReportSortType sortType;
 
-    private LocalDateTime startDate;
+    private LocalDateTime startDateTime;
 
-    private LocalDateTime endDate;
+    private LocalDateTime endDateTime;
 
     private String keyword;
 }

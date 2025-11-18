@@ -10,6 +10,8 @@
         <result property="targetType" column="target_type"/>
         <result property="targetId" column="target_id"/>
         <result property="status" column="status"/>
+        <result property="reason" column="reason"/>
+        <result property="detailReason" column="detail_reason"/>
         <result property="createdAt" column="created_at"/>
     </resultMap>
 
@@ -30,7 +32,6 @@
         SELECT COUNT(r.id)
         FROM reports r
         LEFT JOIN users reporter ON r.reporter_id = reporter.id
-        LEFT JOIN users target_user ON r.target_user_id = target_user.id
         WHERE r.deleted_at IS NULL
 
         <if test="status != null">
@@ -46,10 +47,7 @@
         </if>
 
         <if test="keyword != null and keyword != ''">
-            AND (
-            reporter.username LIKE CONCAT('%', #{keyword}, '%')
-            OR target_user.username LIKE CONCAT('%', #{keyword}, '%')
-            )
+            AND reporter.username LIKE CONCAT('%', #{keyword}, '%')
         </if>
     </select>
 
@@ -61,6 +59,8 @@
         r.target_type,
         r.target_id,
         r.status,
+        r.reason,
+        r.detail_reason,
         r.created_at
         FROM reports r
         LEFT JOIN users reporter ON r.reporter_id = reporter.id
@@ -99,7 +99,40 @@
                 r.created_at DESC
             </otherwise>
         </choose>
-
         LIMIT #{pagination.size} OFFSET #{pagination.offset}
+    </select>
+
+    <select id="getDetailReason">
+        SELECT r.detail_reason
+        FROM reports r
+        WHERE id = #{reportId};
+    </select>
+
+    <select id="countAll">
+        SELECT COUNT(r.id)
+        FROM reports r
+        WHERE deleted_at IS NULL;
+    </select>
+
+    <select id="countPending">
+        SELECT COUNT(r.id)
+        FROM reports r
+        WHERE deleted_at IS NULL
+          AND status = 'PENDING';
+
+    </select>
+
+    <select id="countReviewing">
+        SELECT COUNT(r.id)
+        FROM reports r
+        WHERE deleted_at IS NULL
+          AND status = 'REVIEWING';
+    </select>
+
+    <select id="countResolved">
+        SELECT COUNT(r.id)
+        FROM reports r
+        WHERE deleted_at IS NULL
+          AND status = 'RESOLVED';
     </select>
 </mapper>

@@ -25,17 +25,36 @@ public class ReportService
 
     public List<ReportCard> getReports(ReportSearchQuery query, Pagination pagination)
     {
-        return null;
+        return reportMapper.getReports(query, pagination);
     }
 
-    @Transactional
-    public void deleteReport(Long reportId)
+    public Long countAll()
     {
+        return reportMapper.countAll();
+    }
 
+    public Long countPending()
+    {
+        return reportMapper.countPending();
+    }
+
+    public Long countReviewing()
+    {
+        return reportMapper.countReviewing();
+    }
+
+    public Long countResolved()
+    {
+        return reportMapper.countResolved();
     }
 
     public Long countReports(ReportSearchQuery query)
     {
         return reportMapper.countReports(query);
+    }
+
+    public String getDetailReason(Long reportId)
+    {
+        return reportMapper.getDetailReason(reportId);
     }
 }

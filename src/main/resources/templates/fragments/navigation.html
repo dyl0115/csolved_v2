@@ -50,6 +50,13 @@
                                 <span>내 활동</span>
                             </a>
                             
+                            <a class="flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-100 transition"
+                               th:if="${user.admin}"
+                               onclick="goToReportList()">
+                                <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                                <span>신고내역</span>
+                            </a>
+                            
                             <hr class="border-gray-200"/>
                             
                             <a href="#" onclick="signOut()"
@@ -102,6 +109,12 @@
                    class="flex items-center space-x-2 px-4 py-3 text-gray-300 hover:bg-gray-800 transition">
                     <i data-lucide="activity" class="w-4 h-4"></i>
                     <span>내 활동</span>
+                </a>
+                <a class="flex items-center space-x-2 px-4 py-3 text-gray-300 hover:bg-gray-800 transition"
+                   th:if="${user.admin}"
+                   onclick="goToReportList()">
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <span>신고내역</span>
                 </a>
                 <a href="#" onclick="signOut()"
                    class="flex items-center space-x-2 px-4 py-3 text-gray-300 hover:bg-gray-800 transition">

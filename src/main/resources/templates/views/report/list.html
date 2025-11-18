@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>신고 관리</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/lucide@latest"></script>
+    </head>
+    <body class="bg-gray-50">
+        
+        <!-- 헤더 -->
+        <header class="bg-white shadow-sm border-b">
+            <div class="container mx-auto px-4 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-alert" class="w-6 h-6 text-red-500"></i>
+                        <h1 class="text-2xl font-bold">신고 관리</h1>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm text-gray-600" th:text="${user.nickname}">관리자</span>
+                        <a href="/admin/dashboard" class="text-sm text-blue-500 hover:text-blue-700">대시보드로</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="container mx-auto px-4 py-6">
+            
+            <!-- 통계 카드 -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <!-- 전체 신고 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">전체 신고</p>
+                            <p class="text-2xl font-bold mt-1" th:text="${totalCount}">45</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-lg">
+                            <i data-lucide="flag" class="w-6 h-6 text-blue-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 대기중 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">대기중</p>
+                            <p class="text-2xl font-bold mt-1 text-red-500" th:text="${pendingCount}">5</p>
+                        </div>
+                        <div class="bg-red-100 p-3 rounded-lg">
+                            <i data-lucide="alert-circle" class="w-6 h-6 text-red-500"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 완료 -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">완료</p>
+                            <p class="text-2xl font-bold mt-1 text-green-500" th:text="${resolvedCount}">37</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-lg">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-green-500"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 필터 및 검색 -->
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <form th:action="@{/admin/report}" method="get" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        
+                        <!-- 상태 필터 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">상태</label>
+                            <select name="status"
+                                    th:value="${param.status}"
+                                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">전체</option>
+                                <option value="PENDING" th:selected="${param.status == 'PENDING'}">대기중</option>
+                                <option value="RESOLVED" th:selected="${param.status == 'RESOLVED'}">해결됨</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 타입 필터 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">대상 타입</label>
+                            <select name="targetType"
+                                    th:value="${param.targetType}"
+                                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="">전체</option>
+                                <option value="POST" th:selected="${param.targetType == 'POST'}">게시글</option>
+                                <option value="ANSWER" th:selected="${param.targetType == 'ANSWER'}">댓글</option>
+                                <option value="COMMENT" th:selected="${param.targetType == 'COMMENT'}">대댓글</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 정렬 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">정렬</label>
+                            <select name="sort"
+                                    th:value="${param.sort}"
+                                    class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                                <option value="CREATED_AT" th:selected="${param.sort == 'CREATED_AT'}">최신순</option>
+                                <option value="STATUS" th:selected="${param.sort == 'STATUS'}">상태별</option>
+                            </select>
+                        </div>
+                        
+                        <!-- 검색 -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">검색</label>
+                            <input type="text"
+                                   name="keyword"
+                                   th:value="${param.keyword}"
+                                   placeholder="신고자/피신고자 검색"
+                                   class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <!-- 버튼 -->
+                    <div class="flex gap-2">
+                        <button type="submit"
+                                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2">
+                            <i data-lucide="search" class="w-4 h-4"></i>
+                            검색
+                        </button>
+                        <a href="/admin/report"
+                           class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition flex items-center gap-2">
+                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                            초기화
+                        </a>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- 신고 목록 -->
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                
+                <!-- 테이블 헤더 -->
+                <div class="bg-gray-50 px-6 py-3 border-b">
+                    <div class="flex items-center justify-between">
+                        <h2 class="font-semibold text-gray-700">
+                            신고 목록
+                            <span class="text-sm font-normal text-gray-500">
+                        (총 <span th:text="${page.totalPage}">45</span>건)
+                    </span>
+                        </h2>
+                        <div class="text-sm text-gray-500">
+                            <span th:text="${page.currentPage}">1</span> /
+                            <span th:text="${page.totalPage}">3</span> 페이지
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 테이블 -->
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50 border-b">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">타입</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">신고 사유</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">신고자</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">신고일시</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            <tr th:each="report : ${reports}"
+                                class="hover:bg-gray-50 transition"
+                                th:classappend="${report.status == 'PENDING'} ? 'bg-red-50'">
+                                
+                                <!-- ID -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-sm font-mono text-gray-900"
+                                          th:text="'#' + ${report.id}">#123</span>
+                                </td>
+                                
+                                <!-- 상태 -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                <span th:if="${report.status == 'PENDING'}"
+                                      class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                    🔴 대기중
+                                </span>
+                                    <span th:if="${report.status == 'RESOLVED'}"
+                                          class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                        ✅ 해결됨
+                                </span>
+                                </td>
+                                
+                                <!-- 타입 -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center gap-2">
+                                        <i th:if="${report.targetType == 'POST'}"
+                                           data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
+                                        <i th:if="${report.targetType == 'COMMENT'}"
+                                           data-lucide="message-circle" class="w-4 h-4 text-gray-500"></i>
+                                        <i th:if="${report.targetType == 'USER'}"
+                                           data-lucide="user" class="w-4 h-4 text-gray-500"></i>
+                                        <span class="text-sm text-gray-900" th:text="${report.targetType}">게시글</span>
+                                    </div>
+                                </td>
+                                
+                                <!-- 신고 사유 -->
+                                <td class="px-6 py-4">
+                                    <div class="text-sm">
+                                        <div class="font-medium text-gray-900"
+                                             th:text="${report.reason}">스팸/광고
+                                        </div>
+                                        <div class="text-gray-500 text-xs mt-1 truncate max-w-xs"
+                                             th:if="${report.reason != null}"
+                                             th:text="${report.detailReason}">
+                                            추가 설명...
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <!-- 신고자 -->
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm">
+                                        <div class="font-medium text-gray-900" th:text="${report.reporterNickname}">홍길동
+                                        </div>
+                                        <div class="text-gray-500 text-xs" th:text="'ID: ' + ${report.reporterId}">ID:
+                                                                                                                   123
+                                        </div>
+                                    </div>
+                                </td>
+                                
+                                <!-- 신고일시 -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <div th:text="${#temporals.format(report.createdAt, 'yyyy-MM-dd')}">2024-01-01</div>
+                                    <div class="text-xs" th:text="${#temporals.format(report.createdAt, 'HH:mm')}">
+                                        12:34
+                                    </div>
+                                </td>
+                                
+                                <!-- 작업 -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    <div class="flex items-center gap-2">
+                                        <button
+                                                th:onclick="|viewReportDetail(${report.id})|"
+                                                class="text-blue-500 hover:text-blue-700 transition"
+                                                title="상세보기">
+                                            <i data-lucide="eye" class="w-4 h-4"></i>
+                                        </button>
+                                        <a th:href="@{/admin/report/{id}(id=${report.id})}"
+                                           class="text-green-500 hover:text-green-700 transition"
+                                           title="처리하기">
+                                            <i data-lucide="edit" class="w-4 h-4"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <!-- 데이터 없을 때 -->
+                            <tr th:if="${#lists.isEmpty(reports)}">
+                                <td colspan="7" class="px-6 py-12 text-center">
+                                    <div class="flex flex-col items-center justify-center text-gray-400">
+                                        <i data-lucide="inbox" class="w-12 h-12 mb-2"></i>
+                                        <p class="text-sm">신고 내역이 없습니다</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- 페이지네이션 -->
+                <div class="bg-gray-50 px-6 py-4 border-t" th:if="${!#lists.isEmpty(reports)}">
+                    <div class="flex items-center justify-between">
+                        <div class="text-sm text-gray-600">
+                            <span th:text="${page.currentPage * page.size + 1}">1</span>-
+                            <span th:text="${page.currentPage * page.size + #lists.size(reports)}">20
+                            </span>/ 총
+                            <span th:text="${page.totalPage}">45</span>건
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <!-- 이전 페이지 -->
+                            <a th:if="${page.currentPage > 1}"
+                               th:href="@{/admin/report(page=${page.currentPage - 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sort=${param.sort})}"
+                               class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
+                                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                            </a>
+                            <span th:unless="${page.currentPage > 1}"
+                                  class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
+                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                    </span>
+                            
+                            <!-- 페이지 번호 -->
+                            <div class="flex gap-1">
+                                <a th:each="i : ${#numbers.sequence(0, page.totalPage - 1)}"
+                                   th:if="${i >= page.currentPage - 2 && i <= page.currentPage + 2}"
+                                   th:href="@{/admin/report(page=${i}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sort=${param.sort})}"
+                                   th:classappend="${i == page.currentPage} ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'"
+                                   class="px-4 py-2 border rounded-lg transition">
+                                    <span th:text="${i + 1}">1</span>
+                                </a>
+                            </div>
+                            
+                            <!-- 다음 페이지 -->
+                            <a th:if="${page.currentPage < page.totalPage}"
+                               th:href="@{/admin/report(page=${page.currentPage + 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sort=${param.sort})}"
+                               class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
+                                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </a>
+                            <span th:unless="${page.currentPage < page.totalPage}"
+                                  class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
+                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        </div>
+        
+        <!-- 상세보기 모달 -->
+        <div id="detailModal"
+             class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold">신고 상세</h3>
+                        <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                    <div id="detailContent">
+                        <!-- AJAX로 로드될 내용 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Lucide 아이콘 초기화
+            lucide.createIcons();
+
+            // 상세보기 모달
+            async function viewReportDetail(reportId)
+            {
+                try
+                {
+                    const response = await fetch(`/api/report/${reportId}`);
+                    document.getElementById('detailContent').textContent = await response.text();
+                    document.getElementById('detailModal').classList.remove('hidden');
+                    lucide.createIcons();
+                }
+                catch (error)
+                {
+                    console.error('Error:', error);
+                    alert('상세 정보를 불러오는데 실패했습니다.');
+                }
+            }
+
+            function closeDetailModal()
+            {
+                document.getElementById('detailModal').classList.add('hidden');
+            }
+
+            // ESC 키로 모달 닫기
+            document.addEventListener('keydown', function (e)
+            {
+                if (e.key === 'Escape')
+                {
+                    closeDetailModal();
+                }
+            });
+
+            // 모달 외부 클릭 시 닫기
+            document.getElementById('detailModal').addEventListener('click', function (e)
+            {
+                if (e.target === this)
+                {
+                    closeDetailModal();
+                }
+            });
+        </script>
+    
+    </body>
+</html>

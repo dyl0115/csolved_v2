@@ -449,7 +449,7 @@
         </div>
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
         <!-- 모달 HTML -->
-        <div th:replace="~{/fragments/report-modal :: reportModal}"></div>
+        <div th:replace="~{/fragments/report-modal :: reportModal(${user})}"></div>
         <div th:replace="~{/fragments/report-modal :: reportModalScript}"></div>
     </body>
     <script th:inline="javascript">

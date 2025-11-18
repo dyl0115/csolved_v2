@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class ReportCreateCommand
 {
+    private Long id;
     private Long reporterId;
     private String targetType;
     private Long targetId;
