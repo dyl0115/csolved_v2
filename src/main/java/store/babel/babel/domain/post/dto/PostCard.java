@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import store.babel.babel.domain.tag.Tag;
+import store.babel.babel.domain.tag.dto.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;

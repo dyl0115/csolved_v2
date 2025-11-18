@@ -3,7 +3,7 @@ package store.babel.babel.domain.tag.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.tag.Tag;
+import store.babel.babel.domain.tag.dto.Tag;
 import store.babel.babel.domain.tag.mapper.TagMapper;
 
 import java.util.HashSet;

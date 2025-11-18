@@ -8,7 +8,7 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import store.babel.babel.domain.tag.Tag;
+import store.babel.babel.domain.tag.dto.Tag;
 
 import java.util.List;
 

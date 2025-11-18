@@ -87,18 +87,24 @@
                                 
                                 <!-- 수정/삭제 버튼 -->
                                 <div class="flex items-center space-x-2">
-                                    <a class="inline-flex items-center space-x-1 px-3 py-1.5 text-sm border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition"
+                                    <a class="flex items-center space-x-1 text-blue-600 hover:text-blue-700 cursor-pointer transition-colors duration-150"
                                        th:if="${post.authorId == user.id}"
                                        th:href="@{/post/{id}/updateForm(id=${post.id})}">
                                         <i data-lucide="edit" class="w-4 h-4"></i>
-                                        <span>수정</span>
+                                        <span>수정하기</span>
                                     </a>
-                                    <button class="inline-flex items-center space-x-1 px-3 py-1.5 text-sm border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition"
-                                            onclick="deletePost()"
-                                            th:if="${post.authorId == user.id}">
+                                    <a class="flex items-center space-x-1 text-red-600 hover:text-red-700 cursor-pointer transition-colors duration-150"
+                                       onclick="deletePost()"
+                                       th:if="${post.authorId == user.id}">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        <span>삭제</span>
-                                    </button>
+                                        <span>삭제하기</span>
+                                    </a>
+                                    <a class="flex items-center space-x-1 text-orange-600 hover:text-orange-700 cursor-pointer transition-colors duration-150"
+                                       onclick=""
+                                       th:if="${post.authorId != user.id}">
+                                        <i data-lucide="siren" class="w-4 h-4"></i>
+                                        <span>신고하기</span>
+                                    </a>
                                 </div>
                             </div>
                             

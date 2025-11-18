@@ -1,7 +1,7 @@
 package store.babel.babel.domain.tag.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.babel.babel.domain.tag.Tag;
+import store.babel.babel.domain.tag.dto.Tag;
 
 import java.util.List;
 

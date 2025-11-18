@@ -19,7 +19,7 @@
         <result property="bookmarked" column="bookmarked"/>
         <result property="createdAt" column="created_at"/>
         <result property="modifiedAt" column="modified_at"/>
-        <collection property="tags" ofType="store.babel.babel.domain.tag.Tag">
+        <collection property="tags" ofType="store.babel.babel.domain.tag.dto.Tag">
             <id property="id" column="tag_id"/>
             <result property="name" column="tag_name"/>
         </collection>
@@ -38,7 +38,7 @@
         <result property="answerCount" column="answer_count"/>
         <result property="createdAt" column="created_at"/>
         <result property="modifiedAt" column="modified_at"/>
-        <collection property="tags" ofType="store.babel.babel.domain.tag.Tag">
+        <collection property="tags" ofType="store.babel.babel.domain.tag.dto.Tag">
             <id property="id" column="tag_id"/>
             <result property="name" column="tag_name"/>
         </collection>

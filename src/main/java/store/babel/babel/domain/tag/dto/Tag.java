@@ -1,4 +1,4 @@
-package store.babel.babel.domain.tag;
+package store.babel.babel.domain.tag.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
