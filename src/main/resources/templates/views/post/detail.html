@@ -65,7 +65,7 @@
                                                 
                                                 <!-- 신고하기 (작성자가 아닐 때) -->
                                                 <button th:if="${post.authorId != user.id}"
-                                                        onclick="reportPost()"
+                                                        th:onclick="|openReportModal('POST', ${post.id})|"
                                                         class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150">
                                                     <i data-lucide="alert-triangle" class="w-4 h-4"></i>
                                                     <span>신고하기</span>
@@ -448,6 +448,9 @@
             </div>
         </div>
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
+        <!-- 모달 HTML -->
+        <div th:replace="~{/fragments/report-modal :: reportModal}"></div>
+        <div th:replace="~{/fragments/report-modal :: reportModalScript}"></div>
     </body>
     <script th:inline="javascript">
 
@@ -752,38 +755,38 @@
             }, 10);
         }
 
-        async function reportPost()
-        {
-            const postId = document.getElementById('postId').textContent;
-
-            if (confirm('이 게시글을 신고하시겠습니까?'))
-            {
-                try
-                {
-                    const response = await fetch(`/api/post/${postId}/report`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-
-                    if (response.ok)
-                    {
-                        alert('신고가 접수되었습니다.');
-                        togglePostMenu(); // 메뉴 닫기
-                    } else
-                    {
-                        const errorData = await response.json();
-                        alert(errorData.message || '신고 처리 중 오류가 발생했습니다.');
-                    }
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                    alert('서버와의 통신 중 오류가 발생했습니다.');
-                }
-            }
-        }
+        // async function reportPost()
+        // {
+        //     const postId = document.getElementById('postId').textContent;
+        //
+        //     if (confirm('이 게시글을 신고하시겠습니까?'))
+        //     {
+        //         try
+        //         {
+        //             const response = await fetch(`/api/post/${postId}/report`, {
+        //                 method: 'POST',
+        //                 headers: {
+        //                     'Content-Type': 'application/json',
+        //                 },
+        //             });
+        //
+        //             if (response.ok)
+        //             {
+        //                 alert('신고가 접수되었습니다.');
+        //                 togglePostMenu(); // 메뉴 닫기
+        //             } else
+        //             {
+        //                 const errorData = await response.json();
+        //                 alert(errorData.message || '신고 처리 중 오류가 발생했습니다.');
+        //             }
+        //         }
+        //         catch (error)
+        //         {
+        //             console.error('Error:', error);
+        //             alert('서버와의 통신 중 오류가 발생했습니다.');
+        //         }
+        //     }
+        // }
     </script>
     <script src="/js/timeago.js"></script>
     <script src="/js/navigation.js"></script>
