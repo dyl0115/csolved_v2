@@ -25,6 +25,7 @@ public class ReportService
 
     public List<ReportCard> getReports(ReportSearchQuery query, Pagination pagination)
     {
+        System.out.println("query" + query.toString());
         return reportMapper.getReports(query, pagination);
     }
 

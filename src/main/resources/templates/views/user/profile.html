@@ -74,7 +74,7 @@
                 <div class="bg-white rounded-lg shadow-md p-8">
                     <form id="profileUpdateForm" th:action="@{/users/profile}" th:object="${updateProfileForm}"
                           method="POST" enctype="multipart/form-data">
-
+                        
                         <!-- 프로필 이미지 -->
                         <div class="profile-image-container mb-8">
                             <img th:if="*{currentProfileImage != null}"
@@ -96,10 +96,10 @@
                                 <i data-lucide="camera" class="w-6 h-6"></i>
                             </label>
                         </div>
-
+                        
                         <!-- 회원 아이디 -->
                         <input type="hidden" id="userId" th:value="${user.id}"/>
-
+                        
                         <!-- 닉네임 입력 -->
                         <div class="mb-6">
                             <label for="nickname" class="block text-sm font-semibold text-gray-700 mb-2">
@@ -115,7 +115,7 @@
                                 <span id="nicknameErrorMessage"></span>
                             </p>
                         </div>
-
+                        
                         <!-- 프로필 업데이트 확인 메시지 -->
                         <div id="successMessage"
                              class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3 hidden">
@@ -124,7 +124,7 @@
                                 <p class="text-green-800 font-medium" id="successMessageText">프로필이 성공적으로 업데이트되었습니다!</p>
                             </div>
                         </div>
-
+                        
                         <!-- 에러 메시지 -->
                         <div id="errorMessage"
                              class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3 hidden">
@@ -133,7 +133,7 @@
                                 <p class="text-red-800 font-medium" id="errorMessageText"></p>
                             </div>
                         </div>
-
+                        
                         <!-- 버튼 -->
                         <div class="flex space-x-3">
                             <button type="submit"
@@ -154,6 +154,7 @@
         
         <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
+        <script src="/js/navigation.js"></script>
         
         <script>
             // 전역 변수: 처리된 이미지 데이터 저장
@@ -335,11 +336,11 @@
                         processedImageFileName = null;
 
                         // 2초 후 페이지 새로고침 또는 리다이렉트
-                        setTimeout(() => {
+                        setTimeout(() =>
+                        {
                             window.location.reload();
                         }, 2000);
-                    }
-                    else
+                    } else
                     {
                         // 유효성 검증 오류 처리
                         if (result.errors)
@@ -348,8 +349,7 @@
                             {
                                 showFieldError('nickname', result.errors.nickname);
                             }
-                        }
-                        else
+                        } else
                         {
                             showError(result.message || '프로필 업데이트에 실패했습니다.');
                         }
@@ -359,8 +359,7 @@
                 {
                     console.error('프로필 업데이트 오류:', error);
                     showError('서버와 통신 중 오류가 발생했습니다.');
-                }
-                finally
+                } finally
                 {
                     // 버튼 활성화
                     submitButton.disabled = false;
