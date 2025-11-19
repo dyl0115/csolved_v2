@@ -20,11 +20,13 @@
                             target_type,
                             target_id,
                             reason,
+                            detail_reason,
                             status)
         VALUES (#{reporterId},
                 #{targetType},
                 #{targetId},
                 #{reason},
+                #{detailReason},
                 #{status});
     </insert>
 
@@ -47,7 +49,7 @@
         </if>
 
         <if test="keyword != null and keyword != ''">
-            AND reporter.username LIKE CONCAT('%', #{keyword}, '%')
+            AND reporter.nickname LIKE CONCAT('%', #{keyword}, '%')
         </if>
     </select>
 

@@ -307,8 +307,7 @@
     </select>
 
     <select id="getBookmarkedPosts" resultMap="postCardResultMap">
-        SELECT sub.id         id,
-               sub.post_id    post_id,
+        SELECT sub.post_id    id,
                p.post_type    post_type,
                p.title        title,
                p.anonymous    anonymous,

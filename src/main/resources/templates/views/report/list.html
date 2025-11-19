@@ -82,13 +82,10 @@
                             <div class="flex items-center justify-between">
                                 <h2 class="font-semibold text-gray-700">
                                     신고 목록
-                                    <span class="text-sm font-normal text-gray-500">
-                                        (총 <span th:text="${page.totalPage}">45</span>건)
-                                    </span>
                                 </h2>
                                 <div class="text-sm text-gray-500">
                                     <span th:text="${page.currentPage}">1</span> /
-                                    <span th:text="${page.totalPage}">3</span> 페이지
+                                    <span th:text="${page.totalPages}">3</span> 페이지
                                 </div>
                             </div>
                         </div>
@@ -145,12 +142,27 @@
                                             <div class="flex items-center gap-2">
                                                 <i th:if="${report.targetType == 'POST'}"
                                                    data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
+                                                <i th:if="${report.targetType == 'ANSWER'}"
+                                                   data-lucide="message-circle" class="w-4 h-4 text-gray-500"></i>
                                                 <i th:if="${report.targetType == 'COMMENT'}"
                                                    data-lucide="message-circle" class="w-4 h-4 text-gray-500"></i>
-                                                <i th:if="${report.targetType == 'USER'}"
-                                                   data-lucide="user" class="w-4 h-4 text-gray-500"></i>
-                                                <span class="text-sm text-gray-900"
-                                                      th:text="${report.targetType}">게시글</span>
+                                                <!--                                                <span-->
+                                                <!--                                                        th:text="${report.targetType}">게시글</span>-->
+                                                <a class="text-sm text-gray-900"
+                                                   href="#"
+                                                   th:if="${report.targetType == 'POST'}">
+                                                    POST
+                                                </a>
+                                                <a class="text-sm text-gray-900"
+                                                   href="#"
+                                                   th:if="${report.targetType == 'ANSWER'}">
+                                                    ANSWER
+                                                </a>
+                                                <a class="text-sm text-gray-900"
+                                                   href="#"
+                                                   th:if="${report.targetType == 'COMMENT'}">
+                                                    COMMENT
+                                                </a>
                                             </div>
                                         </td>
                                         
@@ -202,8 +214,13 @@
                                                 </button>
                                                 <a th:href="@{/admin/report/{id}(id=${report.id})}"
                                                    class="text-green-500 hover:text-green-700 transition"
-                                                   title="처리하기">
-                                                    <i data-lucide="edit" class="w-4 h-4"></i>
+                                                   title="일괄승인">
+                                                    <i data-lucide="circle-check" class="w-4 h-4"></i>
+                                                </a>
+                                                <a th:href="@{/admin/report/{id}(id=${report.id})}"
+                                                   class="text-red-500 hover:text-red-700 transition"
+                                                   title="일괄차단">
+                                                    <i data-lucide="ban" class="w-4 h-4"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -223,18 +240,21 @@
                         </div>
                         
                         <!-- 페이지네이션 -->
-                        <div class="bg-gray-50 px-6 py-4 border-t" th:if="${!#lists.isEmpty(reports)}">
-                            <div class="flex items-center justify-between">
-                                <div class="text-sm text-gray-600">
-                                    <span th:text="${page.currentPage * page.size + 1}">1</span>-
-                                    <span th:text="${page.currentPage * page.size + #lists.size(reports)}">20</span> / 총
-                                    <span th:text="${page.totalPage}">45</span>건
-                                </div>
-                                
+                        <div class="bg-gray-50 px-6 py-4 border-t"
+                             th:if="${!#lists.isEmpty(reports)}">
+                            <div class="flex items-center justify-center">
                                 <div class="flex gap-2">
                                     <!-- 이전 페이지 -->
                                     <a th:if="${page.currentPage > 1}"
-                                       th:href="@{/admin/report(page=${page.currentPage - 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sortType=${param.sortType}, startDateTime=${param.startDateTime}, endDateTime=${param.endDateTime})}"
+                                       th:href="@{/admin/report
+                                       (page=${page.currentPage - 1},
+                                       size=${page.size},
+                                       status=${param.status},
+                                       targetType=${param.targetType},
+                                       keyword=${param.keyword},
+                                       sortType=${param.sortType},
+                                       startDateTime=${param.startDateTime},
+                                       endDateTime=${param.endDateTime})}"
                                        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
                                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                                     </a>
@@ -245,22 +265,38 @@
                                     
                                     <!-- 페이지 번호 -->
                                     <div class="flex gap-1">
-                                        <a th:each="i : ${#numbers.sequence(0, page.totalPage - 1)}"
-                                           th:if="${i >= page.currentPage - 2 && i <= page.currentPage + 2}"
-                                           th:href="@{/admin/report(page=${i}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sortType=${param.sortType}, startDateTime=${param.startDateTime}, endDateTime=${param.endDateTime})}"
+                                        <a th:each="i : ${#numbers.sequence(1, page.totalPages)}"
+                                           th:if="${i >= page.currentPage - 1 && i <= page.currentPage + 1}"
+                                           th:href="@{/admin/report
+                                           (page=${i},
+                                           size=${page.size},
+                                           status=${param.status},
+                                           targetType=${param.targetType},
+                                           keyword=${param.keyword},
+                                           sortType=${param.sortType},
+                                           startDateTime=${param.startDateTime},
+                                           endDateTime=${param.endDateTime})}"
                                            th:classappend="${i == page.currentPage} ? 'bg-gray-800 text-white' : 'hover:bg-gray-100'"
                                            class="px-4 py-2 border rounded-lg transition">
-                                            <span th:text="${i + 1}">1</span>
+                                            <span th:text="${i}">1</span>
                                         </a>
                                     </div>
                                     
                                     <!-- 다음 페이지 -->
-                                    <a th:if="${page.currentPage < page.totalPage}"
-                                       th:href="@{/admin/report(page=${page.currentPage + 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sortType=${param.sortType}, startDateTime=${param.startDateTime}, endDateTime=${param.endDateTime})}"
+                                    <a th:if="${page.currentPage < page.totalPages}"
+                                       th:href="@{/admin/report
+                                       (page=${page.currentPage + 1},
+                                       size=${page.size},
+                                       status=${param.status},
+                                       targetType=${param.targetType},
+                                       keyword=${param.keyword},
+                                       sortType=${param.sortType},
+                                       startDateTime=${param.startDateTime},
+                                       endDateTime=${param.endDateTime})}"
                                        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
-                                    <span th:unless="${page.currentPage < page.totalPage}"
+                                    <span th:unless="${page.currentPage < page.totalPages}"
                                           class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </span>
@@ -288,7 +324,7 @@
                                                name="keyword"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
                                                type="text"
-                                               placeholder="신고자/피신고자 검색"
+                                               placeholder="신고자 검색"
                                                th:value="${param.keyword}"/>
                                     </div>
                                     
@@ -313,11 +349,16 @@
                                                 name="targetType"
                                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
                                             <option value="">전체</option>
-                                            <option value="POST" th:selected="${param.targetType == 'POST'}">게시글
+                                            <option value="POST"
+                                                    th:selected="${param.targetType == 'POST'}">게시글
                                             </option>
-                                            <option value="ANSWER" th:selected="${param.targetType == 'ANSWER'}">댓글
+                                            <option value="ANSWER"
+                                                    disabled
+                                                    th:selected="${param.targetType == 'ANSWER'}">댓글
                                             </option>
-                                            <option value="COMMENT" th:selected="${param.targetType == 'COMMENT'}">대댓글
+                                            <option value="COMMENT"
+                                                    disabled
+                                                    th:selected="${param.targetType == 'COMMENT'}">대댓글
                                             </option>
                                         </select>
                                     </div>
@@ -418,7 +459,7 @@
                     sortType: document.getElementById('sortType').value || null,
                     startDateTime: document.getElementById('startDateTime').value || null,
                     endDateTime: document.getElementById('endDateTime').value || null,
-                    page: 0,
+                    page: 1,
                     size: 20
                 };
 
@@ -456,7 +497,7 @@
         // 검색 조건 초기화
         function resetSearch()
         {
-            window.location.href = '/admin/report';
+            window.location.href = `/admin/report?page=1&size=20`;
         }
 
         // 상세보기 모달

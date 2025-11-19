@@ -33,7 +33,7 @@ public class ReportController
                              Model model)
     {
         System.out.println("ReportSearchRequest " + request.toString());
-        Pagination pagination = Pagination.from(request.getPage(), reportService.countReports(ReportCountQuery.from(request)));
+        Pagination pagination = Pagination.from(request.getPage(), reportService.countReports(ReportCountQuery.from(request)), request.getSize());
         System.out.println("Pagination " + pagination);
         List<ReportCard> reports = reportService.getReports(ReportSearchQuery.from(request, pagination));
 

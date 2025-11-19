@@ -22,7 +22,7 @@ public class ReportSearchRequest
 
     @Min(0)
     @Max(100)
-    private int size;
+    private Long size;
 
     private ReportSortType sortType;
 

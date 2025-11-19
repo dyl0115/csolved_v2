@@ -1,40 +1,50 @@
 package store.babel.babel.global.utils.page;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 
-import static lombok.AccessLevel.PRIVATE;
-
-@AllArgsConstructor(access = PRIVATE)
-@Data
+@Getter
+@Builder
 @ToString
 public class Pagination
 {
-    private final static Long POSTS_PER_PAGE = 7L;
+    private static final Long DEFAULT_RECORDS_PER_PAGE = 7L;
 
+    private final Long recordsPerPage;
     private final Long currentPage;
-    private final Long totalPage;
+    private final Long totalPages;
     private final Long offset;
     private final Long size;
 
     public static Pagination from(Long requestPage,
-                                  Long totalRecordsCount)
+                                  Long totalRecords)
     {
-        Long totalPage = createTotalPage(totalRecordsCount);
-        Long currentPage = createCurrentPage(requestPage, totalPage);
-        Long offset = createOffset(currentPage);
-
-        return new Pagination(
-                currentPage,
-                totalPage,
-                offset,
-                POSTS_PER_PAGE);
+        return from(requestPage, totalRecords, DEFAULT_RECORDS_PER_PAGE);
     }
 
-    private static Long createTotalPage(Long totalRecordsCount)
+    public static Pagination from(Long requestPage,
+                                  Long totalRecords,
+                                  Long recordsPerPage)
     {
-        return Math.max((totalRecordsCount + POSTS_PER_PAGE - 1) / POSTS_PER_PAGE, 1);
+        Long totalPages = createTotalPages(totalRecords, recordsPerPage);
+        Long currentPage = createCurrentPage(requestPage, totalPages);
+        Long offset = createOffset(currentPage, recordsPerPage);
+
+        return Pagination.builder()
+                .recordsPerPage(recordsPerPage)
+                .currentPage(currentPage)
+                .totalPages(totalPages)
+                .offset(offset)
+                .size(recordsPerPage)
+                .build();
+    }
+
+    private static Long createTotalPages(Long totalRecords,
+                                         Long recordsPerPage)
+    {
+        return Math.max((totalRecords + recordsPerPage - 1) / recordsPerPage, 1);
     }
 
     private static Long createCurrentPage(Long requestPage,
@@ -43,8 +53,9 @@ public class Pagination
         return Math.min(requestPage, totalPage);
     }
 
-    private static Long createOffset(Long currentPage)
+    private static Long createOffset(Long currentPage,
+                                     Long recordsPerPage)
     {
-        return (currentPage - 1) * POSTS_PER_PAGE;
+        return (currentPage - 1) * recordsPerPage;
     }
 }

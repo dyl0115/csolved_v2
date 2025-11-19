@@ -8,7 +8,6 @@ import store.babel.babel.domain.report.dto.ReportCountQuery;
 import store.babel.babel.domain.report.dto.ReportCreateCommand;
 import store.babel.babel.domain.report.dto.ReportSearchQuery;
 import store.babel.babel.domain.report.mapper.ReportMapper;
-import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
 
@@ -21,6 +20,7 @@ public class ReportService
     @Transactional
     public void createReport(ReportCreateCommand command)
     {
+        System.out.println("ReportService command " + command.toString());
         reportMapper.createReport(command);
     }
 

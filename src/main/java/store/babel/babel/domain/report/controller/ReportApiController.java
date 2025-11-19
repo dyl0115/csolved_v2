@@ -20,6 +20,7 @@ public class ReportApiController
     @PostMapping
     public void createReport(@Valid @RequestBody ReportCreateRequest request)
     {
+        System.out.println("ReportApiController request " + request.toString());
         reportService.createReport(ReportCreateCommand.from(request));
     }
 

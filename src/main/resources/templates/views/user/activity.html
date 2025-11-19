@@ -177,20 +177,20 @@
                             <input type="number"
                                    th:value="${bookmarkPagination.currentPage}"
                                    th:min="1"
-                                   th:max="${bookmarkPagination.totalPage}"
+                                   th:max="${bookmarkPagination.totalPages}"
                                    onchange="updateBookmarkList(this.value)"
                                    class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${bookmarkPagination.totalPage}">/ 10</span>
+                            <span class="text-gray-500" th:text="'/ ' + ${bookmarkPagination.totalPages}">/ 10</span>
                         </div>
                         
                         <!-- 다음 페이지 -->
-                        <button th:if="${bookmarkPagination.currentPage < bookmarkPagination.totalPage}"
+                        <button th:if="${bookmarkPagination.currentPage < bookmarkPagination.totalPages}"
                                 th:onclick="|updateBookmarkList(${bookmarkPagination.currentPage + 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <span>다음</span>
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
-                        <button th:unless="${bookmarkPagination.currentPage < bookmarkPagination.totalPage}"
+                        <button th:unless="${bookmarkPagination.currentPage < bookmarkPagination.totalPages}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <span>다음</span>
@@ -299,20 +299,20 @@
                             <input type="number"
                                    th:value="${myPostPagination.currentPage}"
                                    th:min="1"
-                                   th:max="${myPostPagination.totalPage}"
+                                   th:max="${myPostPagination.totalPages}"
                                    onchange="updateUserPostList(this.value)"
                                    class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${myPostPagination.totalPage}">/ 10</span>
+                            <span class="text-gray-500" th:text="'/ ' + ${myPostPagination.totalPages}">/ 10</span>
                         </div>
                         
                         <!-- 다음 페이지 -->
-                        <button th:if="${myPostPagination.currentPage < myPostPagination.totalPage}"
+                        <button th:if="${myPostPagination.currentPage < myPostPagination.totalPages}"
                                 th:onclick="|updateUserPostList(${myPostPagination.currentPage + 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <span>다음</span>
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
-                        <button th:unless="${myPostPagination.currentPage < myPostPagination.totalPage}"
+                        <button th:unless="${myPostPagination.currentPage < myPostPagination.totalPages}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <span>다음</span>
@@ -421,20 +421,20 @@
                             <input type="number"
                                    th:value="${repliedPagination.currentPage}"
                                    th:min="1"
-                                   th:max="${repliedPagination.totalPage}"
+                                   th:max="${repliedPagination.totalPages}"
                                    onchange="updateRepliedPostList(this.value)"
                                    class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${repliedPagination.totalPage}">/ 10</span>
+                            <span class="text-gray-500" th:text="'/ ' + ${repliedPagination.totalPages}">/ 10</span>
                         </div>
                         
                         <!-- 다음 페이지 -->
-                        <button th:if="${repliedPagination.currentPage < repliedPagination.totalPage}"
+                        <button th:if="${repliedPagination.currentPage < repliedPagination.totalPages}"
                                 th:onclick="|updateRepliedPostList(${repliedPagination.currentPage + 1})|"
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                             <span>다음</span>
                             <i data-lucide="chevron-right" class="w-4 h-4"></i>
                         </button>
-                        <button th:unless="${repliedPagination.currentPage < repliedPagination.totalPage}"
+                        <button th:unless="${repliedPagination.currentPage < repliedPagination.totalPages}"
                                 disabled
                                 class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
                             <span>다음</span>
