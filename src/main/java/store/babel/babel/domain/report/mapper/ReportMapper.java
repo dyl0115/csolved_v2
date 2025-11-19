@@ -3,6 +3,7 @@ package store.babel.babel.domain.report.mapper;
 import org.apache.ibatis.annotations.Mapper;
 import store.babel.babel.domain.post.dto.PostCard;
 import store.babel.babel.domain.report.dto.ReportCard;
+import store.babel.babel.domain.report.dto.ReportCountQuery;
 import store.babel.babel.domain.report.dto.ReportCreateCommand;
 import store.babel.babel.domain.report.dto.ReportSearchQuery;
 import store.babel.babel.global.utils.page.Pagination;
@@ -14,9 +15,9 @@ public interface ReportMapper
 {
     void createReport(ReportCreateCommand command);
 
-    List<ReportCard> getReports(ReportSearchQuery query, Pagination pagination);
+    List<ReportCard> getReports(ReportSearchQuery query);
 
-    Long countReports(ReportSearchQuery query);
+    Long countReports(ReportCountQuery query);
 
     Long countAll();
 

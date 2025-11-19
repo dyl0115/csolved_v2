@@ -42,8 +42,8 @@
             AND r.target_type = #{targetType}
         </if>
 
-        <if test="startDate != null and endDate != null">
-            AND r.created_at BETWEEN #{startDate} AND #{endDate}
+        <if test="startDateTime != null and endDateTime != null">
+            AND r.created_at BETWEEN #{startDateTime} AND #{endDateTime}
         </if>
 
         <if test="keyword != null and keyword != ''">
@@ -66,28 +66,27 @@
         LEFT JOIN users reporter ON r.reporter_id = reporter.id
         WHERE r.deleted_at IS NULL
 
-        <if test="query.status != null">
-            AND r.status = #{query.status}
+        <if test="status != null">
+            AND r.status = #{status}
         </if>
 
-        <if test="query.targetType != null">
-            AND r.target_type = #{query.targetType}
+        <if test="targetType != null">
+            AND r.target_type = #{targetType}
         </if>
 
-        <if test="query.startDate != null and query.endDate != null">
-            AND r.created_at BETWEEN #{query.startDate} AND #{query.endDate}
+        <if test="startDateTime != null and endDateTime != null">
+            AND r.created_at BETWEEN #{startDateTime} AND #{endDateTime}
         </if>
 
-        <if test="query.keyword != null and query.keyword != ''">
-            AND reporter.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+        <if test="keyword != null and keyword != ''">
+            AND reporter.nickname LIKE CONCAT('%', #{keyword}, '%')
         </if>
-
         ORDER BY
         <choose>
-            <when test="query.sortType == 'CREATED_AT'">
+            <when test="sortType == 'CREATED_AT'">
                 r.created_at DESC
             </when>
-            <when test="query.sortType == 'STATUS'">
+            <when test="sortType == 'STATUS'">
                 CASE
                 WHEN r.status = 'PENDING' THEN 0
                 WHEN r.status = 'REVIEWING' THEN 1
@@ -99,7 +98,7 @@
                 r.created_at DESC
             </otherwise>
         </choose>
-        LIMIT #{pagination.size} OFFSET #{pagination.offset}
+        LIMIT #{size} OFFSET #{offset}
     </select>
 
     <select id="getDetailReason">

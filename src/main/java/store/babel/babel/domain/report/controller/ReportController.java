@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.report.dto.ReportCard;
+import store.babel.babel.domain.report.dto.ReportCountQuery;
 import store.babel.babel.domain.report.dto.ReportSearchQuery;
 import store.babel.babel.domain.report.dto.ReportSearchRequest;
 import store.babel.babel.domain.report.service.ReportService;
@@ -31,8 +32,10 @@ public class ReportController
                              @Valid @ModelAttribute ReportSearchRequest request,
                              Model model)
     {
-        Pagination pagination = Pagination.from(request.getPage(), reportService.countReports(ReportSearchQuery.from(request)));
-        List<ReportCard> reports = reportService.getReports(ReportSearchQuery.from(request), pagination);
+        System.out.println("ReportSearchRequest " + request.toString());
+        Pagination pagination = Pagination.from(request.getPage(), reportService.countReports(ReportCountQuery.from(request)));
+        System.out.println("Pagination " + pagination);
+        List<ReportCard> reports = reportService.getReports(ReportSearchQuery.from(request, pagination));
 
         model.addAttribute("reports", reports);
         model.addAttribute("page", pagination);

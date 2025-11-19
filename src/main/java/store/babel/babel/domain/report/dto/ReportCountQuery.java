@@ -2,33 +2,24 @@ package store.babel.babel.domain.report.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.ToString;
-import store.babel.babel.global.utils.page.Pagination;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
-@ToString
-public class ReportSearchQuery
+public class ReportCountQuery
 {
     private String status;
     private String targetType;
-    private Long offset;
-    private Long size;
-    private String sortType;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private String keyword;
 
-    public static ReportSearchQuery from(ReportSearchRequest request, Pagination pagination)
+    public static ReportCountQuery from(ReportSearchRequest request)
     {
-        return ReportSearchQuery.builder()
+        return ReportCountQuery.builder()
                 .status(extractName(request.getStatus()))
                 .targetType(extractName(request.getTargetType()))
-                .offset(pagination.getOffset())
-                .size(pagination.getSize())
-                .sortType(extractName(request.getSortType()))
                 .startDateTime(request.getStartDateTime())
                 .endDateTime(request.getEndDateTime())
                 .keyword(request.getKeyword())

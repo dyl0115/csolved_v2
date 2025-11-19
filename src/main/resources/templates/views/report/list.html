@@ -234,7 +234,7 @@
                                 <div class="flex gap-2">
                                     <!-- 이전 페이지 -->
                                     <a th:if="${page.currentPage > 1}"
-                                       th:href="@{/admin/report(page=${page.currentPage - 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sort=${param.sort})}"
+                                       th:href="@{/admin/report(page=${page.currentPage - 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sortType=${param.sortType}, startDateTime=${param.startDateTime}, endDateTime=${param.endDateTime})}"
                                        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
                                         <i data-lucide="chevron-left" class="w-4 h-4"></i>
                                     </a>
@@ -247,7 +247,7 @@
                                     <div class="flex gap-1">
                                         <a th:each="i : ${#numbers.sequence(0, page.totalPage - 1)}"
                                            th:if="${i >= page.currentPage - 2 && i <= page.currentPage + 2}"
-                                           th:href="@{/admin/report(page=${i}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sort=${param.sort})}"
+                                           th:href="@{/admin/report(page=${i}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sortType=${param.sortType}, startDateTime=${param.startDateTime}, endDateTime=${param.endDateTime})}"
                                            th:classappend="${i == page.currentPage} ? 'bg-gray-800 text-white' : 'hover:bg-gray-100'"
                                            class="px-4 py-2 border rounded-lg transition">
                                             <span th:text="${i + 1}">1</span>
@@ -256,7 +256,7 @@
                                     
                                     <!-- 다음 페이지 -->
                                     <a th:if="${page.currentPage < page.totalPage}"
-                                       th:href="@{/admin/report(page=${page.currentPage + 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sort=${param.sort})}"
+                                       th:href="@{/admin/report(page=${page.currentPage + 1}, size=${page.size}, status=${param.status}, targetType=${param.targetType}, keyword=${param.keyword}, sortType=${param.sortType}, startDateTime=${param.startDateTime}, endDateTime=${param.endDateTime})}"
                                        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                     </a>
@@ -272,99 +272,107 @@
                 
                 <!-- 사이드바 -->
                 <div class="lg:col-span-1 space-y-4">
-                    <!-- 검색 위젯 -->
+                    <!-- 통합 검색 폼 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
                             <i data-lucide="search" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">검색</h3>
+                            <h3 class="font-semibold">검색 및 필터</h3>
                         </div>
                         <div class="p-4">
-                            <form method="GET" th:action="@{/admin/report}">
-                                <input type="hidden" name="page" value="1"/>
-                                
-                                <div class="space-y-3">
-                                    <!-- 검색창 -->
-                                    <input name="keyword"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                           type="text"
-                                           placeholder="신고자/피신고자 검색"
-                                           th:value="${param.keyword}"/>
-                                    <button class="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition flex items-center justify-center space-x-2"
-                                            type="submit">
+                            <form id="searchForm">
+                                <div class="space-y-4">
+                                    <!-- 검색어 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">검색어</label>
+                                        <input id="keyword"
+                                               name="keyword"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                               type="text"
+                                               placeholder="신고자/피신고자 검색"
+                                               th:value="${param.keyword}"/>
+                                    </div>
+                                    
+                                    <!-- 상태 필터 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">상태</label>
+                                        <select id="status"
+                                                name="status"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
+                                            <option value="">전체</option>
+                                            <option value="PENDING" th:selected="${param.status == 'PENDING'}">대기중
+                                            </option>
+                                            <option value="RESOLVED" th:selected="${param.status == 'RESOLVED'}">해결됨
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- 대상 타입 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">대상 타입</label>
+                                        <select id="targetType"
+                                                name="targetType"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
+                                            <option value="">전체</option>
+                                            <option value="POST" th:selected="${param.targetType == 'POST'}">게시글
+                                            </option>
+                                            <option value="ANSWER" th:selected="${param.targetType == 'ANSWER'}">댓글
+                                            </option>
+                                            <option value="COMMENT" th:selected="${param.targetType == 'COMMENT'}">대댓글
+                                            </option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- 정렬 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">정렬</label>
+                                        <select id="sortType"
+                                                name="sortType"
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
+                                            <option value="CREATED_AT" th:selected="${param.sort == 'CREATED_AT'}">최신순
+                                            </option>
+                                            <option value="STATUS" th:selected="${param.sort == 'STATUS'}">상태별</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- 시작 날짜/시간 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">시작 날짜/시간</label>
+                                        <input id="startDateTime"
+                                               name="startDateTime"
+                                               type="datetime-local"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                               th:value="${param.startDateTime}"/>
+                                    </div>
+                                    
+                                    <!-- 종료 날짜/시간 -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">종료 날짜/시간</label>
+                                        <input id="endDateTime"
+                                               name="endDateTime"
+                                               type="datetime-local"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                               th:value="${param.endDateTime}"/>
+                                    </div>
+                                    
+                                    <!-- 검색 버튼 -->
+                                    <button type="button"
+                                            onclick="performSearch()"
+                                            class="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition flex items-center justify-center space-x-2">
                                         <i data-lucide="search" class="w-5 h-5"></i>
                                         <span>검색</span>
+                                    </button>
+                                    
+                                    <!-- 초기화 버튼 -->
+                                    <button type="button"
+                                            onclick="resetSearch()"
+                                            class="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-center space-x-2">
+                                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                                        <span>필터 초기화</span>
                                     </button>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    
-                    <!-- 상태 필터 위젯 -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="filter" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">상태 필터</h3>
-                        </div>
-                        <div class="p-4">
-                            <form method="GET" th:action="@{/admin/report}">
-                                <input type="hidden" name="page" value="1"/>
-                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                        name="status"
-                                        onchange="this.form.submit()">
-                                    <option value="">전체</option>
-                                    <option value="PENDING" th:selected="${param.status == 'PENDING'}">대기중</option>
-                                    <option value="RESOLVED" th:selected="${param.status == 'RESOLVED'}">해결됨</option>
-                                </select>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- 타입 필터 위젯 -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="layers" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">대상 타입</h3>
-                        </div>
-                        <div class="p-4">
-                            <form method="GET" th:action="@{/admin/report}">
-                                <input type="hidden" name="page" value="1"/>
-                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                        name="targetType"
-                                        onchange="this.form.submit()">
-                                    <option value="">전체</option>
-                                    <option value="POST" th:selected="${param.targetType == 'POST'}">게시글</option>
-                                    <option value="ANSWER" th:selected="${param.targetType == 'ANSWER'}">댓글</option>
-                                    <option value="COMMENT" th:selected="${param.targetType == 'COMMENT'}">대댓글</option>
-                                </select>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- 정렬 위젯 -->
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="arrow-up-down" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">정렬</h3>
-                        </div>
-                        <div class="p-4">
-                            <form method="GET" th:action="@{/admin/report}">
-                                <input type="hidden" name="page" value="1"/>
-                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                        name="sort"
-                                        onchange="this.form.submit()">
-                                    <option value="CREATED_AT" th:selected="${param.sort == 'CREATED_AT'}">최신순</option>
-                                    <option value="STATUS" th:selected="${param.sort == 'STATUS'}">상태별</option>
-                                </select>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- 초기화 버튼 -->
-                    <a href="/admin/report"
-                       class="block w-full px-4 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-center font-medium shadow-sm">
-                        <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>
-                        필터 초기화
-                    </a>
                 </div>
             </div>
         </div>
@@ -397,6 +405,59 @@
             initNavigation();
             lucide.createIcons();
         });
+
+        // 통합 검색 기능
+        async function performSearch()
+        {
+            try
+            {
+                const formData = {
+                    keyword: document.getElementById('keyword').value.trim() || null,
+                    status: document.getElementById('status').value || null,
+                    targetType: document.getElementById('targetType').value || null,
+                    sortType: document.getElementById('sortType').value || null,
+                    startDateTime: document.getElementById('startDateTime').value || null,
+                    endDateTime: document.getElementById('endDateTime').value || null,
+                    page: 0,
+                    size: 20
+                };
+
+                // 빈 값 제거
+                Object.keys(formData).forEach(key =>
+                {
+                    if (formData[key] === null || formData[key] === '')
+                    {
+                        delete formData[key];
+                    }
+                });
+
+                console.log('검색 조건:', formData);
+
+                // URL 파라미터로 변환하여 GET 요청
+                const params = new URLSearchParams();
+                Object.keys(formData).forEach(key =>
+                {
+                    if (formData[key] !== undefined)
+                    {
+                        params.append(key, formData[key]);
+                    }
+                });
+
+                // 페이지 이동
+                window.location.href = `/admin/report?${params.toString()}`;
+            }
+            catch (error)
+            {
+                console.error('검색 실패:', error);
+                alert('검색 중 오류가 발생했습니다.');
+            }
+        }
+
+        // 검색 조건 초기화
+        function resetSearch()
+        {
+            window.location.href = '/admin/report';
+        }
 
         // 상세보기 모달
         async function viewReportDetail(reportId)
@@ -435,6 +496,16 @@
             if (e.target === this)
             {
                 closeDetailModal();
+            }
+        });
+
+        // 엔터키로 검색 실행
+        document.getElementById('searchForm').addEventListener('keypress', function (e)
+        {
+            if (e.key === 'Enter')
+            {
+                e.preventDefault();
+                performSearch();
             }
         });
     </script>

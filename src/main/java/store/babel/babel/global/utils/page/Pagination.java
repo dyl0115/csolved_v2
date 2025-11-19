@@ -2,11 +2,13 @@ package store.babel.babel.global.utils.page;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @AllArgsConstructor(access = PRIVATE)
 @Data
+@ToString
 public class Pagination
 {
     private final static Long POSTS_PER_PAGE = 7L;

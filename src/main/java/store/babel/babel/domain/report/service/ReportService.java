@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.babel.babel.domain.report.dto.ReportCard;
+import store.babel.babel.domain.report.dto.ReportCountQuery;
 import store.babel.babel.domain.report.dto.ReportCreateCommand;
 import store.babel.babel.domain.report.dto.ReportSearchQuery;
 import store.babel.babel.domain.report.mapper.ReportMapper;
@@ -23,10 +24,9 @@ public class ReportService
         reportMapper.createReport(command);
     }
 
-    public List<ReportCard> getReports(ReportSearchQuery query, Pagination pagination)
+    public List<ReportCard> getReports(ReportSearchQuery query)
     {
-        System.out.println("query" + query.toString());
-        return reportMapper.getReports(query, pagination);
+        return reportMapper.getReports(query);
     }
 
     public Long countAll()
@@ -49,7 +49,7 @@ public class ReportService
         return reportMapper.countResolved();
     }
 
-    public Long countReports(ReportSearchQuery query)
+    public Long countReports(ReportCountQuery query)
     {
         return reportMapper.countReports(query);
     }
