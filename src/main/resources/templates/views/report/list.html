@@ -11,17 +11,21 @@
     </head>
     
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
-        
         <!-- 게시판 배너 -->
         <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
             <div class="container mx-auto">
                 <div class="flex items-center space-x-3">
-                    <i data-lucide="shield-alert" class="w-8 h-8"></i>
-                    <h1 class="text-3xl font-bold">신고 관리</h1>
+                    <i data-lucide="shield-alert"
+                       class="w-8 h-8">
+                    </i>
+                    <h1 class="text-3xl font-bold">
+                        신고 관리
+                    </h1>
                 </div>
-                <p class="mt-2 text-gray-300">신고된 게시글과 댓글을 관리하세요</p>
+                <p class="mt-2 text-gray-300">
+                    신고된 게시글과 댓글을 관리하세요
+                </p>
             </div>
         </div>
         
@@ -33,11 +37,18 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">전체 신고</p>
-                            <p class="text-2xl font-bold mt-1" th:text="${totalCount}">45</p>
+                            <p class="text-sm text-gray-600">
+                                전체 신고
+                            </p>
+                            <p class="text-2xl font-bold mt-1"
+                               th:text="${totalCount}">
+                                45
+                            </p>
                         </div>
                         <div class="bg-blue-100 p-3 rounded-lg">
-                            <i data-lucide="flag" class="w-6 h-6 text-blue-500"></i>
+                            <i data-lucide="flag"
+                               class="w-6 h-6 text-blue-500">
+                            </i>
                         </div>
                     </div>
                 </div>
@@ -46,11 +57,18 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">대기중</p>
-                            <p class="text-2xl font-bold mt-1 text-red-500" th:text="${pendingCount}">5</p>
+                            <p class="text-sm text-gray-600">
+                                대기중
+                            </p>
+                            <p class="text-2xl font-bold mt-1 text-red-500"
+                               th:text="${pendingCount}">
+                                5
+                            </p>
                         </div>
                         <div class="bg-red-100 p-3 rounded-lg">
-                            <i data-lucide="alert-circle" class="w-6 h-6 text-red-500"></i>
+                            <i data-lucide="alert-circle"
+                               class="w-6 h-6 text-red-500">
+                            </i>
                         </div>
                     </div>
                 </div>
@@ -59,11 +77,18 @@
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm text-gray-600">완료</p>
-                            <p class="text-2xl font-bold mt-1 text-green-500" th:text="${resolvedCount}">37</p>
+                            <p class="text-sm text-gray-600">
+                                처리됨
+                            </p>
+                            <p class="text-2xl font-bold mt-1 text-green-500"
+                               th:text="${resolvedCount}">
+                                37
+                            </p>
                         </div>
                         <div class="bg-green-100 p-3 rounded-lg">
-                            <i data-lucide="check-circle" class="w-6 h-6 text-green-500"></i>
+                            <i data-lucide="check-circle"
+                               class="w-6 h-6 text-green-500">
+                            </i>
                         </div>
                     </div>
                 </div>
@@ -73,10 +98,8 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- 메인 콘텐츠 -->
                 <div class="lg:col-span-3">
-                    
                     <!-- 신고 목록 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        
                         <!-- 테이블 헤더 -->
                         <div class="bg-gray-50 px-6 py-3 border-b">
                             <div class="flex items-center justify-between">
@@ -84,8 +107,12 @@
                                     신고 목록
                                 </h2>
                                 <div class="text-sm text-gray-500">
-                                    <span th:text="${page.currentPage}">1</span> /
-                                    <span th:text="${page.totalPages}">3</span> 페이지
+                                    <span th:text="${page.currentPage}">
+                                        1
+                                    </span> /
+                                    <span th:text="${page.totalPages}">
+                                        3
+                                    </span> 페이지
                                 </div>
                             </div>
                         </div>
@@ -95,14 +122,17 @@
                             <table class="w-full">
                                 <thead class="bg-gray-50 border-b">
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            ID
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">상태
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            상태
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">타입
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            타입
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">신고
-                                                                                                                    사유
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            신고 사유
                                         </th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                             신고자
@@ -110,7 +140,8 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                             신고일시
                                         </th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">작업
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                            작업
                                         </th>
                                     </tr>
                                 </thead>
@@ -122,7 +153,9 @@
                                         <!-- ID -->
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="text-sm font-mono text-gray-900"
-                                                  th:text="'#' + ${report.id}">#123</span>
+                                                  th:text="'#' + ${report.id}">
+                                                #123
+                                            </span>
                                         </td>
                                         
                                         <!-- 상태 -->
@@ -131,9 +164,21 @@
                                                   class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
                                                 대기중
                                             </span>
-                                            <span th:if="${report.status == 'RESOLVED'}"
-                                                  class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-                                                해결됨
+                                            <span th:if="${report.status == 'RESOLVED'}">
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                                    해결됨
+                                                </span>
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+                                                    글 삭제됨
+                                                </span>
+                                            </span>
+                                            <span th:if="${report.status == 'REJECTED'}">
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                                    해결됨
+                                                </span>
+                                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+                                                    글 보존됨
+                                                </span>
                                             </span>
                                         </td>
                                         
@@ -141,28 +186,32 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="flex items-center gap-2">
                                                 <i th:if="${report.targetType == 'POST'}"
-                                                   data-lucide="file-text" class="w-4 h-4 text-gray-500"></i>
+                                                   data-lucide="file-text"
+                                                   class="w-4 h-4 text-gray-500">
+                                                </i>
                                                 <i th:if="${report.targetType == 'ANSWER'}"
-                                                   data-lucide="message-circle" class="w-4 h-4 text-gray-500"></i>
+                                                   data-lucide="message-circle"
+                                                   class="w-4 h-4 text-gray-500">
+                                                </i>
                                                 <i th:if="${report.targetType == 'COMMENT'}"
-                                                   data-lucide="message-circle" class="w-4 h-4 text-gray-500"></i>
-                                                <!--                                                <span-->
-                                                <!--                                                        th:text="${report.targetType}">게시글</span>-->
+                                                   data-lucide="message-circle"
+                                                   class="w-4 h-4 text-gray-500">
+                                                </i>
                                                 <a class="text-sm text-gray-900"
-                                                   href="#"
+                                                   th:href="@{/post/{postId}/admin(postId=${report.targetId})}"
                                                    th:if="${report.targetType == 'POST'}">
                                                     POST
                                                 </a>
-                                                <a class="text-sm text-gray-900"
-                                                   href="#"
-                                                   th:if="${report.targetType == 'ANSWER'}">
+                                                <button class="text-sm text-gray-900"
+                                                        th:onclick="|viewDetailAnswer(${report.targetId})|"
+                                                        th:if="${report.targetType == 'ANSWER'}">
                                                     ANSWER
-                                                </a>
-                                                <a class="text-sm text-gray-900"
-                                                   href="#"
-                                                   th:if="${report.targetType == 'COMMENT'}">
+                                                </button>
+                                                <button class="text-sm text-gray-900"
+                                                        th:onclick="|viewDetailComment(${report.targetId})|"
+                                                        th:if="${report.targetType == 'COMMENT'}">
                                                     COMMENT
-                                                </a>
+                                                </button>
                                             </div>
                                         </td>
                                         
@@ -170,7 +219,8 @@
                                         <td class="px-6 py-4">
                                             <div class="text-sm">
                                                 <div class="font-medium text-gray-900"
-                                                     th:text="${report.reason}">스팸/광고
+                                                     th:text="${report.reason}">
+                                                    스팸/광고
                                                 </div>
                                                 <div class="text-gray-500 text-xs mt-1 truncate max-w-xs"
                                                      th:if="${report.reason != null}"
@@ -184,10 +234,12 @@
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm">
                                                 <div class="font-medium text-gray-900"
-                                                     th:text="${report.reporterNickname}">홍길동
+                                                     th:text="${report.reporterNickname}">
+                                                    홍길동
                                                 </div>
                                                 <div class="text-gray-500 text-xs"
-                                                     th:text="'ID: ' + ${report.reporterId}">ID: 123
+                                                     th:text="'ID: ' + ${report.reporterId}">
+                                                    ID: 123
                                                 </div>
                                             </div>
                                         </td>
@@ -206,20 +258,58 @@
                                         <!-- 작업 -->
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <div class="flex items-center gap-2">
-                                                <button
-                                                        th:onclick="|viewReportDetail(${report.id})|"
+                                                <!-- 상세보기 버튼 (항상 표시) -->
+                                                <button th:onclick="|viewDetailReason(${report.id})|"
                                                         class="text-blue-500 hover:text-blue-700 transition"
                                                         title="상세보기">
                                                     <i data-lucide="eye" class="w-4 h-4"></i>
                                                 </button>
-                                                <a th:href="@{/admin/report/{id}(id=${report.id})}"
+                                                
+                                                <!-- PENDING: 신고된 글 삭제 -->
+                                                <a th:if="${report.status == 'PENDING'}"
+                                                   href="#"
+                                                   class="text-red-500 hover:text-red-700 transition"
+                                                   title="신고된 글 삭제"
+                                                   th:data-admin-id="${user.id}"
+                                                   th:data-target-type="${report.targetType}"
+                                                   th:data-target-id="${report.targetId}"
+                                                   onclick="acceptReports(this); return false;">
+                                                    <i data-lucide="ban" class="w-4 h-4"></i>
+                                                </a>
+                                                
+                                                <!-- PENDING: 신고된 글 보존 -->
+                                                <a th:if="${report.status == 'PENDING'}"
+                                                   href="#"
                                                    class="text-green-500 hover:text-green-700 transition"
-                                                   title="일괄승인">
+                                                   title="신고된 글 보존"
+                                                   th:data-admin-id="${user.id}"
+                                                   th:data-target-type="${report.targetType}"
+                                                   th:data-target-id="${report.targetId}"
+                                                   onclick="dismissReports(this); return false;">
                                                     <i data-lucide="circle-check" class="w-4 h-4"></i>
                                                 </a>
-                                                <a th:href="@{/admin/report/{id}(id=${report.id})}"
+                                                
+                                                <!-- RESOLVED: 신고된 글 복원 -->
+                                                <a th:if="${report.status == 'RESOLVED'}"
+                                                   href="#"
+                                                   class="text-green-500 hover:text-green-700 transition"
+                                                   title="신고된 글 재복원"
+                                                   th:data-admin-id="${user.id}"
+                                                   th:data-target-type="${report.targetType}"
+                                                   th:data-target-id="${report.targetId}"
+                                                   onclick="undoReportAction(this); return false;">
+                                                    <i data-lucide="archive-restore" class="w-4 h-4"></i>
+                                                </a>
+                                                
+                                                <!-- REJECTED: 신고된 글 삭제 -->
+                                                <a th:if="${report.status == 'REJECTED'}"
+                                                   href="#"
                                                    class="text-red-500 hover:text-red-700 transition"
-                                                   title="일괄차단">
+                                                   title="신고된 글 삭제"
+                                                   th:data-admin-id="${user.id}"
+                                                   th:data-target-type="${report.targetType}"
+                                                   th:data-target-id="${report.targetId}"
+                                                   onclick="reprocessReport(this); return false;">
                                                     <i data-lucide="ban" class="w-4 h-4"></i>
                                                 </a>
                                             </div>
@@ -228,10 +318,15 @@
                                     
                                     <!-- 데이터 없을 때 -->
                                     <tr th:if="${#lists.isEmpty(reports)}">
-                                        <td colspan="7" class="px-6 py-12 text-center">
+                                        <td colspan="7"
+                                            class="px-6 py-12 text-center">
                                             <div class="flex flex-col items-center justify-center text-gray-400">
-                                                <i data-lucide="inbox" class="w-12 h-12 mb-2"></i>
-                                                <p class="text-sm">신고 내역이 없습니다</p>
+                                                <i data-lucide="inbox"
+                                                   class="w-12 h-12 mb-2">
+                                                </i>
+                                                <p class="text-sm">
+                                                    신고 내역이 없습니다
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
@@ -256,11 +351,15 @@
                                        startDateTime=${param.startDateTime},
                                        endDateTime=${param.endDateTime})}"
                                        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
-                                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                                        <i data-lucide="chevron-left"
+                                           class="w-4 h-4">
+                                        </i>
                                     </a>
                                     <span th:unless="${page.currentPage > 1}"
                                           class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
-                                        <i data-lucide="chevron-left" class="w-4 h-4"></i>
+                                        <i data-lucide="chevron-left"
+                                           class="w-4 h-4">
+                                        </i>
                                     </span>
                                     
                                     <!-- 페이지 번호 -->
@@ -294,11 +393,15 @@
                                        startDateTime=${param.startDateTime},
                                        endDateTime=${param.endDateTime})}"
                                        class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
-                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                        <i data-lucide="chevron-right"
+                                           class="w-4 h-4">
+                                        </i>
                                     </a>
                                     <span th:unless="${page.currentPage < page.totalPages}"
                                           class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
-                                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                                        <i data-lucide="chevron-right"
+                                           class="w-4 h-4">
+                                        </i>
                                     </span>
                                 </div>
                             </div>
@@ -311,15 +414,22 @@
                     <!-- 통합 검색 폼 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="search" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">검색 및 필터</h3>
+                            <i data-lucide="search"
+                               class="w-5 h-5">
+                            </i>
+                            <h3 class="font-semibold">
+                                검색 및 필터
+                            </h3>
                         </div>
                         <div class="p-4">
                             <form id="searchForm">
                                 <div class="space-y-4">
                                     <!-- 검색어 -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">검색어</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                               for="keyword">
+                                            검색어
+                                        </label>
                                         <input id="keyword"
                                                name="keyword"
                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
@@ -330,54 +440,85 @@
                                     
                                     <!-- 상태 필터 -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">상태</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                               for="status">
+                                            상태
+                                        </label>
                                         <select id="status"
                                                 name="status"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
-                                            <option value="">전체</option>
-                                            <option value="PENDING" th:selected="${param.status == 'PENDING'}">대기중
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                                th:with="status=${param.status != null ? param.status[0] : ''}">
+                                            <option value="">
+                                                전체
                                             </option>
-                                            <option value="RESOLVED" th:selected="${param.status == 'RESOLVED'}">해결됨
+                                            <option value="PENDING"
+                                                    th:selected="${status == 'PENDING'}">
+                                                대기중
+                                            </option>
+                                            <option value="RESOLVED"
+                                                    th:selected="${status == 'RESOLVED'}">
+                                                해결됨
                                             </option>
                                         </select>
                                     </div>
                                     
                                     <!-- 대상 타입 -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">대상 타입</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                               for="targetType">
+                                            대상 타입
+                                        </label>
                                         <select id="targetType"
                                                 name="targetType"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
-                                            <option value="">전체</option>
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                                th:with="targetType=${param.targetType != null ? param.targetType[0] : ''}">
+                                            <option value="">
+                                                전체
+                                            </option>
                                             <option value="POST"
-                                                    th:selected="${param.targetType == 'POST'}">게시글
+                                                    th:selected="${targetType == 'POST'}">
+                                                게시글
                                             </option>
                                             <option value="ANSWER"
                                                     disabled
-                                                    th:selected="${param.targetType == 'ANSWER'}">댓글
+                                                    th:selected="${targetType == 'ANSWER'}">
+                                                댓글
                                             </option>
                                             <option value="COMMENT"
                                                     disabled
-                                                    th:selected="${param.targetType == 'COMMENT'}">대댓글
+                                                    th:selected="${targetType == 'COMMENT'}">
+                                                대댓글
                                             </option>
                                         </select>
                                     </div>
                                     
                                     <!-- 정렬 -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">정렬</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                               for="sortType">
+                                            정렬
+                                        </label>
                                         <select id="sortType"
                                                 name="sortType"
-                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
-                                            <option value="CREATED_AT" th:selected="${param.sort == 'CREATED_AT'}">최신순
+                                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                                th:with="sortType=${param.sortType != null ? param.sortType[0] : ''}">
+                                            <option value="CREATED_AT"
+                                                    th:selected="${sortType == 'CREATED_AT'}">
+                                                최신순
                                             </option>
-                                            <option value="STATUS" th:selected="${param.sort == 'STATUS'}">상태별</option>
+                                            <option value="STATUS"
+                                                    th:selected="${sortType == 'STATUS'}">
+                                                상태별
+                                            </option>
                                         </select>
                                     </div>
                                     
                                     <!-- 시작 날짜/시간 -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">시작 날짜/시간</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                               for="startDateTime">
+                                            시작 날짜/시간
+                                        </label>
                                         <input id="startDateTime"
                                                name="startDateTime"
                                                type="datetime-local"
@@ -387,7 +528,10 @@
                                     
                                     <!-- 종료 날짜/시간 -->
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">종료 날짜/시간</label>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2"
+                                               for="endDateTime">
+                                            종료 날짜/시간
+                                        </label>
                                         <input id="endDateTime"
                                                name="endDateTime"
                                                type="datetime-local"
@@ -399,16 +543,24 @@
                                     <button type="button"
                                             onclick="performSearch()"
                                             class="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition flex items-center justify-center space-x-2">
-                                        <i data-lucide="search" class="w-5 h-5"></i>
-                                        <span>검색</span>
+                                        <i data-lucide="search"
+                                           class="w-5 h-5">
+                                        </i>
+                                        <span>
+                                            검색
+                                        </span>
                                     </button>
                                     
                                     <!-- 초기화 버튼 -->
                                     <button type="button"
                                             onclick="resetSearch()"
                                             class="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-center space-x-2">
-                                        <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                                        <span>필터 초기화</span>
+                                        <i data-lucide="refresh-cw"
+                                           class="w-4 h-4">
+                                        </i>
+                                        <span>
+                                            필터 초기화
+                                        </span>
                                     </button>
                                 </div>
                             </form>
@@ -424,9 +576,14 @@
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-xl font-bold">신고 상세</h3>
-                        <button onclick="closeDetailModal()" class="text-gray-400 hover:text-gray-600">
-                            <i data-lucide="x" class="w-5 h-5"></i>
+                        <h3 class="text-xl font-bold">
+                            신고 상세
+                        </h3>
+                        <button onclick="closeDetailModal()"
+                                class="text-gray-400 hover:text-gray-600">
+                            <i data-lucide="x"
+                               class="w-5 h-5">
+                            </i>
                         </button>
                     </div>
                     <div id="detailContent">
@@ -435,8 +592,6 @@
                 </div>
             </div>
         </div>
-        
-        <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
     
@@ -463,7 +618,6 @@
                     size: 20
                 };
 
-                // 빈 값 제거
                 Object.keys(formData).forEach(key =>
                 {
                     if (formData[key] === null || formData[key] === '')
@@ -471,8 +625,6 @@
                         delete formData[key];
                     }
                 });
-
-                console.log('검색 조건:', formData);
 
                 // URL 파라미터로 변환하여 GET 요청
                 const params = new URLSearchParams();
@@ -501,7 +653,7 @@
         }
 
         // 상세보기 모달
-        async function viewReportDetail(reportId)
+        async function viewDetailReason(reportId)
         {
             try
             {
@@ -514,6 +666,184 @@
             {
                 console.error('Error:', error);
                 alert('상세 정보를 불러오는데 실패했습니다.');
+            }
+        }
+
+        // 신고된 댓글 내용 보기
+        async function viewDetailAnswer(answerId)
+        {
+            try
+            {
+                const response = await fetch(`/answer/${answerId}`);
+                document.getElementById('detailContent').textContent = await response.text();
+                document.getElementById('detailModal').classList.remove('hidden');
+                lucide.createIcons();
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고된 댓글을 불러오는데 실패했습니다.');
+            }
+        }
+
+        // 신고 수락 -> 글 삭제
+        async function acceptReports(element)
+        {
+            const data = {
+                status: 'RESOLVED',
+                adminId: parseInt(element.dataset.adminId),
+                targetType: element.dataset.targetType,
+                targetId: parseInt(element.dataset.targetId)
+            }
+
+            try
+            {
+                const response = await fetch(`/api/report`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok)
+                {
+                    alert('신고된 게시글을 삭제했습니다.')
+                    window.location.reload();
+                } else
+                {
+                    alert('신고를 처리하는데 실패했습니다. ');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고를 처리하는데 실패했습니다.');
+            }
+        }
+
+        // 신고 기각 -> 글 보존
+        async function dismissReports(element)
+        {
+            const data = {
+                status: 'REJECTED',
+                adminId: parseInt(element.dataset.adminId),
+                targetType: element.dataset.targetType,
+                targetId: parseInt(element.dataset.targetId)
+            }
+
+            try
+            {
+                const response = await fetch(`/api/report`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok)
+                {
+                    alert('신고된 게시글을 보존했습니다.');
+                    window.location.reload();
+                } else
+                {
+                    alert('신고를 처리하는데 실패했습니다. ');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고를 처리하는데 실패했습니다.');
+            }
+        }
+
+        // 신고 처리 취소 -> 글 복원
+        async function undoReportAction(element)
+        {
+            const data = {
+                status: 'REJECTED',
+                adminId: parseInt(element.dataset.adminId),
+                targetType: element.dataset.targetType,
+                targetId: parseInt(element.dataset.targetId)
+            }
+
+            try
+            {
+                const response = await fetch(`/api/report/restore`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok)
+                {
+                    alert('삭제된 게시글을 복원했습니다.');
+                    window.location.reload();
+                } else
+                {
+                    alert('신고를 처리하는데 실패했습니다. ');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고를 처리하는데 실패했습니다.');
+            }
+        }
+
+        // 신고 처리 재수락 -> 글 삭제
+        async function reprocessReport(element)
+        {
+            const data = {
+                status: 'RESOLVED',
+                adminId: parseInt(element.dataset.adminId),
+                targetType: element.dataset.targetType,
+                targetId: parseInt(element.dataset.targetId)
+            }
+
+            try
+            {
+                const response = await fetch(`/api/report/reprocess`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok)
+                {
+                    alert('신고된 게시글을 삭제했습니다.')
+                    window.location.reload();
+                } else
+                {
+                    alert('신고를 처리하는데 실패했습니다. ');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고를 처리하는데 실패했습니다.');
+            }
+        }
+
+        // 신고된 대댓글 내용 보기
+        async function viewDetailComment(commentId)
+        {
+            try
+            {
+                const response = await fetch(`/comment/${commentId}`);
+                document.getElementById('detailContent').textContent = await response.text();
+                document.getElementById('detailModal').classList.remove('hidden');
+                lucide.createIcons();
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고된 대댓글을 불러오는데 실패했습니다.');
             }
         }
 

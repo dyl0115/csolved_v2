@@ -22,11 +22,17 @@ public interface PostMapper
     // 게시글 조회
     Post getPost(Long postId, Long userId);
 
+    // 운영자 게시글 조회 (삭제된 게시글도 조회)
+    Post getPostForAdmin(Long postId, Long userId);
+
     // 게시글 작성자 조회
     Long getAuthorId(Long postId);
 
     // 게시글 논리적 삭제
     void deletePost(Long postId);
+
+    // 삭제된 게시글 복원
+    void restorePost(Long postId);
 
     // 질문-좋아요 테이블에 저장된 유저인지 체크
     boolean hasUserLiked(Long postId, Long authorId);

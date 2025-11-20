@@ -1,6 +1,5 @@
 package store.babel.babel.domain.report.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -16,7 +15,7 @@ public class ReportCreateRequest
     private Long reporterId;
 
     @NotNull(message = "신고 대상 타입은 필수입니다")
-    private ReportType targetType;
+    private ReportTargetType targetType;
 
     @NotNull(message = "신고 대상 ID는 필수입니다")
     @Positive(message = "신고 대상 ID는 양수여야 합니다")

@@ -76,6 +76,11 @@ public class PostService
         return post;
     }
 
+    public Post getPostForAdmin(Long postId, Long userId)
+    {
+        return postMapper.getPostForAdmin(postId, userId);
+    }
+
     public Long countPosts(PostSearchQuery query)
     {
         return postMapper.countPosts(query);

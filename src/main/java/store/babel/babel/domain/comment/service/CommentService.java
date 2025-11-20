@@ -29,6 +29,6 @@ public class CommentService
         {
             throw new BabelException(ExceptionCode.ACCESS_DENIED);
         }
-        commentMapper.delete(commentId);
+        commentMapper.deleteComment(commentId);
     }
 }

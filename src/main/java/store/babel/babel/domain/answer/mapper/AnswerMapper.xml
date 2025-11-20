@@ -17,25 +17,25 @@
     </insert>
 
     <select id="getAnswers">
-        select a.id,
+        SELECT a.id,
                u.id            author_id,
                u.profile_image author_profile_image,
                u.nickname      author_nickname,
                a.anonymous,
                a.content,
                a.created_at
-        from answers a
-                 left join users u on u.id = a.author_id
-        where post_id = #{postId};
+        FROM answers a
+                 LEFT JOIN users u ON u.id = a.author_id
+        WHERE post_id = #{postId};
     </select>
 
     <select id="getAnswer">
-        select a.*,
+        SELECT a.*,
                u.id       author_id,
                u.nickname author_nickname
-        from answers a
-                 left join users u on u.id = a.author_id
-        where a.id = #{answerId};
+        FROM answers a
+                 LEFT JOIN users u ON u.id = a.author_id
+        WHERE a.id = #{answerId};
     </select>
 
     <update id="increaseAnswerCount">
@@ -57,16 +57,16 @@
     </select>
 
 
-    <update id="softDelete">
-        update answers
-        set content    = '[삭제된 답변입니다.]',
-            deleted_at = current_timestamp
-        where id = #{answerId}
+    <update id="deleteAnswer">
+        UPDATE answers
+        SET content    = '[삭제된 답변입니다.]',
+            deleted_at = CURRENT_TIMESTAMP
+        WHERE id = #{answerId}
     </update>
 
     <delete id="hardDelete">
-        delete
-        from answers
-        where id = #{answerId}
+        DELETE
+        FROM answers
+        WHERE id = #{answerId}
     </delete>
 </mapper>

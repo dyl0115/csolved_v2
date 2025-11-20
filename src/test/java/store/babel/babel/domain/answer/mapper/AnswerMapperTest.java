@@ -128,7 +128,7 @@ class AnswerMapperTest
         answerMapper.saveAnswer(command);
 
         // when
-        AnswerCreateCommand answer = answerMapper.getAnswer(command.getId());
+        Answer answer = answerMapper.getAnswer(command.getId());
 
         // then
         assertThat(answer).isNotNull();
@@ -259,10 +259,10 @@ class AnswerMapperTest
         answerMapper.saveAnswer(command);
 
         // when
-        answerMapper.softDelete(command.getId());
+        answerMapper.deleteAnswer(command.getId());
 
         // then
-        AnswerCreateCommand deletedAnswer = answerMapper.getAnswer(command.getId());
+        Answer deletedAnswer = answerMapper.getAnswer(command.getId());
         assertThat(deletedAnswer.getContent()).isEqualTo("[삭제된 답변입니다.]");
     }
 
@@ -286,7 +286,7 @@ class AnswerMapperTest
         answerMapper.hardDelete(answerId);
 
         // then
-        AnswerCreateCommand deletedAnswer = answerMapper.getAnswer(answerId);
+        Answer deletedAnswer = answerMapper.getAnswer(answerId);
         assertThat(deletedAnswer).isNull();
     }
 

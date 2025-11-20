@@ -1,6 +1,6 @@
 package store.babel.babel.domain.report.dto;
 
-public enum ReportType
+public enum ReportTargetType
 {
     POST,
     ANSWER,

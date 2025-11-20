@@ -13,7 +13,9 @@ public interface AnswerMapper
 
     List<Answer> getAnswers(Long postId);
 
-    AnswerCreateCommand getAnswer(Long answerId);
+    Answer getAnswer(Long answerId);
+
+    Answer getAnswerForAdmin(Long answerId);
 
     void increaseAnswerCount(Long postId);
 
@@ -21,7 +23,7 @@ public interface AnswerMapper
 
     boolean existComments(Long answerId);
 
-    void softDelete(Long answerId);
+    void deleteAnswer(Long answerId);
 
     void hardDelete(Long answerId);
 }

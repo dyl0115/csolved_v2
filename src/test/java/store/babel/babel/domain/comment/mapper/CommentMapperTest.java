@@ -189,7 +189,7 @@ class CommentMapperTest
         Long commentId = command.getId();
 
         // when
-        commentMapper.delete(commentId);
+        commentMapper.deleteComment(commentId);
 
         // then
         Long authorId = commentMapper.getAuthorId(commentId);

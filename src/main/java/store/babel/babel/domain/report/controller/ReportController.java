@@ -28,13 +28,10 @@ public class ReportController
 
     @LoginRequest
     @GetMapping
-    public String getReports(@LoginUser User user,
-                             @Valid @ModelAttribute ReportSearchRequest request,
+    public String getReports(@Valid @ModelAttribute ReportSearchRequest request,
                              Model model)
     {
-        System.out.println("ReportSearchRequest " + request.toString());
         Pagination pagination = Pagination.from(request.getPage(), reportService.countReports(ReportCountQuery.from(request)), request.getSize());
-        System.out.println("Pagination " + pagination);
         List<ReportCard> reports = reportService.getReports(ReportSearchQuery.from(request, pagination));
 
         model.addAttribute("reports", reports);
@@ -46,6 +43,4 @@ public class ReportController
 
         return VIEW_REPORTS;
     }
-
-
 }

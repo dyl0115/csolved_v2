@@ -136,4 +136,44 @@
         WHERE deleted_at IS NULL
           AND status = 'RESOLVED';
     </select>
+
+    <update id="resolveReports">
+        UPDATE reports
+        SET status       = 'RESOLVED',
+            processed_by = #{adminId},
+            processed_at = CURRENT_TIMESTAMP
+        WHERE target_type = #{targetType}
+          AND target_id = #{targetId}
+          AND status = 'PENDING';
+    </update>
+
+    <update id="rejectReports">
+        UPDATE reports
+        SET status       = 'REJECTED',
+            processed_by = #{adminId},
+            processed_at = CURRENT_TIMESTAMP
+        WHERE target_type = #{targetType}
+          AND target_id = #{targetId}
+          AND status = 'PENDING';
+    </update>
+
+    <update id="undoReportActions">
+        UPDATE reports
+        SET status       = 'REJECTED',
+            processed_by = #{adminId},
+            processed_at = CURRENT_TIMESTAMP
+        WHERE target_type = #{targetType}
+          AND target_id = #{targetId}
+          AND status = 'RESOLVED';
+    </update>
+
+    <update id="reprocessReports">
+        UPDATE reports
+        SET status       = 'RESOLVED',
+            processed_by = #{adminId},
+            processed_at = CURRENT_TIMESTAMP
+        WHERE target_type = #{targetType}
+          AND target_id = #{targetId}
+          AND status = 'REJECTED';
+    </update>
 </mapper>

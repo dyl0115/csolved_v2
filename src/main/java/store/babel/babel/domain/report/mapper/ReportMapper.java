@@ -2,10 +2,7 @@ package store.babel.babel.domain.report.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import store.babel.babel.domain.post.dto.PostCard;
-import store.babel.babel.domain.report.dto.ReportCard;
-import store.babel.babel.domain.report.dto.ReportCountQuery;
-import store.babel.babel.domain.report.dto.ReportCreateCommand;
-import store.babel.babel.domain.report.dto.ReportSearchQuery;
+import store.babel.babel.domain.report.dto.*;
 import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
@@ -16,6 +13,18 @@ public interface ReportMapper
     void createReport(ReportCreateCommand command);
 
     List<ReportCard> getReports(ReportSearchQuery query);
+
+    // 해당 게시글에 대한 신고들을 인정합니다.
+    void resolveReports(ReportUpdateCommand command);
+
+    // 해당 게시글에 대한 신고들을 반려합니다.
+    void rejectReports(ReportUpdateCommand command);
+
+    // 해당 게시글에 대한 신고들을 재인정합니다.
+    void reprocessReports(ReportUpdateCommand command);
+
+    // 해당 게시글에 대한 신고들을 재반려합니다.
+    void undoReportActions(ReportUpdateCommand command);
 
     Long countReports(ReportCountQuery query);
 

@@ -43,10 +43,10 @@
         WHERE id = #{commentId};
     </select>
 
-    <delete id="delete">
-        delete
-        from comments
-        where id = #{commentId}
+    <delete id="deleteComment">
+        DELETE
+        FROM comments
+        WHERE id = #{commentId}
     </delete>
 
 </mapper>

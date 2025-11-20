@@ -32,11 +32,11 @@ public class AnswerService
     public void deleteAnswer(Long answerId)
     {
         boolean commentsExist = answerMapper.existComments(answerId);
-        AnswerCreateCommand answer = answerMapper.getAnswer(answerId);
+        Answer answer = answerMapper.getAnswer(answerId);
 
         if (commentsExist)
         {
-            answerMapper.softDelete(answerId);
+            answerMapper.deleteAnswer(answerId);
         }
         else
         {

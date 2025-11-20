@@ -15,7 +15,7 @@ public class ReportSearchRequest
 {
     private ReportStatus status;
 
-    private ReportType targetType;
+    private ReportTargetType targetType;
 
     @Min(0)
     private Long page;

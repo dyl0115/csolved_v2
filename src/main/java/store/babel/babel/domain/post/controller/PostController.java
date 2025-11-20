@@ -82,6 +82,21 @@ public class PostController
     }
 
     @LoginRequest
+    @GetMapping("/{postId}/admin")
+    public String getPostForAdmin(@LoginUser User user,
+                                  @PathVariable Long postId,
+                                  Model model)
+    {
+        Post post = postService.getPostForAdmin(postId, user.getId());
+        List<AnswerWithComments> answers = answerService.getAnswersWithComments(postId);
+
+        model.addAttribute("post", post);
+        model.addAttribute("answers", answers);
+
+        return VIEWS_POST_DETAIL;
+    }
+
+    @LoginRequest
     @GetMapping("/createForm")
     public String getCreateForm(Model model)
     {
