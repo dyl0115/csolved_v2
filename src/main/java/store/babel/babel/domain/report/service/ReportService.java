@@ -73,9 +73,9 @@ public class ReportService
         return reportMapper.countPending();
     }
 
-    public Long countReviewing()
+    public Long countRejected()
     {
-        return reportMapper.countReviewing();
+        return reportMapper.countRejected();
     }
 
     public Long countResolved()

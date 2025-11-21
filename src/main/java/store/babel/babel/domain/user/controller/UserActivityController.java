@@ -45,7 +45,6 @@ public class UserActivityController
 
         Long repliedCount = postService.countAnsweredPosts(user.getId());
         pagination = Pagination.from(repliedPage, repliedCount);
-        System.out.println("offset=" + pagination.getOffset() + " size=" + pagination.getSize());
         List<PostCard> replied = postService.getAnsweredPostCards(user.getId(), pagination);
 
         model.addAttribute("replied", replied);
@@ -102,12 +101,7 @@ public class UserActivityController
     {
         Long repliedCount = postService.countAnsweredPosts(user.getId());
         Pagination pagination = Pagination.from(repliedPage, repliedCount);
-        System.out.println("pagination=" + pagination.toString());
-        System.out.println("repliedCount=" + repliedCount);
-        System.out.println("offset=" + pagination.getOffset() + " size=" + pagination.getSize());
-
         List<PostCard> replied = postService.getAnsweredPostCards(user.getId(), pagination);
-        System.out.println("realSize = " + replied.size());
 
         model.addAttribute("replied", replied);
         model.addAttribute("repliedPagination", pagination);

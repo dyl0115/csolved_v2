@@ -38,7 +38,7 @@ public class ReportController
         model.addAttribute("page", pagination);
         model.addAttribute("totalCount", reportService.countAll());
         model.addAttribute("pendingCount", reportService.countPending());
-        model.addAttribute("reviewingCount", reportService.countReviewing());
+        model.addAttribute("rejectedCount", reportService.countRejected());
         model.addAttribute("resolvedCount", reportService.countResolved());
 
         return VIEW_REPORTS;

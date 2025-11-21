@@ -32,7 +32,7 @@ public interface ReportMapper
 
     Long countPending();
 
-    Long countReviewing();
+    Long countRejected();
 
     Long countResolved();
 

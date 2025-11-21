@@ -137,6 +137,13 @@
           AND status = 'RESOLVED';
     </select>
 
+    <select id="countRejected">
+        SELECT COUNT(r.id)
+        FROM reports r
+        WHERE deleted_at IS NULL
+          AND status = 'REJECTED';
+    </select>
+
     <update id="resolveReports">
         UPDATE reports
         SET status       = 'RESOLVED',
