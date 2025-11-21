@@ -50,7 +50,6 @@ public class UserActivityController
         model.addAttribute("replied", replied);
         model.addAttribute("repliedPagination", pagination);
 
-
         Long myPostCount = postService.countMyPosts(user.getId());
         pagination = Pagination.from(myPostPage, myPostCount);
         List<PostCard> myPosts = postService.getMyPosts(user.getId(), pagination);

@@ -37,8 +37,10 @@
                         <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
                         <h5 class="text-xl font-semibold text-gray-700 mb-2">공지사항이 없습니다</h5>
                         <a th:href="@{/notice/createForm}"
+                           th:if="${user.admin}"
                            class="inline-flex items-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition">
-                            <i data-lucide="edit" class="w-5 h-5"></i>
+                            <i data-lucide="edit" class="w-5 h-5">
+                            </i>
                             <span>공지사항 작성하기</span>
                         </a>
                     </div>
@@ -46,7 +48,8 @@
                     <!-- 공지사항이 있는 경우: 작성 버튼 -->
                     <div th:if="${!#lists.isEmpty(notices)}" class="mb-4 flex justify-end">
                         <a class="inline-flex items-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition shadow-md"
-                           th:href="@{/notice/createForm}">
+                           th:href="@{/notice/createForm}"
+                           th:if="${user.admin}">
                             <i data-lucide="edit" class="w-5 h-5"></i>
                             <span>공지사항 작성</span>
                         </a>
