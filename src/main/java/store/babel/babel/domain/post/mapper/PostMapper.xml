@@ -199,7 +199,7 @@
     </select>
 
     <select id="countPosts">
-        SELECT count(p.id)
+        SELECT COUNT(p.id)
         FROM posts p
         LEFT JOIN category c ON p.category_id = c.id
         LEFT JOIN users u ON p.user_id = u.id
@@ -208,10 +208,10 @@
             AND p.category_id = #{filterValue}
         </if>
         <if test="searchType == 'TITLE' and searchKeyword != null and searchKeyword != ''">
-            AND p.title LIKE concat('%', #{searchKeyword}, '%')
+            AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
         </if>
         <if test="searchType == 'AUTHOR' and searchKeyword != null and searchKeyword != ''">
-            AND u.nickname LIKE concat('%',#{searchKeyword},'%')
+            AND u.nickname LIKE CONCAT('%',#{searchKeyword},'%')
             AND p.anonymous IS FALSE
         </if>
     </select>
