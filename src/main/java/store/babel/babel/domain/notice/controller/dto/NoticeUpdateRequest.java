@@ -27,6 +27,8 @@ public class NoticeUpdateRequest
     @NotBlank(message = "내용을 입력해주세요.")
     private String content;
 
+    @NotNull(message = "카테고리를 선택해주세요.")
+    private Long categoryId;
 
     public static NoticeUpdateRequest from(Notice notice)
     {

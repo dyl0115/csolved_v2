@@ -14,6 +14,7 @@
         <result property="views" column="views"/>
         <result property="likes" column="likes"/>
         <result property="answerCount" column="answer_count"/>
+        <result property="categoryId" column="category_id"/>
         <result property="createdAt" column="created_at"/>
         <result property="modifiedAt" column="modified_at"/>
     </resultMap>
@@ -21,39 +22,45 @@
     <resultMap id="noticeCardMap" type="store.babel.babel.domain.notice.dto.NoticeCard">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
+        <result property="anonymous" column="anonymous"/>
         <result property="authorId" column="author_id"/>
         <result property="authorNickname" column="author_nickname"/>
-        <result property="anonymous" column="anonymous"/>
         <result property="views" column="views"/>
         <result property="likes" column="likes"/>
         <result property="answerCount" column="answer_count"/>
+        <result property="categoryId" column="category_id"/>
         <result property="createdAt" column="created_at"/>
         <result property="modifiedAt" column="modified_at"/>
     </resultMap>
 
     <insert id="saveNotice" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO notice(title,
-                           content,
-                           author_id,
-                           is_pinned,
-                           created_at)
+        INSERT INTO posts(title,
+                          post_type,
+                          anonymous,
+                          user_id,
+                          content,
+                          category_id,
+                          created_at)
         VALUES (#{title},
-                #{content},
+                #{postType},
+                #{anonymous},
                 #{authorId},
-                #{isPinned},
+                #{content},
+                #{categoryId},
                 CURRENT_TIMESTAMP);
     </insert>
 
     <update id="updateNotice">
-        UPDATE notice
+        UPDATE posts
         SET title       = #{title},
             content     = #{content},
+            category_id = #{categoryId},
             modified_at = CURRENT_TIMESTAMP
         WHERE id = #{noticeId};
     </update>
 
     <update id="deleteNotice">
-        UPDATE notice
+        UPDATE posts
         SET deleted_at = CURRENT_TIMESTAMP
         WHERE id = #{noticeId};
     </update>
@@ -68,6 +75,7 @@
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
+               p.category_id  category_id,
                p.created_at   created_at,
                p.modified_at  modified_at
         FROM posts p
@@ -84,17 +92,18 @@
         u.nickname author_nickname,
         p.views views,
         p.likes likes,
+        p.category_id category_id,
         p.answer_count answer_count,
         p.created_at created_at,
         p.modified_at modified_at
         FROM posts p
-        LEFT JOIN users u on u.id = p.user_id
+        LEFT JOIN users u ON u.id = p.user_id
         WHERE p.deleted_at IS NULL
         AND p.post_type = #{query.postType}
         <if test="query.searchType == 'TITLE' and
                   query.searchKeyword != null and
                   query.searchKeyword != ''">
-            AND p.title LIKE concat('%', #{query.searchKeyword}, '%')
+            AND p.title LIKE CONCAT('%', #{query.searchKeyword}, '%')
         </if>
         ORDER BY
         p.created_at DESC
@@ -102,19 +111,19 @@
     </select>
 
     <select id="countNotices">
-        SELECT count(p.id)
+        SELECT COUNT(p.id)
         FROM posts p
         WHERE p.deleted_at IS NULL
         AND p.post_type = #{postType}
         <if test="searchType == 'TITLE' and
                   searchKeyword != null and
                  searchKeyword != ''">
-            AND p.title LIKE concat('%', #{searchKeyword}, '%')
+            AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
         </if>
     </select>
 
     <select id="hasUserLiked">
-        select exists(select 1
+        select EXISTS(select 1
                       from post_likes
                       where user_id = #{authorId}
                         and post_id = #{noticeId});

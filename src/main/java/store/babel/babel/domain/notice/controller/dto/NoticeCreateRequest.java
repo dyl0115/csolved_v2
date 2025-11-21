@@ -24,12 +24,8 @@ public class NoticeCreateRequest
     @NotNull(message = "실명/익명 여부를 선택해주세요.")
     private boolean anonymous;
 
-    public static NoticeCreateRequest empty()
-    {
-        return NoticeCreateRequest.builder()
-                .anonymous(false)
-                .build();
-    }
+    @NotNull(message = "카테고리를 선택해주세요.")
+    private Long categoryId;
 
     public static NoticeCreateRequest from(Notice notice)
     {

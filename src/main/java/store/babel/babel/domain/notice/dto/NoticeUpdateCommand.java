@@ -13,6 +13,7 @@ public class NoticeUpdateCommand
     private String content;
     private Long authorId;
     private boolean anonymous;
+    private Long categoryId;
 
     public static NoticeUpdateCommand from(NoticeUpdateRequest request)
     {
@@ -22,6 +23,7 @@ public class NoticeUpdateCommand
                 .content(request.getContent())
                 .authorId(request.getAuthorId())
                 .anonymous(request.isAnonymous())
+                .categoryId(request.getCategoryId())
                 .build();
     }
 }

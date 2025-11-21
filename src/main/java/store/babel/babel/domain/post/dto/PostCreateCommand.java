@@ -8,7 +8,7 @@ import store.babel.babel.domain.tag.dto.Tag;
 import java.util.Arrays;
 import java.util.List;
 
-import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.POST;
 
 @Getter
 @Builder
@@ -26,7 +26,7 @@ public class PostCreateCommand
     public static PostCreateCommand from(PostCreateRequest request)
     {
         return PostCreateCommand.builder()
-                .postType(COMMUNITY.getCode())
+                .postType(POST.getCode())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .authorId(request.getAuthorId())

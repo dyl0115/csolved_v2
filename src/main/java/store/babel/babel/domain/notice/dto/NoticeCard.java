@@ -17,6 +17,7 @@ public class NoticeCard
     private Long views;
     private Long likes;
     private Long answerCount;
+    private Long categoryId;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 }

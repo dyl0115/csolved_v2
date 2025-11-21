@@ -6,7 +6,7 @@ import store.babel.babel.global.utils.filter.Filtering;
 import store.babel.babel.global.utils.search.Searching;
 import store.babel.babel.global.utils.sort.Sorting;
 
-import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.POST;
 
 @Getter
 @Builder
@@ -23,7 +23,7 @@ public class PostSearchQuery
     public static PostSearchQuery from(Long pageNumber, Sorting sort, Filtering filter, Searching searching)
     {
         return PostSearchQuery.builder()
-                .postType(COMMUNITY.getCode())
+                .postType(POST.getCode())
                 .pageNumber(pageNumber)
                 .sortType(sort.name())
                 .filterType(filter.getFilterType())

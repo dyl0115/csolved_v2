@@ -217,7 +217,7 @@
     </select>
 
     <select id="hasUserLiked">
-        SELECT exists(SELECT 1
+        SELECT EXISTS(SELECT 1
                       FROM post_likes
                       WHERE user_id = #{authorId}
                         AND post_id = #{postId});
@@ -242,10 +242,10 @@
         WHERE id = #{postId};
     </update>
 
+    <!-- 내 최근 활동 시간 순으로 댓글, 대댓글 단 글 조회 -->
     <select id="getAnsweredPosts" resultMap="postCardMap">
         SELECT p.id           id,
                p.post_type    post_type,
-               p.id           post_id,
                p.title        title,
                p.anonymous    anonymous,
                p.user_id      author_id,
@@ -258,40 +258,46 @@
                p.created_at   created_at,
                t.id           tag_id,
                t.name         tag_name
-        FROM (SELECT DISTINCT post_id
-              FROM ((SELECT a.post_id
+        FROM (SELECT post_id, MAX(activity_created_at) AS latest_activity_created_at
+              FROM ((SELECT a.post_id as post_id, a.created_at AS activity_created_at
                      FROM answers a
                               JOIN posts p ON p.id = a.post_id
                      WHERE author_id = #{userId}
                        AND p.deleted_at IS NULL
                        AND a.deleted_at IS NULL)
                     UNION
-                    (SELECT c.post_id
+                    (SELECT c.post_id as post_id, c.created_at AS activity_created_at
                      FROM comments c
                               JOIN posts p on p.id = c.post_id
                      WHERE author_id = #{userId}
                        AND p.deleted_at IS NULL
-                       AND c.deleted_at IS NULL)) AS user_activity
-              ORDER BY post_id DESC
-              LIMIT #{pagination.offset}, #{pagination.size}) AS paginated_posts
-                 JOIN posts p ON p.id = paginated_posts.post_id
+                       AND c.deleted_at IS NULL)) AS user_answered
+              GROUP BY post_id
+              ORDER BY latest_activity_created_at DESC
+              LIMIT #{pagination.offset}, #{pagination.size}) AS sorted_user_answered
+                 JOIN posts p ON p.id = sorted_user_answered.post_id
                  JOIN users u ON u.id = p.user_id
                  JOIN category c ON c.id = p.category_id
                  LEFT JOIN post_tags pt ON pt.post_id = p.id
                  LEFT JOIN tags t ON t.id = pt.tag_id
     </select>
 
+    <!-- 댓글 대댓글 단 글 개수 조회 -->
     <select id="countAnsweredPosts">
         SELECT COUNT(*)
         FROM ((SELECT a.post_id
                FROM answers a
-               WHERE author_id = #{userId}
-                 AND deleted_at IS NULL)
+                        JOIN posts p ON p.id = a.post_id
+               WHERE a.author_id = #{userId}
+                 AND a.deleted_at IS NULL
+                 AND p.deleted_at IS NULL)
               UNION
               (SELECT c.post_id
                FROM comments c
-               WHERE author_id = #{userId}
-                 AND deleted_at IS NULL)) reply_count;
+                        JOIN posts p ON p.id = c.post_id
+               WHERE c.author_id = #{userId}
+                 AND c.deleted_at IS NULL
+                 AND p.deleted_at IS NULL)) AS user_answered;
     </select>
 
     <select id="getMyPosts" resultMap="postCardMap">
@@ -345,6 +351,7 @@
           AND deleted_at IS NULL;
     </select>
 
+    <!-- 내 북마크 게시글 조회-->
     <select id="getBookmarkedPosts" resultMap="postCardMap">
         SELECT sub.post_id    id,
                p.post_type    post_type,

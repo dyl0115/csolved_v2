@@ -6,8 +6,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.answer.dto.AnswerWithComments;
 import store.babel.babel.domain.answer.service.AnswerService;
+import store.babel.babel.domain.category.dto.Category;
+import store.babel.babel.domain.category.service.CategoryService;
 import store.babel.babel.domain.notice.dto.*;
 import store.babel.babel.domain.notice.service.NoticeService;
+import store.babel.babel.domain.post.dto.PostType;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.page.PageInfo;
 import store.babel.babel.global.utils.page.Pagination;
@@ -27,6 +30,7 @@ public class NoticeController
 
     private final NoticeService noticeService;
     private final AnswerService answerService;
+    private final CategoryService categoryService;
 
     @LoginRequest
     @GetMapping("/notices")
@@ -64,8 +68,10 @@ public class NoticeController
 
     @LoginRequest
     @GetMapping("/notice/createForm")
-    public String getNoticeCreateForm()
+    public String getNoticeCreateForm(Model model)
     {
+        List<Category> categories = categoryService.getAllCategories(PostType.NOTICE.getCode());
+        model.addAttribute("categories", categories);
         return VIEWS_NOTICE_CREATE_FORM;
     }
 
@@ -74,10 +80,11 @@ public class NoticeController
     public String getNoticeUpdateForm(@PathVariable Long noticeId,
                                       Model model)
     {
-        Notice result = noticeService.getNotice(noticeId);
-        model.addAttribute("notice", result);
+        List<Category> categories = categoryService.getAllCategories(PostType.NOTICE.getCode());
+        Notice notice = noticeService.getNotice(noticeId);
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("notice", notice);
         return VIEWS_NOTICE_UPDATE_FORM;
     }
-
-
 }

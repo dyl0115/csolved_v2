@@ -18,8 +18,6 @@ import java.util.List;
 public class NoticeService
 {
     private final NoticeMapper noticeMapper;
-    private final AnswerMapper answerMapper;
-    private final CommentMapper commentMapper;
 
     public Long countNotices(NoticeSearchQuery query)
     {

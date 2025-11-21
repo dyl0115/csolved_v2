@@ -12,10 +12,11 @@ public class NoticeCreateCommand
 {
     private Long id;
     private Long postType;
+    private boolean anonymous;
+    private Long categoryId;
+    private Long authorId;
     private String title;
     private String content;
-    private Long authorId;
-    private boolean anonymous;
 
     public static NoticeCreateCommand from(NoticeCreateRequest request)
     {
@@ -25,6 +26,7 @@ public class NoticeCreateCommand
                 .content(request.getContent())
                 .authorId(request.getAuthorId())
                 .anonymous(request.isAnonymous())
+                .categoryId(request.getCategoryId())
                 .build();
     }
 }

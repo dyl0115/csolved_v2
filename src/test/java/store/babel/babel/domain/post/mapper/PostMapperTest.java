@@ -15,7 +15,7 @@ import store.babel.babel.global.utils.page.Pagination;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.POST;
 
 @MybatisTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -372,7 +372,7 @@ class PostMapperTest
         Long userId = 1L;
 
         PostCreateCommand command = PostCreateCommand.builder()
-                .postType(COMMUNITY.getCode())
+                .postType(POST.getCode())
                 .title("제목")
                 .content("내용")
                 .authorId(userId)
@@ -400,7 +400,7 @@ class PostMapperTest
         Long authorId = 1L;
 
         PostCreateCommand command = PostCreateCommand.builder()
-                .postType(COMMUNITY.getCode())
+                .postType(POST.getCode())
                 .title("제목")
                 .content("내용")
                 .authorId(authorId)
@@ -433,7 +433,7 @@ class PostMapperTest
         Long authorId = 1L;
 
         PostCreateCommand command = PostCreateCommand.builder()
-                .postType(COMMUNITY.getCode())
+                .postType(POST.getCode())
                 .title("제목")
                 .content("내용")
                 .authorId(authorId)

@@ -26,7 +26,7 @@ import store.babel.babel.global.utils.sort.Sorting;
 
 import java.util.List;
 
-import static store.babel.babel.domain.post.dto.PostType.COMMUNITY;
+import static store.babel.babel.domain.post.dto.PostType.POST;
 
 @RequiredArgsConstructor
 @Controller
@@ -53,7 +53,7 @@ public class PostController
         PostSearchQuery query = PostSearchQuery.from(pageNumber, sort, filter, search);
 
         Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
-        List<Category> categories = categoryService.getAllCategories(COMMUNITY.getCode());
+        List<Category> categories = categoryService.getAllCategories(POST.getCode());
         List<PostCard> postCards = postService.getPostCards(query, pagination);
 
         model.addAttribute("pagination", pagination);
@@ -101,7 +101,7 @@ public class PostController
     public String getCreateForm(Model model)
     {
         List<Category> categories
-                = categoryService.getAllCategories(COMMUNITY.getCode());
+                = categoryService.getAllCategories(POST.getCode());
 
         model.addAttribute("categories", categories);
 
@@ -115,7 +115,7 @@ public class PostController
                                 Model model)
     {
         List<Category> categories
-                = categoryService.getAllCategories(COMMUNITY.getCode());
+                = categoryService.getAllCategories(POST.getCode());
         Post post = postService.getPost(postId, user.getId());
 
         model.addAttribute("categories", categories);
