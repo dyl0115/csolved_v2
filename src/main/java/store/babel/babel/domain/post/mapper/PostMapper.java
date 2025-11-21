@@ -46,6 +46,10 @@ public interface PostMapper
     // 질문 테이블의 Views 1증가
     void increaseView(Long postId);
 
+    void increaseAnswerCount(Long postId);
+
+    void decreaseAnswerCount(Long postId);
+
     // 댓글 단 게시글 리스트 조회
     List<PostCard> getAnsweredPosts(Long userId, Pagination pagination);
 
@@ -53,10 +57,10 @@ public interface PostMapper
     Long countAnsweredPosts(Long userId);
 
     // 작성한 게시글 리스트 조회
-    List<PostCard> getUserPosts(Long userId, Pagination pagination);
+    List<PostCard> getMyPosts(Long userId, Pagination pagination);
 
     //    작성한 게시글 개수 조회
-    Long countUserPosts(Long userId);
+    Long countMyPosts(Long userId);
 
     //    북마크한 게시글 조회
     List<PostCard> getBookmarkedPosts(Long userId, Pagination pagination);

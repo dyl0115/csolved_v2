@@ -20,6 +20,7 @@ public class AnswerWithComments
     private boolean anonymous;
     private String content;
     private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
     private List<Comment> comments;
 
     public static List<AnswerWithComments> from(List<Answer> answerDetailRecords,
@@ -30,17 +31,18 @@ public class AnswerWithComments
                 .toList();
     }
 
-    private static AnswerWithComments groupAnswerWithComments(Answer answerDetailRecord,
+    private static AnswerWithComments groupAnswerWithComments(Answer answer,
                                                               List<Comment> comments)
     {
         return AnswerWithComments.builder()
-                .id(answerDetailRecord.getId())
-                .authorId(answerDetailRecord.getAuthorId())
-                .authorProfileImage(answerDetailRecord.getAuthorProfileImage())
-                .authorNickname(answerDetailRecord.getAuthorNickname())
-                .anonymous(answerDetailRecord.isAnonymous())
-                .content(answerDetailRecord.getContent())
-                .createdAt(answerDetailRecord.getCreatedAt())
+                .id(answer.getId())
+                .authorId(answer.getAuthorId())
+                .authorProfileImage(answer.getAuthorProfileImage())
+                .authorNickname(answer.getAuthorNickname())
+                .anonymous(answer.isAnonymous())
+                .content(answer.getContent())
+                .createdAt(answer.getCreatedAt())
+                .deletedAt(answer.getDeletedAt())
                 .comments(comments)
                 .build();
     }

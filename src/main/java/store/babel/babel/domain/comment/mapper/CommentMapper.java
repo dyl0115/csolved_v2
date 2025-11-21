@@ -9,11 +9,13 @@ import java.util.List;
 @Mapper
 public interface CommentMapper
 {
-    void save(CommentCreateCommand comment);
+    void saveComment(CommentCreateCommand comment);
 
     List<Comment> getComments(List<Long> answerIds);
 
     Long getAuthorId(Long commentId);
+
+    Long getPostId(Long commentId);
 
     void deleteComment(Long commentId);
 }

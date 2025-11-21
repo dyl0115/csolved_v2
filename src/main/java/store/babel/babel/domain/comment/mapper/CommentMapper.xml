@@ -4,7 +4,7 @@
 
 <mapper namespace="store.babel.babel.domain.comment.mapper.CommentMapper">
 
-    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    <insert id="saveComment" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO comments(post_id,
                              answer_id,
                              author_id,
@@ -38,8 +38,14 @@
     </select>
 
     <select id="getAuthorId">
-        SELECT c.author_id
-        FROM comments c
+        SELECT author_id
+        FROM comments
+        WHERE id = #{commentId};
+    </select>
+
+    <select id="getPostId">
+        SELECT post_id
+        FROM comments
         WHERE id = #{commentId};
     </select>
 

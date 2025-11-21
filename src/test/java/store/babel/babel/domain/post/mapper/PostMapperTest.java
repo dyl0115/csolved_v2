@@ -495,7 +495,7 @@ class PostMapperTest
         Pagination pagination = Pagination.from(1L, 10L);
 
         // when
-        List<PostCard> userPosts = postMapper.getUserPosts(userId, pagination);
+        List<PostCard> userPosts = postMapper.getMyPosts(userId, pagination);
 
         // then
         assertThat(userPosts).isNotNull();
@@ -512,7 +512,7 @@ class PostMapperTest
         Long userId = 1L;
 
         // when
-        Long count = postMapper.countUserPosts(userId);
+        Long count = postMapper.countMyPosts(userId);
 
         // then
         assertThat(count).isNotNull();

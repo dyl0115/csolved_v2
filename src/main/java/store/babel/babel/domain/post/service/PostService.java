@@ -64,16 +64,17 @@ public class PostService
         postMapper.deletePost(postId);
     }
 
+    @Transactional(readOnly = true)
     public Post getPost(Long postId, Long userId)
     {
-        Post post = postMapper.getPost(postId, userId).stringifyTags();
+        Long authorId = postMapper.getAuthorId(postId);
 
-        if (post == null)
+        if (authorId == null)
         {
             throw new BabelException(ExceptionCode.POST_NOT_FOUND);
         }
 
-        return post;
+        return postMapper.getPost(postId, userId).stringifyTags();
     }
 
     public Post getPostForAdmin(Long postId, Long userId)
@@ -91,9 +92,9 @@ public class PostService
         return postMapper.countAnsweredPosts(userId);
     }
 
-    public Long countUserPosts(Long userId)
+    public Long countMyPosts(Long userId)
     {
-        return postMapper.countUserPosts(userId);
+        return postMapper.countMyPosts(userId);
     }
 
     public List<PostCard> getBookmarkedPostCards(Long userId, Pagination pagination)
@@ -106,9 +107,10 @@ public class PostService
         return postMapper.getAnsweredPosts(userId, pagination);
     }
 
-    public List<PostCard> getUserPostCards(Long userId, Pagination pagination)
+    @Transactional(readOnly = true)
+    public List<PostCard> getMyPosts(Long userId, Pagination pagination)
     {
-        return postMapper.getUserPosts(userId, pagination);
+        return postMapper.getMyPosts(userId, pagination);
     }
 
     public List<PostCard> getPostCards(PostSearchQuery query, Pagination pagination)

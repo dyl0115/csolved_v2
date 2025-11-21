@@ -4,9 +4,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.answer.dto.AnswerCreateCommand;
+import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.domain.answer.controller.dto.AnswerCreateRequest;
 import store.babel.babel.domain.answer.service.AnswerService;
+import store.babel.babel.global.utils.login.LoginUser;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/answer")
@@ -24,8 +26,9 @@ public class AnswerApiController
 
     @LoginRequest
     @DeleteMapping("/{answerId}")
-    public void deleteAnswer(@PathVariable Long answerId)
+    public void deleteAnswer(@LoginUser User user,
+                             @PathVariable Long answerId)
     {
-        answerService.deleteAnswer(answerId);
+        answerService.deleteAnswer(answerId, user.getId());
     }
 }

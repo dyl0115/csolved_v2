@@ -136,62 +136,7 @@ class AnswerMapperTest
         assertThat(answer.getContent()).isEqualTo(content);
         assertThat(answer.getAuthorId()).isEqualTo(authorId);
     }
-
-    @Test
-    @DisplayName("게시글의 답변 개수를 증가시키고 확인")
-    void increaseAnswerCount()
-    {
-        // given
-        Long postId = 1L;
-
-        // 게시글의 초기 답변 개수 확인
-        Integer beforeCount = jdbcTemplate.queryForObject(
-                "SELECT answer_count FROM posts WHERE id = ?",
-                Integer.class,
-                postId
-        );
-
-        // when
-        answerMapper.increaseAnswerCount(postId);
-
-        // then
-        Integer afterCount = jdbcTemplate.queryForObject(
-                "SELECT answer_count FROM posts WHERE id = ?",
-                Integer.class,
-                postId
-        );
-
-        assertThat(afterCount).isEqualTo(beforeCount + 1);
-    }
-
-    @Test
-    @DisplayName("게시글의 답변 개수를 감소시키고 확인")
-    void decreaseAnswerCount()
-    {
-        // given
-        Long postId = 1L;
-
-        // 답변 개수를 먼저 증가시킴
-        answerMapper.increaseAnswerCount(postId);
-
-        Integer beforeCount = jdbcTemplate.queryForObject(
-                "SELECT answer_count FROM posts WHERE id = ?",
-                Integer.class,
-                postId
-        );
-
-        // when
-        answerMapper.decreaseAnswerCount(postId);
-
-        // then
-        Integer afterCount = jdbcTemplate.queryForObject(
-                "SELECT answer_count FROM posts WHERE id = ?",
-                Integer.class,
-                postId
-        );
-
-        assertThat(afterCount).isEqualTo(beforeCount - 1);
-    }
+    
 
     @Test
     @DisplayName("댓글이 없는 답변은 false 반환")
@@ -264,30 +209,6 @@ class AnswerMapperTest
         // then
         Answer deletedAnswer = answerMapper.getAnswer(command.getId());
         assertThat(deletedAnswer.getContent()).isEqualTo("[삭제된 답변입니다.]");
-    }
-
-    @Test
-    @DisplayName("답변을 물리적으로 삭제하고 조회되지 않는지 확인")
-    void hardDelete()
-    {
-        // given
-        AnswerCreateCommand command = AnswerCreateCommand.builder()
-                .postId(1L)
-                .authorId(1L)
-                .anonymous(false)
-                .content("완전히 삭제될 답변")
-                .createdAt(LocalDateTime.now())
-                .build();
-
-        answerMapper.saveAnswer(command);
-        Long answerId = command.getId();
-
-        // when
-        answerMapper.hardDelete(answerId);
-
-        // then
-        Answer deletedAnswer = answerMapper.getAnswer(answerId);
-        assertThat(deletedAnswer).isNull();
     }
 
     @Test

@@ -3,6 +3,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="store.babel.babel.domain.answer.mapper.AnswerMapper">
+    <resultMap id="answerMap" type="store.babel.babel.domain.answer.dto.Answer">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorProfileImage" column="profile_image"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="content" column="content"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
     <insert id="saveAnswer" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO answers(post_id,
                             author_id,
@@ -17,38 +28,46 @@
     </insert>
 
     <select id="getAnswers">
-        SELECT a.id,
+        SELECT a.id            id,
                u.id            author_id,
                u.profile_image author_profile_image,
                u.nickname      author_nickname,
-               a.anonymous,
-               a.content,
-               a.created_at
+               a.anonymous     anonymous,
+               a.content       content,
+               a.created_at    created_at,
+               a.deleted_at    deleted_at
         FROM answers a
                  LEFT JOIN users u ON u.id = a.author_id
         WHERE post_id = #{postId};
     </select>
 
-    <select id="getAnswer">
-        SELECT a.*,
-               u.id       author_id,
-               u.nickname author_nickname
+    <select id="getAnswer" resultMap="answerMap">
+        SELECT a.id            id,
+               a.post_id       post_id,
+               u.id            author_id,
+               u.profile_image profile_image,
+               u.nickname      author_nickname,
+               a.anonymous     anonymous,
+               a.content       content,
+               a.created_at    created_at
         FROM answers a
                  LEFT JOIN users u ON u.id = a.author_id
-        WHERE a.id = #{answerId};
+        WHERE a.id = #{answerId}
+          AND a.deleted_at IS NULL;
     </select>
 
-    <update id="increaseAnswerCount">
-        update posts
-        set answer_count = answer_count + 1
-        where id = #{questionId};
-    </update>
+    <select id="getPostId">
+        SELECT post_id
+        FROM answers
+        WHERE id = #{answerId};
+    </select>
 
-    <update id="decreaseAnswerCount">
-        update posts
-        set answer_count = answer_count - 1
-        where id = #{questionId};
-    </update>
+    <select id="getAuthorId">
+        SELECT author_id
+        FROM answers
+        WHERE id = #{answerId}
+          AND deleted_at IS NULL;
+    </select>
 
     <select id="existComments">
         select exists(select 1
@@ -59,14 +78,7 @@
 
     <update id="deleteAnswer">
         UPDATE answers
-        SET content    = '[삭제된 답변입니다.]',
-            deleted_at = CURRENT_TIMESTAMP
+        SET deleted_at = CURRENT_TIMESTAMP
         WHERE id = #{answerId}
     </update>
-
-    <delete id="hardDelete">
-        DELETE
-        FROM answers
-        WHERE id = #{answerId}
-    </delete>
 </mapper>

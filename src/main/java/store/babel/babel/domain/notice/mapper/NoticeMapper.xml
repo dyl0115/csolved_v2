@@ -4,7 +4,7 @@
 
 <mapper namespace="store.babel.babel.domain.notice.mapper.NoticeMapper">
 
-    <resultMap id="noticeResultMap" type="store.babel.babel.domain.notice.dto.Notice">
+    <resultMap id="noticeMap" type="store.babel.babel.domain.notice.dto.Notice">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
@@ -18,7 +18,7 @@
         <result property="modifiedAt" column="modified_at"/>
     </resultMap>
 
-    <resultMap id="noticeCardResultMap" type="store.babel.babel.domain.notice.dto.NoticeCard">
+    <resultMap id="noticeCardMap" type="store.babel.babel.domain.notice.dto.NoticeCard">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
@@ -31,37 +31,34 @@
         <result property="modifiedAt" column="modified_at"/>
     </resultMap>
 
-    <insert id="saveNotice"
-            useGeneratedKeys="true"
-            keyProperty="id">
-        INSERT INTO posts(post_type,
-                          user_id,
-                          anonymous,
-                          title,
-                          content)
-        VALUES (#{postType},
+    <insert id="saveNotice" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO notice(title,
+                           content,
+                           author_id,
+                           is_pinned,
+                           created_at)
+        VALUES (#{title},
+                #{content},
                 #{authorId},
-                #{anonymous},
-                #{title},
-                #{content});
+                #{isPinned},
+                CURRENT_TIMESTAMP);
     </insert>
 
     <update id="updateNotice">
-        UPDATE posts
-        SET anonymous   = #{anonymous},
-            title       = #{title},
+        UPDATE notice
+        SET title       = #{title},
             content     = #{content},
-            modified_at = current_timestamp
+            modified_at = CURRENT_TIMESTAMP
         WHERE id = #{noticeId};
     </update>
 
     <update id="deleteNotice">
-        UPDATE posts
-        SET deleted_at = current_timestamp
+        UPDATE notice
+        SET deleted_at = CURRENT_TIMESTAMP
         WHERE id = #{noticeId};
     </update>
 
-    <select id="getNotice" resultMap="noticeResultMap">
+    <select id="getNotice" resultMap="noticeMap">
         SELECT p.id           id,
                p.title        title,
                u.id           author_id,
@@ -78,7 +75,7 @@
         WHERE p.id = #{noticeId};
     </select>
 
-    <select id="getNoticeCards" resultMap="noticeCardResultMap">
+    <select id="getNoticeCards" resultMap="noticeCardMap">
         SELECT
         p.id id,
         p.title title,

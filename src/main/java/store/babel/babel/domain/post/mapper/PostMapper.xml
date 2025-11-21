@@ -4,7 +4,7 @@
 
 <mapper namespace="store.babel.babel.domain.post.mapper.PostMapper">
 
-    <resultMap id="postResultMap" type="store.babel.babel.domain.post.dto.Post">
+    <resultMap id="postMap" type="store.babel.babel.domain.post.dto.Post">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
@@ -25,7 +25,7 @@
         </collection>
     </resultMap>
 
-    <resultMap id="postCardResultMap" type="store.babel.babel.domain.post.dto.PostCard">
+    <resultMap id="postCardMap" type="store.babel.babel.domain.post.dto.PostCard">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="authorId" column="author_id"/>
@@ -83,26 +83,26 @@
         WHERE id = #{postId};
     </update>
 
-    <select id="getPost" resultMap="postResultMap">
-        SELECT p.id                                   id,
-               p.title                                title,
-               p.anonymous                            anonymous,
-               p.content                              content,
-               p.views                                views,
-               p.likes                                likes,
-               p.answer_count                         answer_count,
-               p.created_at                           created_at,
-               p.modified_at                          modified_at,
-               u.id                                   author_id,
-               u.nickname                             author_nickname,
-               c.id                                   category_id,
-               c.name                                 category_name,
-               t.id                                   tag_id,
-               t.name                                 tag_name,
+    <select id="getPost" resultMap="postMap">
+        SELECT p.id                                id,
+               p.title                             title,
+               p.anonymous                         anonymous,
+               p.content                           content,
+               p.views                             views,
+               p.likes                             likes,
+               p.answer_count                      answer_count,
+               p.created_at                        created_at,
+               p.modified_at                       modified_at,
+               u.id                                author_id,
+               u.nickname                          author_nickname,
+               c.id                                category_id,
+               c.name                              category_name,
+               t.id                                tag_id,
+               t.name                              tag_name,
                EXISTS(SELECT 1
                       FROM bookmarks b
                       WHERE b.post_id = p.id
-                        AND b.user_id = #{userId}) AS bookmarked
+                        AND b.user_id = #{userId}) bookmarked
         FROM POSTS p
                  LEFT JOIN users u ON p.user_id = u.id
                  LEFT JOIN category c ON p.category_id = c.id
@@ -112,7 +112,7 @@
           AND p.deleted_at IS NULL;
     </select>
 
-    <select id="getPostForAdmin" resultMap="postResultMap">
+    <select id="getPostForAdmin" resultMap="postMap">
         SELECT p.id                                   id,
                p.title                                title,
                p.anonymous                            anonymous,
@@ -140,7 +140,7 @@
         WHERE p.id = #{postId};
     </select>
 
-    <select id="getPostCards" resultMap="postCardResultMap">
+    <select id="getPostCards" resultMap="postCardMap">
         SELECT
         sub.post_id id,
         sub.title title,
@@ -242,7 +242,7 @@
         WHERE id = #{postId};
     </update>
 
-    <select id="getAnsweredPosts" resultMap="postCardResultMap">
+    <select id="getAnsweredPosts" resultMap="postCardMap">
         SELECT p.id           id,
                p.post_type    post_type,
                p.id           post_id,
@@ -261,20 +261,24 @@
         FROM (SELECT DISTINCT post_id
               FROM ((SELECT a.post_id
                      FROM answers a
+                              JOIN posts p ON p.id = a.post_id
                      WHERE author_id = #{userId}
-                       AND deleted_at IS NULL)
+                       AND p.deleted_at IS NULL
+                       AND a.deleted_at IS NULL)
                     UNION
                     (SELECT c.post_id
                      FROM comments c
+                              JOIN posts p on p.id = c.post_id
                      WHERE author_id = #{userId}
-                       AND deleted_at IS NULL)) AS user_activities
+                       AND p.deleted_at IS NULL
+                       AND c.deleted_at IS NULL)) AS user_activity
               ORDER BY post_id DESC
               LIMIT #{pagination.offset}, #{pagination.size}) AS paginated_posts
                  JOIN posts p ON p.id = paginated_posts.post_id
                  JOIN users u ON u.id = p.user_id
                  JOIN category c ON c.id = p.category_id
                  LEFT JOIN post_tags pt ON pt.post_id = p.id
-                 LEFT JOIN tags t ON t.id = pt.tag_id;
+                 LEFT JOIN tags t ON t.id = pt.tag_id
     </select>
 
     <select id="countAnsweredPosts">
@@ -290,7 +294,7 @@
                  AND deleted_at IS NULL)) reply_count;
     </select>
 
-    <select id="getUserPosts" resultMap="postCardResultMap">
+    <select id="getMyPosts" resultMap="postCardMap">
         SELECT up.id           id,
                up.post_type    post_type,
                up.id           post_id,
@@ -327,7 +331,7 @@
                  LEFT JOIN tags t ON t.id = pt.tag_id
     </select>
 
-    <select id="countUserPosts">
+    <select id="countMyPosts">
         SELECT count(p.id)
         FROM posts p
         WHERE p.user_id = #{userId}
@@ -337,10 +341,11 @@
     <select id="getAuthorId">
         SELECT user_id
         FROM posts
-        WHERE id = #{postId};
+        WHERE id = #{postId}
+          AND deleted_at IS NULL;
     </select>
 
-    <select id="getBookmarkedPosts" resultMap="postCardResultMap">
+    <select id="getBookmarkedPosts" resultMap="postCardMap">
         SELECT sub.post_id    id,
                p.post_type    post_type,
                p.title        title,
@@ -368,4 +373,16 @@
                  LEFT JOIN post_tags pt ON p.id = pt.post_id
                  LEFT JOIN tags t ON pt.tag_id = t.id;
     </select>
+
+    <update id="increaseAnswerCount">
+        UPDATE posts
+        SET answer_count = answer_count + 1
+        WHERE id = #{postId};
+    </update>
+
+    <update id="decreaseAnswerCount">
+        UPDATE posts
+        SET answer_count = answer_count - 1
+        WHERE id = #{postId};
+    </update>
 </mapper>

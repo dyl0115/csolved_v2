@@ -70,7 +70,7 @@ class CommentMapperTest
                 .build();
 
         // when
-        commentMapper.save(command);
+        commentMapper.saveComment(command);
 
         // then
         assertThat(command.getId()).isNotNull();
@@ -100,8 +100,8 @@ class CommentMapperTest
                 .content("댓글2")
                 .build();
 
-        commentMapper.save(command1);
-        commentMapper.save(command2);
+        commentMapper.saveComment(command1);
+        commentMapper.saveComment(command2);
 
         // when
         List<Comment> comments = commentMapper.getComments(List.of(answerId));
@@ -137,8 +137,8 @@ class CommentMapperTest
                 .content("답변2의 댓글")
                 .build();
 
-        commentMapper.save(command1);
-        commentMapper.save(command2);
+        commentMapper.saveComment(command1);
+        commentMapper.saveComment(command2);
 
         // when
         List<Comment> comments = commentMapper.getComments(List.of(answerId1, answerId2));
@@ -163,7 +163,7 @@ class CommentMapperTest
                 .content("테스트 댓글")
                 .build();
 
-        commentMapper.save(command);
+        commentMapper.saveComment(command);
 
         // when
         Long authorId = commentMapper.getAuthorId(command.getId());
@@ -185,7 +185,7 @@ class CommentMapperTest
                 .content("삭제될 댓글")
                 .build();
 
-        commentMapper.save(command);
+        commentMapper.saveComment(command);
         Long commentId = command.getId();
 
         // when
@@ -211,7 +211,7 @@ class CommentMapperTest
                 .content("익명 댓글")
                 .build();
 
-        commentMapper.save(command);
+        commentMapper.saveComment(command);
 
         // when
         List<Comment> comments = commentMapper.getComments(List.of(answerId));
@@ -273,9 +273,9 @@ class CommentMapperTest
                 .content("사용자3의 댓글")
                 .build();
 
-        commentMapper.save(command1);
-        commentMapper.save(command2);
-        commentMapper.save(command3);
+        commentMapper.saveComment(command1);
+        commentMapper.saveComment(command2);
+        commentMapper.saveComment(command3);
 
         // when
         List<Comment> comments = commentMapper.getComments(List.of(answerId));

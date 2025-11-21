@@ -15,15 +15,13 @@ public interface AnswerMapper
 
     Answer getAnswer(Long answerId);
 
+    Long getPostId(Long answerId);
+
+    Long getAuthorId(Long answerId);
+
     Answer getAnswerForAdmin(Long answerId);
-
-    void increaseAnswerCount(Long postId);
-
-    void decreaseAnswerCount(Long postId);
 
     boolean existComments(Long answerId);
 
     void deleteAnswer(Long answerId);
-
-    void hardDelete(Long answerId);
 }

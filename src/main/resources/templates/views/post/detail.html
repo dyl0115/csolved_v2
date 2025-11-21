@@ -266,17 +266,22 @@
                                             </span>
                                             
                                             <!-- 댓글삭제 버튼 -->
-                                            <span th:if="${answer.authorId == user.id}">
+                                            <span th:if="${answer.authorId == user.id && answer.deletedAt == null}">
                                                 <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
                                                         th:onclick="|deleteAnswer(${answer.id})|">
-                                                    <i data-lucide="trash-2" class="w-3 h-3"></i>
-                                                    <span>삭제</span>
+                                                    <i data-lucide="trash-2"
+                                                       class="w-3 h-3">
+                                                    </i>
+                                                    <span>
+                                                        삭제
+                                                    </span>
                                                 </button>
                                             </span>
                                         </div>
                                         
                                         <!-- 댓글내용 -->
                                         <div class="mb-3 text-gray-700 prose max-w-none break-words"
+                                             th:classappend="${answer.deletedAt != null} ? 'opacity-50 italic'"
                                              th:utext="${answer.content}">
                                             댓글 내용
                                         </div>

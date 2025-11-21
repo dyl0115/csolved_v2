@@ -22,6 +22,7 @@ public class Answer
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
+    private LocalDateTime deletedAt;
 
     public static Answer from(AnswerCreateCommand command)
     {
@@ -32,5 +33,15 @@ public class Answer
                 .content(command.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
+    }
+
+    public void maskContent(String deletedContentMessage)
+    {
+        if (isDeleted()) this.content = deletedContentMessage;
+    }
+
+    public boolean isDeleted()
+    {
+        return this.deletedAt != null;
     }
 }

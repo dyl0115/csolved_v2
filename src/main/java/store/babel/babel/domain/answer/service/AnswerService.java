@@ -9,47 +9,86 @@ import store.babel.babel.domain.answer.mapper.AnswerMapper;
 import store.babel.babel.domain.answer.dto.AnswerWithComments;
 import store.babel.babel.domain.comment.mapper.CommentMapper;
 import store.babel.babel.domain.comment.dto.Comment;
+import store.babel.babel.domain.post.mapper.PostMapper;
+import store.babel.babel.global.exception.BabelException;
+import store.babel.babel.global.exception.ExceptionCode;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class AnswerService
 {
+    private static final String DELETED_CONTENT_MESSAGE = "[삭제된 댓글 입니다.]";
+
     private final AnswerMapper answerMapper;
+    private final PostMapper postMapper;
     private final CommentMapper commentMapper;
 
     @Transactional
     public void saveAnswer(AnswerCreateCommand command)
     {
-        answerMapper.increaseAnswerCount(command.getPostId());
+        postMapper.increaseAnswerCount(command.getPostId());
         answerMapper.saveAnswer(command);
     }
 
     @Transactional
-    public void deleteAnswer(Long answerId)
+    public void deleteAnswer(Long answerId, Long userId)
     {
-        boolean commentsExist = answerMapper.existComments(answerId);
         Answer answer = answerMapper.getAnswer(answerId);
 
-        if (commentsExist)
+        if (answer == null)
         {
-            answerMapper.deleteAnswer(answerId);
+            throw new BabelException(ExceptionCode.ANSWER_NOT_FOUND);
         }
-        else
+
+        if (!Objects.equals(answer.getAuthorId(), userId))
         {
-            answerMapper.decreaseAnswerCount(answer.getPostId());
-            answerMapper.hardDelete(answerId);
+            throw new BabelException(ExceptionCode.ANSWER_DELETE_DENIED);
         }
+
+        postMapper.decreaseAnswerCount(answer.getPostId());
+        answerMapper.deleteAnswer(answerId);
     }
 
     public List<AnswerWithComments> getAnswersWithComments(Long postId)
     {
         List<Answer> answers = answerMapper.getAnswers(postId);
-        Map<Long, List<Comment>> answerWithCommentsMap = mapAnswerIdToComments(extractIds(answers));
-        return AnswerWithComments.from(answers, answerWithCommentsMap);
+        Map<Long, List<Comment>> commentsByAnswer = mapAnswerIdToComments(extractIds(answers));
+        removeDeletedAnswersWithoutComments(answers, commentsByAnswer);
+        maskDeletedAnswersWithComments(answers, commentsByAnswer);
+        return AnswerWithComments.from(answers, commentsByAnswer);
+    }
+
+    private void removeDeletedAnswersWithoutComments(List<Answer> answers, Map<Long, List<Comment>> commentsByAnswer)
+    {
+        answers.removeIf(answer -> isDeletedAndHasNoComments(answer, commentsByAnswer));
+    }
+
+    private void maskDeletedAnswersWithComments(List<Answer> answers, Map<Long, List<Comment>> commentByAnswer)
+    {
+        answers.stream()
+                .filter(answer -> isDeletedAndHasComments(answer, commentByAnswer))
+                .forEach(answer -> answer.maskContent(DELETED_CONTENT_MESSAGE));
+    }
+
+    private boolean isDeletedAndHasComments(Answer answer, Map<Long, List<Comment>> commentByAnswer)
+    {
+        return answer.isDeleted() && hasComments(answer.getId(), commentByAnswer);
+    }
+
+    private boolean isDeletedAndHasNoComments(Answer answer, Map<Long, List<Comment>> commentsByAnswer)
+    {
+        return answer.isDeleted() && !hasComments(answer.getId(), commentsByAnswer);
+    }
+
+    private boolean hasComments(Long answerId, Map<Long, List<Comment>> commentsByAnswer)
+    {
+        return !commentsByAnswer.getOrDefault(answerId, Collections.emptyList()).isEmpty();
     }
 
     private Map<Long, List<Comment>> mapAnswerIdToComments(List<Long> answerIds)

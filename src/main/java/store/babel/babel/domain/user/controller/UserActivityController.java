@@ -45,15 +45,16 @@ public class UserActivityController
 
         Long repliedCount = postService.countAnsweredPosts(user.getId());
         pagination = Pagination.from(repliedPage, repliedCount);
+        System.out.println("offset=" + pagination.getOffset() + " size=" + pagination.getSize());
         List<PostCard> replied = postService.getAnsweredPostCards(user.getId(), pagination);
 
         model.addAttribute("replied", replied);
         model.addAttribute("repliedPagination", pagination);
 
 
-        Long myPostCount = postService.countUserPosts(user.getId());
+        Long myPostCount = postService.countMyPosts(user.getId());
         pagination = Pagination.from(myPostPage, myPostCount);
-        List<PostCard> myPosts = postService.getUserPostCards(user.getId(), pagination);
+        List<PostCard> myPosts = postService.getMyPosts(user.getId(), pagination);
 
         model.addAttribute("myPosts", myPosts);
         model.addAttribute("myPostPagination", pagination);
@@ -83,9 +84,9 @@ public class UserActivityController
                                @PageInfo(type = "myPostPage") Long myPostPage,
                                Model model)
     {
-        Long myPostCount = postService.countUserPosts(user.getId());
+        Long myPostCount = postService.countMyPosts(user.getId());
         Pagination pagination = Pagination.from(myPostPage, myPostCount);
-        List<PostCard> myPosts = postService.getUserPostCards(user.getId(), pagination);
+        List<PostCard> myPosts = postService.getMyPosts(user.getId(), pagination);
 
         model.addAttribute("myPosts", myPosts);
         model.addAttribute("myPostPagination", pagination);
@@ -101,6 +102,8 @@ public class UserActivityController
     {
         Long repliedCount = postService.countAnsweredPosts(user.getId());
         Pagination pagination = Pagination.from(repliedPage, repliedCount);
+        System.out.println("offset=" + pagination.getOffset() + " size=" + pagination.getSize());
+
         List<PostCard> replied = postService.getAnsweredPostCards(user.getId(), pagination);
 
         model.addAttribute("replied", replied);
