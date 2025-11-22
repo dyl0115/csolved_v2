@@ -23,6 +23,7 @@ import java.util.List;
 public class ReportController
 {
     private static final String VIEW_REPORTS = "/views/report/list";
+    private static final String FRAGMENT_COMMENT_DETAIL = "/views/report/list :: "
 
     private final ReportService reportService;
 

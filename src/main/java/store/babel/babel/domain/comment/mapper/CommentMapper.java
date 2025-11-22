@@ -18,4 +18,6 @@ public interface CommentMapper
     Long getPostId(Long commentId);
 
     void deleteComment(Long commentId);
+
+    Comment getCommentForAdmin(Long commentId);
 }

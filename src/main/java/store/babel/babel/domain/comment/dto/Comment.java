@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 public class Comment
 {
     private Long id;
+    private Long postId;
     private Long answerId;
     private Long authorId;
     private String authorProfileImage;
@@ -17,4 +18,5 @@ public class Comment
     private boolean anonymous;
     private String content;
     private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
 }

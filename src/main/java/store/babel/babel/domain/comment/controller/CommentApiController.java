@@ -3,6 +3,7 @@ package store.babel.babel.domain.comment.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import store.babel.babel.domain.comment.dto.Comment;
 import store.babel.babel.domain.comment.dto.CommentCreateCommand;
 import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
@@ -30,5 +31,12 @@ public class CommentApiController
                               @PathVariable Long commentId)
     {
         commentService.delete(user.getId(), commentId);
+    }
+
+    @LoginRequest
+    @GetMapping("{commentId}")
+    public Comment getCommentForAdmin(@PathVariable Long commentId)
+    {
+        return commentService.getCommentForAdmin(commentId);
     }
 }

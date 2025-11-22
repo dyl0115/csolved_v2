@@ -3,6 +3,7 @@ package store.babel.babel.domain.comment.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.babel.babel.domain.comment.dto.Comment;
 import store.babel.babel.domain.comment.dto.CommentCreateCommand;
 import store.babel.babel.domain.comment.mapper.CommentMapper;
 import store.babel.babel.domain.post.mapper.PostMapper;
@@ -34,5 +35,11 @@ public class CommentService
         }
         postMapper.decreaseAnswerCount(commentMapper.getPostId(commentId));
         commentMapper.deleteComment(commentId);
+    }
+
+    @Transactional(readOnly = true)
+    public Comment getCommentForAdmin(Long commentId)
+    {
+        return commentMapper.getCommentForAdmin(commentId);
     }
 }

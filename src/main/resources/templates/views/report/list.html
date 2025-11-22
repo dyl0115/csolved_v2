@@ -208,7 +208,7 @@
                                                     ANSWER
                                                 </button>
                                                 <button class="text-sm text-gray-900"
-                                                        th:onclick="|viewDetailComment(${report.targetId})|"
+                                                        th:onclick="|openCommentReportModal(${report.targetId})|"
                                                         th:if="${report.targetType == 'COMMENT'}">
                                                     COMMENT
                                                 </button>
@@ -570,9 +570,9 @@
             </div>
         </div>
         
-        <!-- 상세보기 모달 -->
+        <!-- 신고사유 상세보기 모달 -->
         <div id="detailModal"
-             class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+             class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-6">
@@ -592,6 +592,67 @@
                 </div>
             </div>
         </div>
+        
+        <!-- 댓글, 대댓글 상세보기 모달 -->
+        <div th:fragment="commentReportModal"
+             id="comment-report-modal"
+             class="modal fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+            
+            <div class="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
+                
+                <!-- 헤더 -->
+                <div class="flex items-center justify-between px-5 py-4 border-b">
+                    <h3 class="font-bold text-lg">
+                        신고된 댓글
+                    </h3>
+                    <button onclick="closeDetailModal()"
+                            class="text-gray-400 hover:text-gray-600">
+                        <i data-lucide="x"
+                           class="w-5 h-5">
+                        </i>
+                    </button>
+                </div>
+                
+                <!-- 본문 -->
+                <div class="p-5 space-y-4">
+                    <!-- 작성자 정보 -->
+                    <div class="flex items-center gap-3">
+                        <img id="modal-author-image"
+                             class="w-10 h-10 rounded-full object-cover"
+                             src=""
+                             alt="프로필">
+                        <div>
+                            <p id="modal-author-nickname"
+                               class="font-medium text-gray-900"></p>
+                            <p id="modal-created-at"
+                               class="text-sm text-gray-500"></p>
+                        </div>
+                    </div>
+                    
+                    <!-- 댓글 내용 -->
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p id="modal-content"
+                           class="text-gray-800 whitespace-pre-wrap"></p>
+                    </div>
+                    
+                    <!-- 메타 정보 -->
+                    <div class="text-sm text-gray-500 space-y-1">
+                        <a>본문 ID: <span id="modal-post-id"></span></a>
+                        <p>댓글 ID: <span id="modal-comment-id"></span></p>
+                        <p>답변 ID: <span id="modal-answer-id"></span></p>
+                    </div>
+                </div>
+                
+                <!-- 푸터 -->
+                <div class="flex gap-2 px-5 py-4 border-t bg-gray-50">
+                    <button onclick="closeDetailModal()"
+                            class="flex-1 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
+                        닫기
+                    </button>
+                </div>
+            </div>
+        </div>
+        
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
     
@@ -666,23 +727,6 @@
             {
                 console.error('Error:', error);
                 alert('상세 정보를 불러오는데 실패했습니다.');
-            }
-        }
-
-        // 신고된 댓글 내용 보기
-        async function viewDetailAnswer(answerId)
-        {
-            try
-            {
-                const response = await fetch(`/answer/${answerId}`);
-                document.getElementById('detailContent').textContent = await response.text();
-                document.getElementById('detailModal').classList.remove('hidden');
-                lucide.createIcons();
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고된 댓글을 불러오는데 실패했습니다.');
             }
         }
 
@@ -830,26 +874,36 @@
             }
         }
 
+        // 모달 수정하기: 지금 너무 복잡함.
         // 신고된 대댓글 내용 보기
-        async function viewDetailComment(commentId)
+        function openCommentReportModal(commentId)
         {
-            try
-            {
-                const response = await fetch(`/comment/${commentId}`);
-                document.getElementById('detailContent').textContent = await response.text();
-                document.getElementById('detailModal').classList.remove('hidden');
-                lucide.createIcons();
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고된 대댓글을 불러오는데 실패했습니다.');
-            }
+            fetch(`/api/comment/${commentId}`)
+                .then(res => res.json())
+                .then(comment =>
+                {
+                    currentCommentId = comment.id;
+
+                    document.getElementById('modal-author-image').src =
+                        comment.anonymous ? '/assets/anonymous.jpg' : comment.authorProfileImage;
+                    document.getElementById('modal-author-nickname').textContent =
+                        comment.anonymous ? '익명' : comment.authorNickname;
+                    document.getElementById('modal-created-at').textContent = comment.createdAt;
+                    document.getElementById('modal-content').textContent = comment.content;
+                    document.getElementById('modal-post-id').textContent = comment.postId;
+                    document.getElementById('modal-comment-id').textContent = comment.id;
+                    document.getElementById('modal-answer-id').textContent = comment.answerId;
+
+                    const modal = document.getElementById('comment-report-modal');
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                });
         }
 
         function closeDetailModal()
         {
-            document.getElementById('detailModal').classList.add('hidden');
+            const modals = document.querySelectorAll('.modal')
+            modals.forEach(modal => modal.classList.add('hidden'));
         }
 
         // ESC 키로 모달 닫기

@@ -20,13 +20,15 @@
     <select id="getComments">
         SELECT
         c.id id,
+        c.post_id post_id,
         c.answer_id answer_id,
         c.author_id author_id,
         u.profile_image author_profile_image,
         u.nickname author_nickname,
         c.anonymous anonymous,
         c.content content,
-        c.created_at created_at
+        c.created_at created_at,
+        c.deleted_at deleted_at
         FROM comments c
         LEFT JOIN users u ON c.author_id = u.id
         <if test="answerIds != null and answerIds.size() > 0">
@@ -35,6 +37,22 @@
                 #{answerId}
             </foreach>
         </if>
+    </select>
+
+    <select id="getCommentForAdmin">
+        SELECT c.id            id,
+               c.post_id       post_id,
+               c.answer_id     answer_id,
+               c.author_id     author_id,
+               u.profile_image author_profile_image,
+               u.nickname      author_nickname,
+               c.anonymous     anonymous,
+               c.content       content,
+               c.created_at    created_at,
+               c.deleted_at    deleted_at
+        FROM comments c
+                 JOIN users u ON c.author_id = u.id
+        WHERE c.id = #{commentId};
     </select>
 
     <select id="getAuthorId">
