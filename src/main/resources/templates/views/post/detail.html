@@ -34,25 +34,30 @@
                                     </h3>
                                     
                                     <!-- 게시글 메뉴 (드롭다운) -->
-                                    <div class="relative flex-shrink-0"
-                                         th:if="${post.authorId == user.id || post.authorId != user.id}">
+                                    <div class="relative flex-shrink-0">
                                         <!-- 메뉴 버튼 -->
-                                        <button onclick="togglePostMenu()"
+                                        <button onclick="toggleMenu('post-menu')"
                                                 class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
                                                 id="post-menu-button">
-                                            <i data-lucide="more-vertical" class="w-5 h-5"></i>
+                                            <i data-lucide="ellipsis"
+                                               class="w-5 h-5">
+                                            </i>
                                         </button>
                                         
                                         <!-- 드롭다운 메뉴 -->
                                         <div id="post-menu"
-                                             class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                             class="post-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                                             <div class="py-1">
                                                 <!-- 수정하기 (작성자만) -->
                                                 <a th:if="${post.authorId == user.id}"
                                                    th:href="@{/post/{id}/updateForm(id=${post.id})}"
                                                    class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150">
-                                                    <i data-lucide="edit" class="w-4 h-4"></i>
-                                                    <span>수정하기</span>
+                                                    <i data-lucide="edit"
+                                                       class="w-4 h-4">
+                                                    </i>
+                                                    <span>
+                                                        수정하기
+                                                    </span>
                                                 </a>
                                                 
                                                 <!-- 삭제하기 (작성자만) -->
@@ -144,10 +149,7 @@
                     <div class="flex flex-wrap gap-3 mb-6">
                         <!-- 좋아요 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-sm
-                                        disabled:bg-gray-400
-                                        disabled:cursor-not-allowed
-                                        disabled:opacity-60
-                                        disabled:shadow-none"
+                                        disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
                                 id="like-button"
                                 onclick="addLike()">
                             <i data-lucide="heart" class="w-5 h-5"></i>
@@ -163,8 +165,12 @@
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition shadow-sm"
                                 id="toggle-answer-form"
                                 onclick="toggleAnswerForm()">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i>
-                            <span>답변 달기</span>
+                            <i data-lucide="message-circle"
+                               class="w-5 h-5">
+                            </i>
+                            <span>
+                                답변 달기
+                            </span>
                         </button>
                         
                         <!-- 북마크 버튼 -->
@@ -265,18 +271,47 @@
                                                 1시간 전
                                             </span>
                                             
-                                            <!-- 댓글삭제 버튼 -->
-                                            <span th:if="${answer.authorId == user.id && answer.deletedAt == null}">
-                                                <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
-                                                        th:onclick="|deleteAnswer(${answer.id})|">
-                                                    <i data-lucide="trash-2"
-                                                       class="w-3 h-3">
+                                            <!-- 댓글 메뉴 (드롭다운) -->
+                                            <div class="relative flex-shrink-0">
+                                                <!-- 댓글 메뉴 버튼 -->
+                                                <button th:onclick="|toggleMenu('answer-menu' + ${answer.id})|"
+                                                        class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                                        id="answer-menu-button">
+                                                    <i data-lucide="ellipsis"
+                                                       class="w-5 h-5">
                                                     </i>
-                                                    <span>
-                                                        삭제
-                                                    </span>
                                                 </button>
-                                            </span>
+                                                
+                                                <!-- 댓글 드롭다운 메뉴 -->
+                                                <div th:id="answer-menu + ${answer.id}"
+                                                     class="answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                    <div class="py-1">
+                                                        <!-- 댓글 삭제하기 (작성자만) -->
+                                                        <button th:if="${answer.authorId == user.id}"
+                                                                th:onclick="|deleteAnswer(${answer.id})|"
+                                                                class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                            <i data-lucide="trash-2"
+                                                               class="w-4 h-4">
+                                                            </i>
+                                                            <span>
+                                                                삭제하기
+                                                            </span>
+                                                        </button>
+                                                        
+                                                        <!-- 댓글 신고하기 (작성자가 아닐 때) -->
+                                                        <button th:if="${answer.authorId != user.id}"
+                                                                th:onclick="|openReportModal('ANSWER', ${answer.id})|"
+                                                                class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150">
+                                                            <i data-lucide="alert-triangle"
+                                                               class="w-4 h-4">
+                                                            </i>
+                                                            <span>
+                                                                신고하기
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                         
                                         <!-- 댓글내용 -->
@@ -363,7 +398,6 @@
                                             
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center flex-wrap gap-2 mb-2">
-                                                    
                                                     <!-- 대댓쓴이 닉네임 -->
                                                     <span class="font-bold text-gray-800 text-sm"
                                                           th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
@@ -376,14 +410,47 @@
                                                         1시간 전
                                                     </span>
                                                     
-                                                    <!-- 대댓글 삭제버튼-->
-                                                    <span th:if="${comment.authorId == user.id}">
-                                                        <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
-                                                                th:onclick="|deleteComment(${comment.id})|">
-                                                            <i data-lucide="trash-2" class="w-3 h-3"></i>
-                                                            <span>삭제</span>
+                                                    <!-- 대댓글 메뉴 (드롭다운) -->
+                                                    <div class="relative flex-shrink-0">
+                                                        <!-- 대댓글 메뉴 버튼 -->
+                                                        <button th:onclick="|toggleMenu('comment-menu' + ${comment.id})|"
+                                                                class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                                                id="comment-menu-button">
+                                                            <i data-lucide="ellipsis"
+                                                               class="w-5 h-5">
+                                                            </i>
                                                         </button>
-                                                       </span>
+                                                        
+                                                        <!-- 댓글 드롭다운 메뉴 -->
+                                                        <div th:id="comment-menu + ${comment.id}"
+                                                             class="comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                            <div class="py-1">
+                                                                <!-- 댓글 삭제하기 (작성자만) -->
+                                                                <button th:if="${comment.authorId == user.id}"
+                                                                        th:onclick="|deleteComment(${comment.id})|"
+                                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                                    <i data-lucide="trash-2"
+                                                                       class="w-4 h-4">
+                                                                    </i>
+                                                                    <span>
+                                                                        삭제하기
+                                                                    </span>
+                                                                </button>
+                                                                
+                                                                <!-- 댓글 신고하기 (작성자가 아닐 때) -->
+                                                                <button th:if="${comment.authorId != user.id}"
+                                                                        th:onclick="|openReportModal('COMMENT', ${comment.id})|"
+                                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150">
+                                                                    <i data-lucide="alert-triangle"
+                                                                       class="w-4 h-4">
+                                                                    </i>
+                                                                    <span>
+                                                                        신고하기
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 
                                                 <!-- 대댓글 내용 -->
@@ -405,8 +472,11 @@
                     <!-- 검색창 위젯 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden ">
                         <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="search" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">검색</h3>
+                            <i data-lucide="search"
+                               class="w-5 h-5"></i>
+                            <h3 class="font-semibold">
+                                검색
+                            </h3>
                         </div>
                         <div class="p-4">
                             <form method="get"
@@ -453,42 +523,41 @@
             </div>
         </div>
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
-        <!-- 모달 HTML -->
         <div th:replace="~{/fragments/report-modal :: reportModal(${user})}"></div>
         <div th:replace="~{/fragments/report-modal :: reportModalScript}"></div>
     </body>
     <script th:inline="javascript">
 
+        <!-- TODO: 이후 전역변수를 활용한 방식으로 리팩토링 하기 -->
+        const uiState = {
+            openMenu: null,
+            openForm: null,
+        }
+
         document.addEventListener('DOMContentLoaded', async function ()
         {
             initNavigation();
             lucide.createIcons();
-
-            // 메뉴 외부 클릭 시 닫기
-            document.addEventListener('click', function (event)
-            {
-                const menu = document.getElementById('post-menu');
-                const button = document.getElementById('post-menu-button');
-
-                if (menu && button && !menu.contains(event.target) && !button.contains(event.target))
-                {
-                    menu.classList.add('hidden');
-                }
-            });
         });
 
         async function toggleAnswerForm()
         {
+            const commentFormCards = document.querySelectorAll('.comment-form');
+            commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
+
             const answerFormCard = document.getElementById('answer-form-card');
             answerFormCard.classList.toggle('hidden');
         }
 
         async function toggleCommentForm(button)
         {
-            const commentFormCards = document.querySelectorAll('.comment-form');
-            const commentForm = button.nextElementSibling;
+            const answerFormCard = document.getElementById('answer-form-card');
+            answerFormCard.classList.add('hidden');
 
+            const commentFormCards = document.querySelectorAll('.comment-form');
             commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
+
+            const commentForm = button.nextElementSibling;
             commentForm.classList.toggle('hidden');
         }
 
@@ -748,50 +817,20 @@
             }
         }
 
-        function togglePostMenu()
+        function toggleMenu(menuId)
         {
-            const menu = document.getElementById('post-menu');
-            menu.classList.toggle('hidden');
+            const menu = document.getElementById(menuId);
 
-            // 아이콘 다시 렌더링
-            setTimeout(() =>
+            if (uiState.openMenu && uiState.openMenu !== menu)
             {
-                lucide.createIcons();
-            }, 10);
-        }
+                uiState.openMenu.classList.add('hidden');
+            }
 
-        // async function reportPost()
-        // {
-        //     const postId = document.getElementById('postId').textContent;
-        //
-        //     if (confirm('이 게시글을 신고하시겠습니까?'))
-        //     {
-        //         try
-        //         {
-        //             const response = await fetch(`/api/post/${postId}/report`, {
-        //                 method: 'POST',
-        //                 headers: {
-        //                     'Content-Type': 'application/json',
-        //                 },
-        //             });
-        //
-        //             if (response.ok)
-        //             {
-        //                 alert('신고가 접수되었습니다.');
-        //                 togglePostMenu(); // 메뉴 닫기
-        //             } else
-        //             {
-        //                 const errorData = await response.json();
-        //                 alert(errorData.message || '신고 처리 중 오류가 발생했습니다.');
-        //             }
-        //         }
-        //         catch (error)
-        //         {
-        //             console.error('Error:', error);
-        //             alert('서버와의 통신 중 오류가 발생했습니다.');
-        //         }
-        //     }
-        // }
+            menu.classList.toggle('hidden');
+            uiState.openMenu = menu.classList.contains('hidden') ? null : menu;
+
+            lucide.createIcons();
+        }
     </script>
     <script src="/js/timeago.js"></script>
     <script src="/js/navigation.js"></script>

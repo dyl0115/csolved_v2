@@ -14,7 +14,6 @@ async function signOut()
                 const result = await response.json();
                 if (result.success)
                 {
-                    alert("로그아웃이 완료되었습니다.");
                     window.location.replace('/auth/signIn');
                 } else
                 {
