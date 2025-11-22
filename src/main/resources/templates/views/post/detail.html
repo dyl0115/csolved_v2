@@ -251,9 +251,16 @@
                                     
                                     <!-- 댓쓴이 프로필 -->
                                     <div class="flex-shrink-0">
-                                        <img class="rounded-full w-10 h-10 object-cover"
-                                             th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
-                                             alt="프로필 이미지"/>
+                                        <th:block th:if="${answer.deletedAt != null}">
+                                            <img class="rounded-full w-10 h-10 object-cover"
+                                                 src="/assets/anonymous.jpg"
+                                                 alt="프로필 이미지"/>
+                                        </th:block>
+                                        <th:block th:if="${answer.deletedAt == null}">
+                                            <img class="rounded-full w-10 h-10 object-cover"
+                                                 th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
+                                                 alt="프로필 이미지"/>
+                                        </th:block>
                                     </div>
                                     
                                     
@@ -261,13 +268,19 @@
                                         <div class="flex items-center justify-between mb-2">
                                             <!-- 댓쓴이 닉네임 -->
                                             <div class="flex items-center flex-wrap gap-2">
-                                                <span class="font-bold text-gray-800"
-                                                      th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
-                                                    댓쓴이 닉네임
+                                               <span class="font-bold text-gray-800"
+                                                     th:classappend="${answer.deletedAt != null} ? 'opacity-50 italic' : ''">
+                                                    <th:block th:if="${answer.deletedAt != null}">
+                                                        (삭제)
+                                                    </th:block>
+                                                    <th:block th:if="${answer.deletedAt == null}"
+                                                              th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
+                                                    </th:block>
                                                 </span>
                                                 
                                                 <!-- 댓글시간 -->
                                                 <span class="timeago text-gray-500 text-sm"
+                                                      th:if="${answer.deletedAt == null}"
                                                       th:data-date="${answer.createdAt}">
                                                     1시간 전
                                                 </span>
@@ -276,7 +289,8 @@
                                             <!-- 댓글 메뉴 (드롭다운) -->
                                             <div class="relative flex-shrink-0">
                                                 <!-- 댓글 메뉴 버튼 -->
-                                                <button th:onclick="|toggleMenu('answer-menu' + ${answer.id})|"
+                                                <button th:if="${answer.deletedAt == null}"
+                                                        th:onclick="|toggleMenu('answer-menu' + ${answer.id})|"
                                                         class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
                                                         id="answer-menu-button">
                                                     <i data-lucide="ellipsis"
@@ -325,6 +339,7 @@
                                         
                                         <!-- 대댓글 쓰기 버튼 -->
                                         <button class="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 toggle-comment-form"
+                                                th:if="${answer.deletedAt == null}"
                                                 th:onclick="|toggleForm('comment-form' + ${answer.id})|">
                                             <i data-lucide="corner-down-right"
                                                class="w-4 h-4">
@@ -408,8 +423,8 @@
                                                         <!-- 대댓쓴이 닉네임 -->
                                                         <span class="font-bold text-gray-800 text-sm"
                                                               th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
-                                                        댓쓴이 닉네임
-                                                    </span>
+                                                            댓쓴이 닉네임
+                                                        </span>
                                                         
                                                         <!-- 대댓글 작성시간 -->
                                                         <span class="timeago text-gray-500 text-xs"
