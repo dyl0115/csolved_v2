@@ -164,7 +164,7 @@
                         <!-- 답변하기 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition shadow-sm"
                                 id="toggle-answer-form"
-                                onclick="toggleAnswerForm()">
+                                th:onclick="|toggleForm('answer-form-card')|">
                             <i data-lucide="message-circle"
                                class="w-5 h-5">
                             </i>
@@ -258,18 +258,20 @@
                                     
                                     
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex items-center flex-wrap gap-2 mb-2">
+                                        <div class="flex items-center justify-between mb-2">
                                             <!-- 댓쓴이 닉네임 -->
-                                            <span class="font-bold text-gray-800"
-                                                  th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
-                                                댓쓴이 닉네임
-                                            </span>
-                                            
-                                            <!-- 댓글시간 -->
-                                            <span class="timeago text-gray-500 text-sm"
-                                                  th:data-date="${answer.createdAt}">
-                                                1시간 전
-                                            </span>
+                                            <div class="flex items-center flex-wrap gap-2">
+                                                <span class="font-bold text-gray-800"
+                                                      th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
+                                                    댓쓴이 닉네임
+                                                </span>
+                                                
+                                                <!-- 댓글시간 -->
+                                                <span class="timeago text-gray-500 text-sm"
+                                                      th:data-date="${answer.createdAt}">
+                                                    1시간 전
+                                                </span>
+                                            </div>
                                             
                                             <!-- 댓글 메뉴 (드롭다운) -->
                                             <div class="relative flex-shrink-0">
@@ -323,14 +325,18 @@
                                         
                                         <!-- 대댓글 쓰기 버튼 -->
                                         <button class="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 toggle-comment-form"
-                                                onclick="toggleCommentForm(this)">
-                                            <i data-lucide="corner-down-right" class="w-4 h-4"></i>
-                                            <span>댓글 쓰기</span>
+                                                th:onclick="|toggleForm('comment-form' + ${answer.id})|">
+                                            <i data-lucide="corner-down-right"
+                                               class="w-4 h-4">
+                                            </i>
+                                            <span>
+                                                댓글 쓰기
+                                            </span>
                                         </button>
                                         
                                         <!-- 대댓글 작성 폼 -->
                                         <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
-                                             id="comment-form-card">
+                                             th:id="|comment-form${answer.id}|">
                                             <form class="flex flex-col">
                                                 <!-- 게시글 아이디  -->
                                                 <input th:id="|comment-post${answer.id}|"
@@ -397,18 +403,20 @@
                                             </div>
                                             
                                             <div class="flex-1 min-w-0">
-                                                <div class="flex items-center flex-wrap gap-2 mb-2">
-                                                    <!-- 대댓쓴이 닉네임 -->
-                                                    <span class="font-bold text-gray-800 text-sm"
-                                                          th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <div class="flex items-center flex-wrap gap-2">
+                                                        <!-- 대댓쓴이 닉네임 -->
+                                                        <span class="font-bold text-gray-800 text-sm"
+                                                              th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
                                                         댓쓴이 닉네임
                                                     </span>
-                                                    
-                                                    <!-- 대댓글 작성시간 -->
-                                                    <span class="timeago text-gray-500 text-xs"
-                                                          th:data-date="${comment.createdAt}">
+                                                        
+                                                        <!-- 대댓글 작성시간 -->
+                                                        <span class="timeago text-gray-500 text-xs"
+                                                              th:data-date="${comment.createdAt}">
                                                         1시간 전
                                                     </span>
+                                                    </div>
                                                     
                                                     <!-- 대댓글 메뉴 (드롭다운) -->
                                                     <div class="relative flex-shrink-0">
@@ -540,6 +548,21 @@
             lucide.createIcons();
         });
 
+        function toggleForm(formId)
+        {
+            const form = document.getElementById(formId);
+
+            if (uiState.openForm && uiState.openForm !== form)
+            {
+                uiState.openForm.classList.add('hidden');
+            }
+
+            form.classList.toggle('hidden');
+            uiState.openForm = form.classList.contains('hidden') ? null : form;
+
+            lucide.createIcons();
+        }
+
         async function toggleAnswerForm()
         {
             const commentFormCards = document.querySelectorAll('.comment-form');
@@ -547,6 +570,8 @@
 
             const answerFormCard = document.getElementById('answer-form-card');
             answerFormCard.classList.toggle('hidden');
+
+
         }
 
         async function toggleCommentForm(button)
