@@ -1,300 +1,520 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <body>
-        <!-- 신고 모달 Fragment -->
-        <div th:fragment="reportModal(user)"
-             id="reportModal"
-             class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-                
-                <!-- 모달 헤더 -->
-                <div class="flex items-center justify-between p-6 border-b">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="alert-triangle"
-                           class="w-5 h-5 text-red-500">
-                        </i>
-                        <h3 class="text-lg font-bold">
-                            신고하기
-                        </h3>
-                    </div>
-                    <button onclick="closeReportModal()"
-                            class="text-gray-400 hover:text-gray-600">
-                        <i data-lucide="x"
-                           class="w-5 h-5">
-                        </i>
-                    </button>
+    
+    <!-- 게시글, 댓글, 대댓글 신고하기 모달 -->
+    <div th:fragment="reportModal(user)"
+         id="reportModal"
+         class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            
+            <!-- 모달 헤더 -->
+            <div class="flex items-center justify-between p-6 border-b">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="alert-triangle"
+                       class="w-5 h-5 text-red-500">
+                    </i>
+                    <h3 class="text-lg font-bold">
+                        신고하기
+                    </h3>
                 </div>
+                <button onclick="closeReportModal()"
+                        class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x"
+                       class="w-5 h-5">
+                    </i>
+                </button>
+            </div>
+            
+            <!-- 모달 내용 -->
+            <form id="reportForm"
+                  onsubmit="submitReport(event)"
+                  class="p-6">
                 
-                <!-- 모달 내용 -->
-                <form id="reportForm"
-                      onsubmit="submitReport(event)"
-                      class="p-6">
-                    
-                    <!-- 숨겨진 필드 -->
-                    <input type="hidden"
-                           id="targetType"
-                           name="targetType">
-                    <input type="hidden"
-                           id="targetId"
-                           name="targetId">
-                    <input type="hidden"
-                           id="reporterId"
-                           name="reporterId"
-                           th:value="${user.id}">
-                    
-                    <!-- 신고 사유 선택 (Pills) -->
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-700 mb-3">
-                            신고 사유를 선택해주세요
-                            <span class="text-red-500">
+                <!-- 숨겨진 필드 -->
+                <input type="hidden"
+                       id="targetType"
+                       name="targetType">
+                <input type="hidden"
+                       id="targetId"
+                       name="targetId">
+                <input type="hidden"
+                       id="reporterId"
+                       name="reporterId"
+                       th:value="${user.id}">
+                
+                <!-- 신고 사유 선택 (Pills) -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-3">
+                        신고 사유를 선택해주세요
+                        <span class="text-red-500">
                                 *
                             </span>
-                        </label>
-                        
-                        <div class="flex flex-wrap gap-2">
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="SPAM"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                    </label>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="SPAM"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     스팸/광고
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="ABUSIVE_LANGUAGE"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="ABUSIVE_LANGUAGE"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     욕설/비방
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="SEXUAL_CONTENT"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="SEXUAL_CONTENT"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     음란물/선정성
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="VIOLENCE"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="VIOLENCE"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     폭력적 콘텐츠
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="HATE_SPEECH"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="HATE_SPEECH"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     혐오 발언
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="FALSE_INFO"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="FALSE_INFO"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     허위 정보
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="COPYRIGHT"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="COPYRIGHT"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     저작권 침해
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="PRIVACY"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="PRIVACY"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     개인정보 노출
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="ILLEGAL"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="ILLEGAL"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     불법 정보
                                 </span>
-                            </label>
-                            
-                            <label class="cursor-pointer">
-                                <input type="radio"
-                                       name="reason"
-                                       value="ETC"
-                                       class="peer hidden">
-                                <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
+                        </label>
+                        
+                        <label class="cursor-pointer">
+                            <input type="radio"
+                                   name="reason"
+                                   value="ETC"
+                                   class="peer hidden">
+                            <span class="inline-block px-4 py-2 text-sm border rounded-full hover:bg-gray-50 peer-checked:bg-red-500 peer-checked:text-white peer-checked:border-red-500 transition">
                                     기타
                                 </span>
-                            </label>
-                        </div>
-                    </div>
-                    
-                    <!-- 추가 설명 (선택) -->
-                    <div class="mb-6">
-                        <label for="detailReason"
-                               class="block text-sm font-medium text-gray-700 mb-2">
-                            추가 설명 (선택)
                         </label>
-                        <textarea
-                                id="detailReason"
-                                name="detailReason"
-                                rows="4"
-                                maxlength="500"
-                                placeholder="신고 사유에 대한 추가 설명을 작성해주세요 (최대 500자)"
-                                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"></textarea>
-                        <div class="text-xs text-gray-500 mt-1 text-right">
+                    </div>
+                </div>
+                
+                <!-- 추가 설명 (선택) -->
+                <div class="mb-6">
+                    <label for="detailReason"
+                           class="block text-sm font-medium text-gray-700 mb-2">
+                        추가 설명 (선택)
+                    </label>
+                    <textarea
+                            id="detailReason"
+                            name="detailReason"
+                            rows="4"
+                            maxlength="500"
+                            placeholder="신고 사유에 대한 추가 설명을 작성해주세요 (최대 500자)"
+                            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"></textarea>
+                    <div class="text-xs text-gray-500 mt-1 text-right">
                             <span id="charCount">
                                 0
                             </span> / 500
-                        </div>
                     </div>
-                    
-                    <!-- 버튼 -->
-                    <div class="flex gap-3">
-                        <button
-                                type="button"
-                                onclick="closeReportModal()"
-                                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium">
-                            취소
-                        </button>
-                        <button type="submit"
-                                class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition font-medium">
-                            신고하기
-                        </button>
-                    </div>
+                </div>
                 
-                </form>
-            </div>
+                <!-- 버튼 -->
+                <div class="flex gap-3">
+                    <button
+                            type="button"
+                            onclick="closeReportModal()"
+                            class="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium">
+                        취소
+                    </button>
+                    <button type="submit"
+                            class="flex-1 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition font-medium">
+                        신고하기
+                    </button>
+                </div>
+            
+            </form>
         </div>
-        
-        <!-- 신고 모달 스크립트 Fragment -->
-        <th:block th:fragment="reportModalScript">
-            <script th:inline="javascript">
-                // 모달 열기
-                function openReportModal(targetType, targetId)
-                {
-                    document.getElementById('targetType').value = targetType;
-                    document.getElementById('targetId').value = targetId;
-                    document.getElementById('reportModal').classList.remove('hidden');
-                    document.body.style.overflow = 'hidden';
+    </div>
+    <th:block th:fragment="reportModalScript">
+        <script th:inline="javascript">
+            // 모달 열기
+            function openReportModal(targetType, targetId)
+            {
+                document.getElementById('targetType').value = targetType;
+                document.getElementById('targetId').value = targetId;
+                document.getElementById('reportModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
 
-                    if (typeof lucide !== 'undefined')
-                    {
-                        lucide.createIcons();
-                    }
+                lucide.createIcons();
+            }
+
+            // 모달 닫기
+            function closeReportModal()
+            {
+                document.getElementById('reportModal').classList.add('hidden');
+                document.getElementById('reportForm').reset();
+                document.getElementById('charCount').textContent = '0';
+                document.body.style.overflow = 'auto';
+            }
+
+            // 모달 외부 클릭 시 닫기
+            document.getElementById('reportModal').addEventListener('click', function (e)
+            {
+                if (e.target === this)
+                {
+                    closeReportModal();
                 }
+            });
 
-                // 모달 닫기
-                function closeReportModal()
+            // ESC 키로 모달 닫기
+            document.addEventListener('keydown', function (e)
+            {
+                if (e.key === 'Escape')
                 {
-                    document.getElementById('reportModal').classList.add('hidden');
-                    document.getElementById('reportForm').reset();
-                    document.getElementById('charCount').textContent = '0';
-                    document.body.style.overflow = 'auto';
-                }
-
-                // 모달 외부 클릭 시 닫기
-                document.getElementById('reportModal').addEventListener('click', function (e)
-                {
-                    if (e.target === this)
+                    const modal = document.getElementById('reportModal');
+                    if (modal && !modal.classList.contains('hidden'))
                     {
                         closeReportModal();
                     }
-                });
+                }
+            });
 
-                // ESC 키로 모달 닫기
-                document.addEventListener('keydown', function (e)
+            // 글자 수 카운터
+            document.getElementById('detailReason').addEventListener('input', function (e)
+            {
+                document.getElementById('charCount').textContent = e.target.value.length;
+            });
+
+            // 신고 제출
+            async function submitReport(e)
+            {
+                e.preventDefault();
+
+                const formData = new FormData(e.target);
+
+                if (!formData.get('reason'))
                 {
-                    if (e.key === 'Escape')
-                    {
-                        const modal = document.getElementById('reportModal');
-                        if (modal && !modal.classList.contains('hidden'))
-                        {
-                            closeReportModal();
-                        }
-                    }
-                });
+                    alert('신고 사유를 선택해주세요!');
+                    return;
+                }
 
-                // 글자 수 카운터
-                document.getElementById('detailReason').addEventListener('input', function (e)
+                const data = {
+                    reporterId: parseInt(formData.get('reporterId')),
+                    targetType: formData.get('targetType'),
+                    targetId: parseInt(formData.get('targetId')),
+                    reason: formData.get('reason'),
+                    detailReason: formData.get('detailReason') || null
+                };
+
+                try
                 {
-                    document.getElementById('charCount').textContent = e.target.value.length;
-                });
+                    const response = await fetch('/api/report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(data)
+                    });
 
-                // 신고 제출
-                async function submitReport(e)
-                {
-                    e.preventDefault();
-
-                    const formData = new FormData(e.target);
-
-                    if (!formData.get('reason'))
+                    if (response.ok)
                     {
-                        alert('신고 사유를 선택해주세요!');
-                        return;
-                    }
-
-                    const data = {
-                        reporterId: parseInt(formData.get('reporterId')),
-                        targetType: formData.get('targetType'),
-                        targetId: parseInt(formData.get('targetId')),
-                        reason: formData.get('reason'),
-                        detailReason: formData.get('detailReason') || null
-                    };
-
-                    try
+                        alert('신고가 접수되었습니다.');
+                        closeReportModal();
+                    } else
                     {
-                        const response = await fetch('/api/report', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify(data)
-                        });
-
-                        if (response.ok)
-                        {
-                            alert('신고가 접수되었습니다.');
-                            closeReportModal();
-                        } else
-                        {
-                            const error = await response.json();
-                            alert('신고 접수에 실패했습니다: ' + (error.message || '알 수 없는 오류'));
-                        }
-                    }
-                    catch (error)
-                    {
-                        console.error('Error:', error);
-                        alert('신고 접수 중 오류가 발생했습니다.');
+                        const error = await response.json();
+                        alert('신고 접수에 실패했습니다: ' + (error.message || '알 수 없는 오류'));
                     }
                 }
-            </script>
-        </th:block>
+                catch (error)
+                {
+                    console.error('Error:', error);
+                    alert('신고 접수 중 오류가 발생했습니다.');
+                }
+            }
+        </script>
+    </th:block>
     
-    </body>
+    <!-- 신고된 대댓글 상세보기 모달 -->
+    <th:block th:fragment="reported-commend-modal">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
+            
+            <div class="flex items-center justify-between px-5 py-4 border-b">
+                <h3 class="font-bold text-lg">
+                    신고된 댓글
+                </h3>
+                <button onclick="closeDetailModal()"
+                        class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x"
+                       class="w-5 h-5">
+                    </i>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4">
+                <!-- 작성자 정보 -->
+                <div class="flex items-center gap-3">
+                    <img class="w-10 h-10 rounded-full object-cover"
+                         th:src="${comment.authorProfileImage}"
+                         alt="프로필 이미지">
+                    <div>
+                        <p class="font-medium text-gray-900"
+                           th:text="${comment.authorNickname}">
+                            작성자 닉네임
+                        </p>
+                        <p class="text-sm text-gray-500"
+                           th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm:ss')}">
+                            2025.11.22 06:54:00
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 댓글/대댓글 내용 -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-800 whitespace-pre-wrap"
+                       th:text="${comment.content}">
+                    </p>
+                </div>
+                
+                <!-- 메타 정보 -->
+                <div class="space-y-3">
+                    <a th:href="@{/post/{postId}(postId=${comment.postId})}"
+                       class="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span class="font-medium">원본 게시글로 이동</span>
+                            </div>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                        </div>
+                    </a>
+                    
+                    <div class="flex gap-4 text-xs text-gray-400">
+                        <span th:text="'댓글 #' + ${comment.answerId}">댓글 #16</span>
+                        <span th:text="'대댓글 #' + ${comment.id}">대댓글 #18</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 푸터 -->
+            <div class="flex gap-2 px-5 py-4 border-t bg-gray-50">
+                <button onclick="closeDetailModal()"
+                        class="flex-1 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </th:block>
+    <script th:fragment="reportedCommenModalScript">
+
+        // 신고된 대댓글 상세모달 열기
+        async function openReportedCommentModal(element)
+        {
+            const modal = document.getElementById('reported-comment-modal');
+            const commentId = element.dataset.commentId;
+
+            try
+            {
+                const response = await fetch(`/admin/report/comment/${commentId}`);
+                modal.innerHTML = await response.text();
+                modal.classList.remove('hidden');
+                lucide.createIcons();
+            }
+            catch (error)
+            {
+                alert('대댓글 상세 정보를 받아오는 중 오류가 발생했습니다. ');
+            }
+        }
+
+        function closeDetailModal()
+        {
+            const modals = document.querySelectorAll('.modal')
+            modals.forEach(modal => modal.classList.add('hidden'));
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function (e)
+        {
+            if (e.key === 'Escape')
+            {
+                closeDetailModal();
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('detailModal').addEventListener('click', function (e)
+        {
+            if (e.target === this)
+            {
+                closeDetailModal();
+            }
+        });
+    </script>
+    
+    <!-- 신고된 댓글 상세보기 모달 -->
+    <th:block th:fragment="reported-answer-modal">
+        <div class="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
+            <div class="flex items-center justify-between px-5 py-4 border-b">
+                <h3 class="font-bold text-lg">
+                    신고된 댓글
+                </h3>
+                <button onclick="closeDetailModal()"
+                        class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x"
+                       class="w-5 h-5">
+                    </i>
+                </button>
+            </div>
+            
+            <div class="p-5 space-y-4">
+                <!-- 작성자 정보 -->
+                <div class="flex items-center gap-3">
+                    <img class="w-10 h-10 rounded-full object-cover"
+                         th:src="${answer.authorProfileImage}"
+                         alt="프로필 이미지">
+                    <div>
+                        <p class="font-medium text-gray-900"
+                           th:text="${answer.authorNickname}">
+                            작성자 닉네임
+                        </p>
+                        <p class="text-sm text-gray-500"
+                           th:text="${#temporals.format(answer.createdAt, 'yyyy.MM.dd HH:mm:ss')}">
+                            2025.11.22 06:54:00
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 댓글/대댓글 내용 -->
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="text-gray-800 whitespace-pre-wrap"
+                       th:text="${answer.content}">
+                    </p>
+                </div>
+                
+                <!-- 메타 정보 -->
+                <div class="space-y-3">
+                    <a th:href="@{/post/{postId}(postId=${answer.postId})}"
+                       class="block p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition border border-gray-200">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2 text-gray-700">
+                                <i data-lucide="file-text" class="w-4 h-4"></i>
+                                <span class="font-medium">원본 게시글로 이동</span>
+                            </div>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-gray-400"></i>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- 푸터 -->
+            <div class="flex gap-2 px-5 py-4 border-t bg-gray-50">
+                <button onclick="closeDetailModal()"
+                        class="flex-1 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </th:block>
+    <script th:fragment="reportedAnswerModalScript">
+
+        // 신고된 댓글 상세모달 열기
+        async function openReportedAnswerModal(element)
+        {
+            const modal = document.getElementById('reported-answer-modal');
+            const answerId = element.dataset.answerId;
+
+            try
+            {
+                const response = await fetch(`/admin/report/answer/${answerId}`);
+                modal.innerHTML = await response.text();
+                modal.classList.remove('hidden');
+                lucide.createIcons();
+            }
+            catch (error)
+            {
+                alert('대댓글 상세 정보를 받아오는 중 오류가 발생했습니다. ');
+            }
+        }
+
+        function closeDetailModal()
+        {
+            const modals = document.querySelectorAll('.modal')
+            modals.forEach(modal => modal.classList.add('hidden'));
+        }
+
+        // ESC 키로 모달 닫기
+        document.addEventListener('keydown', function (e)
+        {
+            if (e.key === 'Escape')
+            {
+                closeDetailModal();
+            }
+        });
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('detailModal').addEventListener('click', function (e)
+        {
+            if (e.target === this)
+            {
+                closeDetailModal();
+            }
+        });
+    </script>
+
 </html>

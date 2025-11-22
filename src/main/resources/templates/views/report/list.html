@@ -203,13 +203,15 @@
                                                     POST
                                                 </a>
                                                 <button class="text-sm text-gray-900"
-                                                        th:onclick="|viewDetailAnswer(${report.targetId})|"
-                                                        th:if="${report.targetType == 'ANSWER'}">
+                                                        th:if="${report.targetType == 'ANSWER'}"
+                                                        th:data-answer-id="${report.targetId}"
+                                                        onclick="openReportedAnswerModal(this)">
                                                     ANSWER
                                                 </button>
                                                 <button class="text-sm text-gray-900"
-                                                        th:onclick="|openCommentReportModal(${report.targetId})|"
-                                                        th:if="${report.targetType == 'COMMENT'}">
+                                                        th:if="${report.targetType == 'COMMENT'}"
+                                                        th:data-comment-id="${report.targetId}"
+                                                        onclick="openReportedCommentModal(this)">
                                                     COMMENT
                                                 </button>
                                             </div>
@@ -593,68 +595,20 @@
             </div>
         </div>
         
-        <!-- 댓글, 대댓글 상세보기 모달 -->
-        <div th:fragment="commentReportModal"
-             id="comment-report-modal"
-             class="modal fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-            
-            <div class="bg-white rounded-lg w-full max-w-md mx-4 overflow-hidden">
-                
-                <!-- 헤더 -->
-                <div class="flex items-center justify-between px-5 py-4 border-b">
-                    <h3 class="font-bold text-lg">
-                        신고된 댓글
-                    </h3>
-                    <button onclick="closeDetailModal()"
-                            class="text-gray-400 hover:text-gray-600">
-                        <i data-lucide="x"
-                           class="w-5 h-5">
-                        </i>
-                    </button>
-                </div>
-                
-                <!-- 본문 -->
-                <div class="p-5 space-y-4">
-                    <!-- 작성자 정보 -->
-                    <div class="flex items-center gap-3">
-                        <img id="modal-author-image"
-                             class="w-10 h-10 rounded-full object-cover"
-                             src=""
-                             alt="프로필">
-                        <div>
-                            <p id="modal-author-nickname"
-                               class="font-medium text-gray-900"></p>
-                            <p id="modal-created-at"
-                               class="text-sm text-gray-500"></p>
-                        </div>
-                    </div>
-                    
-                    <!-- 댓글 내용 -->
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <p id="modal-content"
-                           class="text-gray-800 whitespace-pre-wrap"></p>
-                    </div>
-                    
-                    <!-- 메타 정보 -->
-                    <div class="text-sm text-gray-500 space-y-1">
-                        <a>본문 ID: <span id="modal-post-id"></span></a>
-                        <p>댓글 ID: <span id="modal-comment-id"></span></p>
-                        <p>답변 ID: <span id="modal-answer-id"></span></p>
-                    </div>
-                </div>
-                
-                <!-- 푸터 -->
-                <div class="flex gap-2 px-5 py-4 border-t bg-gray-50">
-                    <button onclick="closeDetailModal()"
-                            class="flex-1 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100">
-                        닫기
-                    </button>
-                </div>
-            </div>
+        <!-- 댓글 신고 모달 -->
+        <div id="reported-answer-modal"
+             class="modal hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <!-- 여기에 신고된 댓글 상세 내용이 로드됨 -->
         </div>
         
-        <div th:replace="~{/fragments/footer :: default-footer}"></div>
+        <!-- 대댓글 신고 모달 -->
+        <div id="reported-comment-modal"
+             class="modal hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <!-- 여기에 신고된 대댓글 상세 내용이 로드됨 -->
+        </div>
     </body>
+    
+    <div th:replace="~{/fragments/footer :: default-footer}"></div>
     
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', async function ()
@@ -874,56 +828,6 @@
             }
         }
 
-        // 모달 수정하기: 지금 너무 복잡함.
-        // 신고된 대댓글 내용 보기
-        function openCommentReportModal(commentId)
-        {
-            fetch(`/api/comment/${commentId}`)
-                .then(res => res.json())
-                .then(comment =>
-                {
-                    currentCommentId = comment.id;
-
-                    document.getElementById('modal-author-image').src =
-                        comment.anonymous ? '/assets/anonymous.jpg' : comment.authorProfileImage;
-                    document.getElementById('modal-author-nickname').textContent =
-                        comment.anonymous ? '익명' : comment.authorNickname;
-                    document.getElementById('modal-created-at').textContent = comment.createdAt;
-                    document.getElementById('modal-content').textContent = comment.content;
-                    document.getElementById('modal-post-id').textContent = comment.postId;
-                    document.getElementById('modal-comment-id').textContent = comment.id;
-                    document.getElementById('modal-answer-id').textContent = comment.answerId;
-
-                    const modal = document.getElementById('comment-report-modal');
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                });
-        }
-
-        function closeDetailModal()
-        {
-            const modals = document.querySelectorAll('.modal')
-            modals.forEach(modal => modal.classList.add('hidden'));
-        }
-
-        // ESC 키로 모달 닫기
-        document.addEventListener('keydown', function (e)
-        {
-            if (e.key === 'Escape')
-            {
-                closeDetailModal();
-            }
-        });
-
-        // 모달 외부 클릭 시 닫기
-        document.getElementById('detailModal').addEventListener('click', function (e)
-        {
-            if (e.target === this)
-            {
-                closeDetailModal();
-            }
-        });
-
         // 엔터키로 검색 실행
         document.getElementById('searchForm').addEventListener('keypress', function (e)
         {
@@ -935,5 +839,7 @@
         });
     </script>
     
+    <script th:replace="~{/fragments/report-modal :: reportedCommenModalScript}"></script>
+    <script th:replace="~{/fragments/report-modal :: reportedAnswerModalScript}"></script>
     <script src="/js/navigation.js"></script>
 </html>

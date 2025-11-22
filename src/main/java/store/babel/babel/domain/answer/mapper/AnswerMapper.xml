@@ -56,6 +56,20 @@
           AND a.deleted_at IS NULL;
     </select>
 
+    <select id="getAnswerForAdmin" resultMap="answerMap">
+        SELECT a.id            id,
+               a.post_id       post_id,
+               u.id            author_id,
+               u.profile_image profile_image,
+               u.nickname      author_nickname,
+               a.anonymous     anonymous,
+               a.content       content,
+               a.created_at    created_at
+        FROM answers a
+                 LEFT JOIN users u ON u.id = a.author_id
+        WHERE a.id = #{answerId};
+    </select>
+
     <select id="getPostId">
         SELECT post_id
         FROM answers

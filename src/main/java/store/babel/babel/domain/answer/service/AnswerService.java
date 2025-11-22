@@ -55,6 +55,13 @@ public class AnswerService
         answerMapper.deleteAnswer(answerId);
     }
 
+    @Transactional(readOnly = true)
+    public Answer getAnswerForAdmin(Long answerId)
+    {
+        return answerMapper.getAnswerForAdmin(answerId);
+    }
+
+    @Transactional(readOnly = true)
     public List<AnswerWithComments> getAnswersWithComments(Long postId)
     {
         List<Answer> answers = answerMapper.getAnswers(postId);

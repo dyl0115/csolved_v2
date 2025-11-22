@@ -63,9 +63,7 @@ async function goToReportList()
     const param = {
         page: 1,
         size: 20,
-        sortType: 'CREATED_AT',
-        startDateTime: '1800-01-01T12:00:00',
-        endDateTime: '2050-01-01T12:00:00',
+        sortType: 'CREATED_AT'
     };
     const queryString = new URLSearchParams(param).toString();
     window.location.href = `/admin/report?${queryString}`;
