@@ -28,12 +28,53 @@
                                     게시글 아이디
                                 </div>
                                 
-                                <!-- 제목 -->
-                                <h3 class="text-2xl font-bold text-gray-800 mb-3"
-                                    th:text="${notice.title}">
-                                    게시글 제목
-                                </h3>
-                                
+                                <!-- 제목과 메뉴 -->
+                                <div class="flex items-start justify-between gap-4 mb-3">
+                                    <!-- 제목 -->
+                                    <h3 class="text-2xl font-bold text-gray-800 flex-1"
+                                        th:text="${notice.title}">
+                                        게시글 제목
+                                    </h3>
+
+                                    <!-- 게시글 메뉴 (드롭다운) -->
+                                    <div class="relative flex-shrink-0">
+                                        <!-- 메뉴 버튼 -->
+                                        <button onclick="toggleMenu('notice-menu')"
+                                                class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                                id="notice-menu-button">
+                                            <i data-lucide="ellipsis"
+                                               class="w-5 h-5">
+                                            </i>
+                                        </button>
+
+                                        <!-- 드롭다운 메뉴 -->
+                                        <div id="notice-menu"
+                                             class="notice-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                            <div class="py-1">
+                                                <!-- 수정하기 (작성자만) -->
+                                                <a th:if="${notice.authorId == user.id}"
+                                                   th:href="@{/notice/{id}/updateForm(id=${notice.id})}"
+                                                   class="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150">
+                                                    <i data-lucide="edit"
+                                                       class="w-4 h-4">
+                                                    </i>
+                                                    <span>
+                                                        수정하기
+                                                    </span>
+                                                </a>
+
+                                                <!-- 삭제하기 (작성자만) -->
+                                                <button th:if="${notice.authorId == user.id}"
+                                                        onclick="deleteNotice()"
+                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                                    <span>삭제하기</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <!-- 메타 정보 -->
                                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 mb-4">
                                     <!-- 글쓴이 -->
@@ -43,7 +84,7 @@
                                             글쓴이
                                         </span>
                                     </div>
-                                    
+
                                     <!-- 조회수 -->
                                     <div class="flex items-center space-x-1">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
@@ -51,7 +92,7 @@
                                             조회수
                                         </span>
                                     </div>
-                                    
+
                                     <!-- 작성시간 -->
                                     <div class="flex items-center space-x-1">
                                         <i data-lucide="clock" class="w-4 h-4"></i>
@@ -60,22 +101,6 @@
                                             1시간 전
                                         </span>
                                     </div>
-                                </div>
-                                
-                                <!-- 수정/삭제 버튼 -->
-                                <div class="flex items-center space-x-2">
-                                    <a class="inline-flex items-center space-x-1 px-3 py-1.5 text-sm border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50 transition"
-                                       th:if="${notice.authorId == user.id}"
-                                       th:href="@{/notice/{id}/updateForm(id=${notice.id})}">
-                                        <i data-lucide="edit" class="w-4 h-4"></i>
-                                        <span>수정</span>
-                                    </a>
-                                    <button class="inline-flex items-center space-x-1 px-3 py-1.5 text-sm border border-red-500 text-red-500 rounded-lg hover:bg-red-50 transition"
-                                            onclick="deleteNotice()"
-                                            th:if="${notice.authorId == user.id}">
-                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                                        <span>삭제</span>
-                                    </button>
                                 </div>
                             </div>
                             
@@ -93,27 +118,35 @@
                     <div class="flex flex-wrap gap-3 mb-6">
                         <!-- 좋아요 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-sm
-                        disabled:bg-gray-400
-               disabled:cursor-not-allowed
-               disabled:opacity-60
-               disabled:shadow-none"
+                                        disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
                                 id="like-button"
                                 onclick="addLike()">
-                            <i data-lucide="heart" class="w-5 h-5"></i>
-                            <span>좋아요</span>
+                            <i data-lucide="heart"
+                               class="w-5 h-5">
+                            </i>
+                            <span>
+                                좋아요
+                            </span>
                             <span id="like-count"
                                   class="ml-1 font-semibold"
                                   th:text="${notice.likes}">
                                 0
                             </span>
                         </button>
-                        
+
                         <!-- 답변하기 버튼 -->
-                        <button class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition shadow-sm"
+                        <button class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition shadow-sm"
                                 id="toggle-answer-form"
-                                onclick="toggleAnswerForm()">
-                            <i data-lucide="message-circle" class="w-5 h-5"></i>
-                            <span>답변 달기</span>
+                                th:onclick="|toggleForm('answer-form-card')|">
+                            <i data-lucide="message-square"
+                               class="w-5 h-5">
+                            </i>
+                            <span>
+                                댓글
+                            </span>
+                            <span th:text="${answersWithComments.size()}">
+                                12
+                            </span>
                         </button>
                     </div>
                     
@@ -177,55 +210,118 @@
                                 <!-- 댓글과 대댓글 -->
                                 <div class="flex gap-3 mb-6 pb-6 border-b border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
                                      th:each="answer:${answers}">
-                                    
+
                                     <!-- 댓쓴이 프로필 -->
                                     <div class="flex-shrink-0">
                                         <img class="rounded-full w-10 h-10 object-cover"
                                              th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
                                              alt="프로필 이미지"/>
                                     </div>
-                                    
-                                    
+
+
                                     <div class="flex-1 min-w-0">
-                                        <div class="flex items-center flex-wrap gap-2 mb-2">
+                                        <div class="flex items-center justify-between mb-2">
                                             <!-- 댓쓴이 닉네임 -->
-                                            <span class="font-bold text-gray-800"
-                                                  th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
-                                                댓쓴이 닉네임
-                                            </span>
-                                            
-                                            <!-- 댓글시간 -->
-                                            <span class="timeago text-gray-500 text-sm"
-                                                  th:data-date="${answer.createdAt}">
-                                                1시간 전
-                                            </span>
-                                            
-                                            <!-- 댓글삭제 버튼 -->
-                                            <span th:if="${answer.authorId == user.id}">
-                                                <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
-                                                        th:onclick="|deleteAnswer(${answer.id})|">
-                                                    <i data-lucide="trash-2" class="w-3 h-3"></i>
-                                                    <span>삭제</span>
+                                            <div class="flex items-center flex-wrap gap-2">
+                                               <span class="font-bold text-gray-800"
+                                                     th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
+                                                    댓쓴이 닉네임
+                                                </span>
+
+                                                <!-- 댓글시간 -->
+                                                <span class="timeago text-gray-500 text-sm"
+                                                      th:data-date="${answer.createdAt}">
+                                                    1시간 전
+                                                </span>
+                                            </div>
+
+                                            <!-- 댓글 메뉴 (드롭다운) -->
+                                            <div class="relative flex-shrink-0">
+                                                <!-- 댓글 메뉴 버튼 -->
+                                                <button th:onclick="|toggleMenu('answer-menu' + ${answer.id})|"
+                                                        class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                                        id="answer-menu-button">
+                                                    <i data-lucide="ellipsis"
+                                                       class="w-5 h-5">
+                                                    </i>
                                                 </button>
-                                            </span>
+
+                                                <!-- 댓글 드롭다운 메뉴 -->
+                                                <div th:id="answer-menu + ${answer.id}"
+                                                     class="answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                    <div class="py-1">
+                                                        <!-- 댓글 삭제하기 (작성자만) -->
+                                                        <button th:if="${answer.authorId == user.id}"
+                                                                th:onclick="|deleteAnswer(${answer.id})|"
+                                                                class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                            <i data-lucide="trash-2"
+                                                               class="w-4 h-4">
+                                                            </i>
+                                                            <span>
+                                                                삭제하기
+                                                            </span>
+                                                        </button>
+
+                                                        <!-- 댓글 신고하기 (작성자가 아닐 때) -->
+                                                        <button th:if="${answer.authorId != user.id}"
+                                                                th:onclick="|openReportModal('ANSWER', ${answer.id})|"
+                                                                class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150">
+                                                            <i data-lucide="alert-triangle"
+                                                               class="w-4 h-4">
+                                                            </i>
+                                                            <span>
+                                                                신고하기
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        
-                                        <!-- 댓글내용 -->
+
+                                        <!-- 댓글 내용 -->
                                         <div class="mb-3 text-gray-700 prose max-w-none break-words"
                                              th:utext="${answer.content}">
                                             댓글 내용
                                         </div>
-                                        
-                                        <!-- 대댓글 쓰기 버튼 -->
-                                        <button class="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 toggle-comment-form"
-                                                onclick="toggleCommentForm(this)">
-                                            <i data-lucide="corner-down-right" class="w-4 h-4"></i>
-                                            <span>댓글 쓰기</span>
-                                        </button>
+
+                                        <!-- 댓글 액션 버튼들 -->
+                                        <div class="flex items-center gap-4 pt-1 border-t border-gray-100">
+                                            <!-- 좋아요 버튼 -->
+                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
+                                                    th:data-answer-id="${answer.id}"
+                                                    onclick="addAnswerLike(this)">
+                                                <i data-lucide="heart"
+                                                   class="w-4 h-4 group-hover:fill-red-500 transition-all duration-200">
+                                                </i>
+                                                <span class="font-medium">
+                                                    좋아요
+                                                </span>
+                                                <span id="answer-like-count"
+                                                      class="text-xs text-gray-400"
+                                                      th:text="${answer.likes}">
+                                                    12
+                                                </span>
+                                            </button>
+
+                                            <!-- 댓글쓰기 버튼 -->
+                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200"
+                                                    th:onclick="|toggleForm('comment-form'+${answer.id})|">
+                                                <i data-lucide="message-square"
+                                                   class="w-4 h-4 transition-colors duration-200">
+                                                </i>
+                                                <span class="font-medium">
+                                                    댓글
+                                                </span>
+                                                <span class="text-xs text-gray-400"
+                                                      th:text="${answer.comments.size()}">
+                                                    3
+                                                </span>
+                                            </button>
+                                        </div>
                                         
                                         <!-- 대댓글 작성 폼 -->
                                         <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
-                                             id="comment-form-card">
+                                             th:id="|comment-form${answer.id}|">
                                             <form class="flex flex-col">
                                                 <!-- 게시글 아이디  -->
                                                 <input th:id="|comment-post${answer.id}|"
@@ -283,39 +379,73 @@
                                         <!-- 대댓글 리스트 -->
                                         <div class="flex gap-3 mt-4 pl-6 border-l-2 border-gray-200"
                                              th:each="comment:${answer.comments}">
-                                            
+
                                             <!-- 대댓쓴이 프로필 -->
                                             <div class="flex-shrink-0">
                                                 <img class="rounded-full w-8 h-8 object-cover"
                                                      alt="프로필 이미지"
                                                      th:src="${comment.anonymous ? '/assets/anonymous.jpg' : comment.authorProfileImage}"/>
                                             </div>
-                                            
+
                                             <div class="flex-1 min-w-0">
-                                                <div class="flex items-center flex-wrap gap-2 mb-2">
-                                                    
-                                                    <!-- 대댓쓴이 닉네임 -->
-                                                    <span class="font-bold text-gray-800 text-sm"
-                                                          th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
-                                                        댓쓴이 닉네임
-                                                    </span>
-                                                    
-                                                    <!-- 대댓글 작성시간 -->
-                                                    <span class="timeago text-gray-500 text-xs"
-                                                          th:data-date="${comment.createdAt}">
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <div class="flex items-center flex-wrap gap-2">
+                                                        <!-- 대댓쓴이 닉네임 -->
+                                                        <span class="font-bold text-gray-800 text-sm"
+                                                              th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
+                                                            댓쓴이 닉네임
+                                                        </span>
+
+                                                        <!-- 대댓글 작성시간 -->
+                                                        <span class="timeago text-gray-500 text-xs"
+                                                              th:data-date="${comment.createdAt}">
                                                         1시간 전
                                                     </span>
-                                                    
-                                                    <!-- 대댓글 삭제버튼-->
-                                                    <span th:if="${comment.authorId == user.id}">
-                                                        <button class="inline-flex items-center space-x-1 px-2 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-50 transition"
-                                                                th:onclick="|deleteComment(${comment.id})|">
-                                                            <i data-lucide="trash-2" class="w-3 h-3"></i>
-                                                            <span>삭제</span>
+                                                    </div>
+
+                                                    <!-- 대댓글 메뉴 (드롭다운) -->
+                                                    <div class="relative flex-shrink-0">
+                                                        <!-- 대댓글 메뉴 버튼 -->
+                                                        <button th:onclick="|toggleMenu('comment-menu' + ${comment.id})|"
+                                                                class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
+                                                                id="comment-menu-button">
+                                                            <i data-lucide="ellipsis"
+                                                               class="w-5 h-5">
+                                                            </i>
                                                         </button>
-                                                       </span>
+
+                                                        <!-- 댓글 드롭다운 메뉴 -->
+                                                        <div th:id="comment-menu + ${comment.id}"
+                                                             class="comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                            <div class="py-1">
+                                                                <!-- 댓글 삭제하기 (작성자만) -->
+                                                                <button th:if="${comment.authorId == user.id}"
+                                                                        th:onclick="|deleteComment(${comment.id})|"
+                                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                                    <i data-lucide="trash-2"
+                                                                       class="w-4 h-4">
+                                                                    </i>
+                                                                    <span>
+                                                                        삭제하기
+                                                                    </span>
+                                                                </button>
+
+                                                                <!-- 댓글 신고하기 (작성자가 아닐 때) -->
+                                                                <button th:if="${comment.authorId != user.id}"
+                                                                        th:onclick="|openReportModal('COMMENT', ${comment.id})|"
+                                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 transition-colors duration-150">
+                                                                    <i data-lucide="alert-triangle"
+                                                                       class="w-4 h-4">
+                                                                    </i>
+                                                                    <span>
+                                                                        신고하기
+                                                                    </span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                
+
                                                 <!-- 대댓글 내용 -->
                                                 <div class="text-gray-700 text-sm prose max-w-none"
                                                      th:utext="${comment.content}">
@@ -380,8 +510,16 @@
             </div>
         </div>
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
+        <div th:replace="~{/fragments/report-modal :: reportModal(${user})}"></div>
+        <div th:replace="~{/fragments/report-modal :: reportModalScript}"></div>
     </body>
     <script th:inline="javascript">
+
+        <!-- TODO: 이후 전역변수를 활용한 방식으로 리팩토링 하기 -->
+        const uiState = {
+            openMenu: null,
+            openForm: null,
+        }
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
@@ -389,19 +527,55 @@
             lucide.createIcons();
         });
 
+        function toggleForm(formId)
+        {
+            const form = document.getElementById(formId);
+
+            if (uiState.openForm && uiState.openForm !== form)
+            {
+                uiState.openForm.classList.add('hidden');
+            }
+
+            form.classList.toggle('hidden');
+            uiState.openForm = form.classList.contains('hidden') ? null : form;
+
+            lucide.createIcons();
+        }
+
         async function toggleAnswerForm()
         {
+            const commentFormCards = document.querySelectorAll('.comment-form');
+            commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
+
             const answerFormCard = document.getElementById('answer-form-card');
             answerFormCard.classList.toggle('hidden');
         }
 
         async function toggleCommentForm(button)
         {
-            const commentFormCards = document.querySelectorAll('.comment-form');
-            const commentForm = button.nextElementSibling;
+            const answerFormCard = document.getElementById('answer-form-card');
+            answerFormCard.classList.add('hidden');
 
+            const commentFormCards = document.querySelectorAll('.comment-form');
             commentFormCards.forEach(formCard => formCard.classList.add('hidden'));
+
+            const commentForm = button.nextElementSibling;
             commentForm.classList.toggle('hidden');
+        }
+
+        function toggleMenu(menuId)
+        {
+            const menu = document.getElementById(menuId);
+
+            if (uiState.openMenu && uiState.openMenu !== menu)
+            {
+                uiState.openMenu.classList.add('hidden');
+            }
+
+            menu.classList.toggle('hidden');
+            uiState.openMenu = menu.classList.contains('hidden') ? null : menu;
+
+            lucide.createIcons();
         }
 
         async function submitComment(answerId)
@@ -614,6 +788,38 @@
                 {
                     likeCount.textContent = ++likeCountInt;
                     likeButton.disabled = true;
+
+                } else
+                {
+                    const errorData = await response.json();
+                    alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function addAnswerLike(element)
+        {
+            const answerId = element.dataset.answerId;
+            const likeCount = document.getElementById('answer-like-count');
+            let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
+
+            try
+            {
+                const response = await fetch(`/api/answer/${answerId}/likes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok)
+                {
+                    likeCount.textContent = ++likeCountInt;
 
                 } else
                 {
