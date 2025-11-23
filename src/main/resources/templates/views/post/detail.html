@@ -357,7 +357,7 @@
                                                 <span class="font-medium">
                                                     좋아요
                                                 </span>
-                                                <span id="answer-like-count"
+                                                <span th:id="|answer-like-count${answer.id}|"
                                                       class="text-xs text-gray-400"
                                                       th:text="${answer.likes}">
                                                     12
@@ -855,7 +855,7 @@
         async function addAnswerLike(element)
         {
             const answerId = element.dataset.answerId;
-            const likeCount = document.getElementById('answer-like-count');
+            const likeCount = document.getElementById(`answer-like-count${answerId}`);
             let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
 
             try
@@ -870,7 +870,6 @@
                 if (response.ok)
                 {
                     likeCount.textContent = ++likeCountInt;
-
                 } else
                 {
                     const errorData = await response.json();

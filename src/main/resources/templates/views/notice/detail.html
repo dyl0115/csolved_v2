@@ -35,7 +35,7 @@
                                         th:text="${notice.title}">
                                         게시글 제목
                                     </h3>
-
+                                    
                                     <!-- 게시글 메뉴 (드롭다운) -->
                                     <div class="relative flex-shrink-0">
                                         <!-- 메뉴 버튼 -->
@@ -46,7 +46,7 @@
                                                class="w-5 h-5">
                                             </i>
                                         </button>
-
+                                        
                                         <!-- 드롭다운 메뉴 -->
                                         <div id="notice-menu"
                                              class="notice-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -62,7 +62,7 @@
                                                         수정하기
                                                     </span>
                                                 </a>
-
+                                                
                                                 <!-- 삭제하기 (작성자만) -->
                                                 <button th:if="${notice.authorId == user.id}"
                                                         onclick="deleteNotice()"
@@ -74,7 +74,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                
                                 <!-- 메타 정보 -->
                                 <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 mb-4">
                                     <!-- 글쓴이 -->
@@ -84,7 +84,7 @@
                                             글쓴이
                                         </span>
                                     </div>
-
+                                    
                                     <!-- 조회수 -->
                                     <div class="flex items-center space-x-1">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
@@ -92,7 +92,7 @@
                                             조회수
                                         </span>
                                     </div>
-
+                                    
                                     <!-- 작성시간 -->
                                     <div class="flex items-center space-x-1">
                                         <i data-lucide="clock" class="w-4 h-4"></i>
@@ -133,7 +133,7 @@
                                 0
                             </span>
                         </button>
-
+                        
                         <!-- 답변하기 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition shadow-sm"
                                 id="toggle-answer-form"
@@ -210,15 +210,15 @@
                                 <!-- 댓글과 대댓글 -->
                                 <div class="flex gap-3 mb-6 pb-6 border-b border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
                                      th:each="answer:${answers}">
-
+                                    
                                     <!-- 댓쓴이 프로필 -->
                                     <div class="flex-shrink-0">
                                         <img class="rounded-full w-10 h-10 object-cover"
                                              th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
                                              alt="프로필 이미지"/>
                                     </div>
-
-
+                                    
+                                    
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center justify-between mb-2">
                                             <!-- 댓쓴이 닉네임 -->
@@ -227,14 +227,14 @@
                                                      th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
                                                     댓쓴이 닉네임
                                                 </span>
-
+                                                
                                                 <!-- 댓글시간 -->
                                                 <span class="timeago text-gray-500 text-sm"
                                                       th:data-date="${answer.createdAt}">
                                                     1시간 전
                                                 </span>
                                             </div>
-
+                                            
                                             <!-- 댓글 메뉴 (드롭다운) -->
                                             <div class="relative flex-shrink-0">
                                                 <!-- 댓글 메뉴 버튼 -->
@@ -245,7 +245,7 @@
                                                        class="w-5 h-5">
                                                     </i>
                                                 </button>
-
+                                                
                                                 <!-- 댓글 드롭다운 메뉴 -->
                                                 <div th:id="answer-menu + ${answer.id}"
                                                      class="answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -261,7 +261,7 @@
                                                                 삭제하기
                                                             </span>
                                                         </button>
-
+                                                        
                                                         <!-- 댓글 신고하기 (작성자가 아닐 때) -->
                                                         <button th:if="${answer.authorId != user.id}"
                                                                 th:onclick="|openReportModal('ANSWER', ${answer.id})|"
@@ -277,13 +277,13 @@
                                                 </div>
                                             </div>
                                         </div>
-
+                                        
                                         <!-- 댓글 내용 -->
                                         <div class="mb-3 text-gray-700 prose max-w-none break-words"
                                              th:utext="${answer.content}">
                                             댓글 내용
                                         </div>
-
+                                        
                                         <!-- 댓글 액션 버튼들 -->
                                         <div class="flex items-center gap-4 pt-1 border-t border-gray-100">
                                             <!-- 좋아요 버튼 -->
@@ -296,13 +296,13 @@
                                                 <span class="font-medium">
                                                     좋아요
                                                 </span>
-                                                <span id="answer-like-count"
+                                                <span th:id="|answer-like-count${answer.id}|"
                                                       class="text-xs text-gray-400"
                                                       th:text="${answer.likes}">
                                                     12
                                                 </span>
                                             </button>
-
+                                            
                                             <!-- 댓글쓰기 버튼 -->
                                             <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200"
                                                     th:onclick="|toggleForm('comment-form'+${answer.id})|">
@@ -379,14 +379,14 @@
                                         <!-- 대댓글 리스트 -->
                                         <div class="flex gap-3 mt-4 pl-6 border-l-2 border-gray-200"
                                              th:each="comment:${answer.comments}">
-
+                                            
                                             <!-- 대댓쓴이 프로필 -->
                                             <div class="flex-shrink-0">
                                                 <img class="rounded-full w-8 h-8 object-cover"
                                                      alt="프로필 이미지"
                                                      th:src="${comment.anonymous ? '/assets/anonymous.jpg' : comment.authorProfileImage}"/>
                                             </div>
-
+                                            
                                             <div class="flex-1 min-w-0">
                                                 <div class="flex items-center justify-between mb-2">
                                                     <div class="flex items-center flex-wrap gap-2">
@@ -395,14 +395,14 @@
                                                               th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
                                                             댓쓴이 닉네임
                                                         </span>
-
+                                                        
                                                         <!-- 대댓글 작성시간 -->
                                                         <span class="timeago text-gray-500 text-xs"
                                                               th:data-date="${comment.createdAt}">
                                                         1시간 전
                                                     </span>
                                                     </div>
-
+                                                    
                                                     <!-- 대댓글 메뉴 (드롭다운) -->
                                                     <div class="relative flex-shrink-0">
                                                         <!-- 대댓글 메뉴 버튼 -->
@@ -413,7 +413,7 @@
                                                                class="w-5 h-5">
                                                             </i>
                                                         </button>
-
+                                                        
                                                         <!-- 댓글 드롭다운 메뉴 -->
                                                         <div th:id="comment-menu + ${comment.id}"
                                                              class="comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
@@ -429,7 +429,7 @@
                                                                         삭제하기
                                                                     </span>
                                                                 </button>
-
+                                                                
                                                                 <!-- 댓글 신고하기 (작성자가 아닐 때) -->
                                                                 <button th:if="${comment.authorId != user.id}"
                                                                         th:onclick="|openReportModal('COMMENT', ${comment.id})|"
@@ -445,7 +445,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                
                                                 <!-- 대댓글 내용 -->
                                                 <div class="text-gray-700 text-sm prose max-w-none"
                                                      th:utext="${comment.content}">
@@ -805,7 +805,7 @@
         async function addAnswerLike(element)
         {
             const answerId = element.dataset.answerId;
-            const likeCount = document.getElementById('answer-like-count');
+            const likeCount = document.getElementById(`answer-like-count${answerId}`);
             let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
 
             try
