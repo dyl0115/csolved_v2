@@ -31,4 +31,12 @@ public class AnswerApiController
     {
         answerService.deleteAnswer(answerId, user.getId());
     }
+
+    @LoginRequest
+    @PostMapping("/{answerId}/likes")
+    public void addAnswerLike(@LoginUser User user,
+                              @PathVariable Long answerId)
+    {
+        answerService.addLike(answerId, user.getId());
+    }
 }

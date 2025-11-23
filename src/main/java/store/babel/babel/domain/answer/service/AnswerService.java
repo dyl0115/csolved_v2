@@ -71,6 +71,18 @@ public class AnswerService
         return AnswerWithComments.from(answers, commentsByAnswer);
     }
 
+    @Transactional
+    public void addLike(Long answerId, Long userId)
+    {
+        if (answerMapper.hasUserLike(answerId, userId))
+        {
+            throw new BabelException(ExceptionCode.ALREADY_LIKED);
+        }
+
+        answerMapper.addUserLike(answerId, userId);
+        answerMapper.increaseLikes(answerId);
+    }
+
     private void removeDeletedAnswersWithoutComments(List<Answer> answers, Map<Long, List<Comment>> commentsByAnswer)
     {
         answers.removeIf(answer -> isDeletedAndHasNoComments(answer, commentsByAnswer));
@@ -111,4 +123,6 @@ public class AnswerService
                 .map(Answer::getId)
                 .toList();
     }
+
+
 }

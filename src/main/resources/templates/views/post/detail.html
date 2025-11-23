@@ -150,11 +150,15 @@
                         <!-- 좋아요 버튼 -->
                         <button class="inline-flex items-center space-x-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition shadow-sm
                                         disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-60 disabled:shadow-none"
-                                id="like-button"
-                                onclick="addLike()">
-                            <i data-lucide="heart" class="w-5 h-5"></i>
-                            <span>좋아요</span>
-                            <span id="like-count"
+                                id="post-like-button"
+                                onclick="addPostLike()">
+                            <i data-lucide="heart"
+                               class="w-5 h-5">
+                            </i>
+                            <span>
+                                좋아요
+                            </span>
+                            <span id="post-like-count"
                                   class="ml-1 font-semibold"
                                   th:text="${post.likes}">
                                 0
@@ -162,14 +166,17 @@
                         </button>
                         
                         <!-- 답변하기 버튼 -->
-                        <button class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition shadow-sm"
+                        <button class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition shadow-sm"
                                 id="toggle-answer-form"
                                 th:onclick="|toggleForm('answer-form-card')|">
-                            <i data-lucide="message-circle"
+                            <i data-lucide="message-square"
                                class="w-5 h-5">
                             </i>
                             <span>
-                                답변 달기
+                                댓글
+                            </span>
+                            <span th:text="${post.answerCount}">
+                                12
                             </span>
                         </button>
                         
@@ -330,24 +337,49 @@
                                             </div>
                                         </div>
                                         
-                                        <!-- 댓글내용 -->
+                                        <!-- 댓글 내용 -->
                                         <div class="mb-3 text-gray-700 prose max-w-none break-words"
                                              th:classappend="${answer.deletedAt != null} ? 'opacity-50 italic'"
                                              th:utext="${answer.content}">
                                             댓글 내용
                                         </div>
                                         
-                                        <!-- 대댓글 쓰기 버튼 -->
-                                        <button class="inline-flex items-center space-x-1 text-sm text-blue-600 hover:text-blue-700 toggle-comment-form"
-                                                th:if="${answer.deletedAt == null}"
-                                                th:onclick="|toggleForm('comment-form' + ${answer.id})|">
-                                            <i data-lucide="corner-down-right"
-                                               class="w-4 h-4">
-                                            </i>
-                                            <span>
-                                                댓글 쓰기
-                                            </span>
-                                        </button>
+                                        <!-- 댓글 액션 버튼들 -->
+                                        <div class="flex items-center gap-4 pt-1 border-t border-gray-100">
+                                            <!-- 좋아요 버튼 -->
+                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
+                                                    th:if="${answer.deletedAt == null}"
+                                                    th:data-answer-id="${answer.id}"
+                                                    onclick="addAnswerLike(this)">
+                                                <i data-lucide="heart"
+                                                   class="w-4 h-4 group-hover:fill-red-500 transition-all duration-200">
+                                                </i>
+                                                <span class="font-medium">
+                                                    좋아요
+                                                </span>
+                                                <span id="answer-like-count"
+                                                      class="text-xs text-gray-400"
+                                                      th:text="${answer.likes}">
+                                                    12
+                                                </span>
+                                            </button>
+                                            
+                                            <!-- 댓글쓰기 버튼 -->
+                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200"
+                                                    th:if="${answer.deletedAt == null}"
+                                                    th:onclick="|toggleForm('comment-form'+${answer.id})|">
+                                                <i data-lucide="message-square"
+                                                   class="w-4 h-4 transition-colors duration-200">
+                                                </i>
+                                                <span class="font-medium">
+                                                    댓글
+                                                </span>
+                                                <span class="text-xs text-gray-400"
+                                                      th:text="${answer.comments.size()}">
+                                                    3
+                                                </span>
+                                            </button>
+                                        </div>
                                         
                                         <!-- 대댓글 작성 폼 -->
                                         <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
@@ -786,11 +818,11 @@
             }
         }
 
-        async function addLike()
+        async function addPostLike()
         {
             const postId = document.getElementById('postId').textContent;
-            const likeButton = document.getElementById('like-button');
-            const likeCount = document.getElementById('like-count');
+            const likeButton = document.getElementById('post-like-button');
+            const likeCount = document.getElementById('post-like-count');
             let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
 
             try
@@ -806,6 +838,38 @@
                 {
                     likeCount.textContent = ++likeCountInt;
                     likeButton.disabled = true;
+
+                } else
+                {
+                    const errorData = await response.json();
+                    alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('서버와의 통신 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function addAnswerLike(element)
+        {
+            const answerId = element.dataset.answerId;
+            const likeCount = document.getElementById('answer-like-count');
+            let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
+
+            try
+            {
+                const response = await fetch(`/api/answer/${answerId}/likes`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok)
+                {
+                    likeCount.textContent = ++likeCountInt;
 
                 } else
                 {

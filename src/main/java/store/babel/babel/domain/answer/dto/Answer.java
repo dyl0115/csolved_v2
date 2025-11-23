@@ -22,6 +22,7 @@ public class Answer
     private String authorNickname;
     private boolean anonymous;
     private String content;
+    private Long likes;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private LocalDateTime deletedAt;

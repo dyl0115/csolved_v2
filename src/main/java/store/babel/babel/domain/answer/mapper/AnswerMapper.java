@@ -28,4 +28,10 @@ public interface AnswerMapper
     void deleteAnswerByAdmin(Long answerId);
 
     void restoreAnswerByAdmin(Long answerId);
+
+    boolean hasUserLike(Long answerId, Long userId);
+
+    void increaseLikes(Long answerId);
+
+    void addUserLike(Long answerId, Long userId);
 }

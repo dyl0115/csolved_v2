@@ -244,9 +244,11 @@
 
     <insert id="addUserLike">
         INSERT INTO post_likes(post_id,
-                               user_id)
+                               user_id,
+                               created_at)
         VALUES (#{postId},
-                #{authorId});
+                #{authorId},
+                CURRENT_TIMESTAMP);
     </insert>
 
     <update id="increaseView">

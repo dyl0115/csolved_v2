@@ -19,15 +19,16 @@ public class AnswerWithComments
     private String authorNickname;
     private boolean anonymous;
     private String content;
+    private Long likes;
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
     private List<Comment> comments;
 
-    public static List<AnswerWithComments> from(List<Answer> answerDetailRecords,
+    public static List<AnswerWithComments> from(List<Answer> answers,
                                                 Map<Long, List<Comment>> answerCommentListMap)
     {
-        return answerDetailRecords.stream()
-                .map(record -> groupAnswerWithComments(record, answerCommentListMap.getOrDefault(record.getId(), Collections.emptyList())))
+        return answers.stream()
+                .map(answer -> groupAnswerWithComments(answer, answerCommentListMap.getOrDefault(answer.getId(), Collections.emptyList())))
                 .toList();
     }
 
@@ -41,6 +42,7 @@ public class AnswerWithComments
                 .authorNickname(answer.getAuthorNickname())
                 .anonymous(answer.isAnonymous())
                 .content(answer.getContent())
+                .likes(answer.getLikes())
                 .createdAt(answer.getCreatedAt())
                 .deletedAt(answer.getDeletedAt())
                 .comments(comments)
