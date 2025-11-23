@@ -1,9 +1,7 @@
 package store.babel.babel.domain.report.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import store.babel.babel.domain.post.dto.PostCard;
 import store.babel.babel.domain.report.dto.*;
-import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
 
@@ -15,16 +13,19 @@ public interface ReportMapper
     List<ReportCard> getReports(ReportSearchQuery query);
 
     // 해당 게시글에 대한 신고들을 인정합니다.
-    void resolveReports(ReportUpdateCommand command);
+    void approveReports(ReportUpdateCommand command);
 
     // 해당 게시글에 대한 신고들을 반려합니다.
     void rejectReports(ReportUpdateCommand command);
 
-    // 해당 게시글에 대한 신고들을 재인정합니다.
-    void reprocessReports(ReportUpdateCommand command);
+    // 신고를 REJECTED -> APPROVED 변경
+    void approveRejectedReports(ReportUpdateCommand command);
 
-    // 해당 게시글에 대한 신고들을 재반려합니다.
-    void undoReportActions(ReportUpdateCommand command);
+    // 신고를 APPROVED -> REJECTED 변경
+    void rejectApprovedReports(ReportUpdateCommand command);
+
+    // REJECTED/APPROVED 된 신고 -> PENDING 변경
+    void resetToPending(ReportUpdateCommand command);
 
     Long countReports(ReportCountQuery query);
 
@@ -34,7 +35,7 @@ public interface ReportMapper
 
     Long countRejected();
 
-    Long countResolved();
+    Long countApproved();
 
     String getDetailReason(Long reportId);
 }

@@ -27,6 +27,7 @@ public class TagService
         }
 
         List<Tag> newTags = filterNewTags(tags);
+        
         if (!newTags.isEmpty())
         {
             tagMapper.saveTags(newTags);
@@ -58,12 +59,11 @@ public class TagService
     private List<Tag> filterNewTags(List<Tag> tags)
     {
         List<String> tagNames = extractTagNames(tags);
-
         List<Tag> existTags = filterExistTags(tags);
         Set<String> existTagNames = new HashSet<>(extractTagNames(existTags));
 
         return tagNames.stream()
-                .filter(name -> !existTagNames.contains(name))
+                .filter(name -> !existTagNames.contains(name.toLowerCase()))
                 .map(Tag::from)
                 .toList();
     }

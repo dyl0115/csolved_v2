@@ -73,14 +73,27 @@
 
     <update id="deletePost">
         UPDATE posts
-        SET deleted_at = CURRENT_TIMESTAMP
-        WHERE id = #{postId};
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'SELF'
+        WHERE id = #{postId}
+          AND deleted_at IS NULL;
     </update>
 
-    <update id="restorePost">
+    <delete id="deletePostByAdmin">
         UPDATE posts
-        SET deleted_at = NULL
-        WHERE id = #{postId};
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'ADMIN'
+        WHERE id = #{postId}
+          AND deleted_at IS NULL;
+    </delete>
+
+    <update id="restorePostByAdmin">
+        UPDATE posts
+        SET deleted_at   = NULL,
+            deleted_type = NULL
+        WHERE id = #{postId}
+          AND deleted_at IS NOT NULL
+          AND deleted_type = 'ADMIN';
     </update>
 
     <select id="getPost" resultMap="postMap">

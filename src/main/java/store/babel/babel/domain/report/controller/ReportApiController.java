@@ -25,26 +25,39 @@ public class ReportApiController
     }
 
     @LoginRequest
-    @PutMapping
-    public void updateReports(@Valid @RequestBody ReportUpdateRequest request)
+    @PutMapping("/approve")
+    public void approveReports(@Valid @RequestBody ReportUpdateRequest request)
     {
-        reportService.updateReports(ReportUpdateCommand.from(request));
+        reportService.approveReports(ReportUpdateCommand.from(request));
+    }
+
+    @LoginRequest
+    @PutMapping("/reject")
+    public void rejectReports(@Valid @RequestBody ReportUpdateRequest request)
+    {
+        reportService.rejectReports(ReportUpdateCommand.from(request));
     }
 
     @LoginRequest
     @PutMapping("/restore")
-    public void undoReports(@Valid @RequestBody ReportUpdateRequest request)
+    public void rejectApprovedReports(@Valid @RequestBody ReportUpdateRequest request)
     {
-        reportService.undoReportActions(ReportUpdateCommand.from(request));
+        reportService.rejectApprovedReports(ReportUpdateCommand.from(request));
     }
 
     @LoginRequest
     @PutMapping("/reprocess")
-    public void reprocessReports(@Valid @RequestBody ReportUpdateRequest request)
+    public void approveRejectedReports(@Valid @RequestBody ReportUpdateRequest request)
     {
-        reportService.reprocessReports(ReportUpdateCommand.from(request));
+        reportService.approveRejectedReports(ReportUpdateCommand.from(request));
     }
 
+    @LoginRequest
+    @PutMapping("/re-pending")
+    public void resetToPending(@Valid @RequestBody ReportUpdateRequest request)
+    {
+        reportService.resetToPending(ReportUpdateCommand.from(request));
+    }
 
     @LoginRequest
     @GetMapping("/{reportId}")

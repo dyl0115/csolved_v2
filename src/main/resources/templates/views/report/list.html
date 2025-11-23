@@ -81,7 +81,7 @@
                                 처리됨
                             </p>
                             <p class="text-2xl font-bold mt-1 text-green-500"
-                               th:text="${resolvedCount + rejectedCount}">
+                               th:text="${approvedCount + rejectedCount}">
                                 37
                             </p>
                         </div>
@@ -164,7 +164,7 @@
                                                   class="px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
                                                 대기중
                                             </span>
-                                            <span th:if="${report.status == 'RESOLVED'}">
+                                            <span th:if="${report.status == 'APPROVED'}">
                                                 <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
                                                     해결됨
                                                 </span>
@@ -291,8 +291,8 @@
                                                     <i data-lucide="circle-check" class="w-4 h-4"></i>
                                                 </a>
                                                 
-                                                <!-- RESOLVED: 신고된 글 복원 -->
-                                                <a th:if="${report.status == 'RESOLVED'}"
+                                                <!-- APPROVED: 신고된 글 복원 -->
+                                                <a th:if="${report.status == 'APPROVED'}"
                                                    href="#"
                                                    class="text-green-500 hover:text-green-700 transition"
                                                    title="신고된 글 재복원"
@@ -313,6 +313,18 @@
                                                    th:data-target-id="${report.targetId}"
                                                    onclick="reprocessReport(this); return false;">
                                                     <i data-lucide="ban" class="w-4 h-4"></i>
+                                                </a>
+                                                
+                                                <!-- APPROVED/REJECTED -> PENDING으로-->
+                                                <a th:if="${report.status == 'REJECTED' || report.status == 'APPROVED'} "
+                                                   href="#"
+                                                   class="text-red-500 hover:text-red-700 transition"
+                                                   title="대기중으로 처리"
+                                                   th:data-admin-id="${user.id}"
+                                                   th:data-target-type="${report.targetType}"
+                                                   th:data-target-id="${report.targetId}"
+                                                   onclick="pendingReport(this); return false;">
+                                                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
                                                 </a>
                                             </div>
                                         </td>
@@ -457,9 +469,9 @@
                                                     th:selected="${status == 'PENDING'}">
                                                 대기중
                                             </option>
-                                            <option value="RESOLVED"
-                                                    th:selected="${status == 'RESOLVED'}">
-                                                해결됨
+                                            <option value="APPROVED"
+                                                    th:selected="${status == 'APPROVED'}">
+                                                승인됨
                                             </option>
                                         </select>
                                     </div>
@@ -688,7 +700,7 @@
         async function acceptReports(element)
         {
             const data = {
-                status: 'RESOLVED',
+                status: 'APPROVED',
                 adminId: parseInt(element.dataset.adminId),
                 targetType: element.dataset.targetType,
                 targetId: parseInt(element.dataset.targetId)
@@ -696,7 +708,7 @@
 
             try
             {
-                const response = await fetch(`/api/report`, {
+                const response = await fetch(`/api/report/approve`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -732,7 +744,7 @@
 
             try
             {
-                const response = await fetch(`/api/report`, {
+                const response = await fetch(`/api/report/reject`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
@@ -796,7 +808,7 @@
         async function reprocessReport(element)
         {
             const data = {
-                status: 'RESOLVED',
+                status: 'APPROVED',
                 adminId: parseInt(element.dataset.adminId),
                 targetType: element.dataset.targetType,
                 targetId: parseInt(element.dataset.targetId)
@@ -815,6 +827,42 @@
                 if (response.ok)
                 {
                     alert('신고된 게시글을 삭제했습니다.')
+                    window.location.reload();
+                } else
+                {
+                    alert('신고를 처리하는데 실패했습니다. ');
+                }
+            }
+            catch (error)
+            {
+                console.error('Error:', error);
+                alert('신고를 처리하는데 실패했습니다.');
+            }
+        }
+
+        // 처리한 글 다시 PENDING으로
+        async function pendingReport(element)
+        {
+            const data = {
+                status: 'PENDING',
+                adminId: parseInt(element.dataset.adminId),
+                targetType: element.dataset.targetType,
+                targetId: parseInt(element.dataset.targetId)
+            }
+
+            try
+            {
+                const response = await fetch(`/api/report/re-pending`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok)
+                {
+                    alert('해당 게시글을 다시 대기중으로 변경했습니다.')
                     window.location.reload();
                 } else
                 {

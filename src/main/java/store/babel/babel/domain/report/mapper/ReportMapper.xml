@@ -91,7 +91,7 @@
             <when test="sortType == 'STATUS'">
                 CASE
                 WHEN r.status = 'PENDING' THEN 0
-                WHEN r.status = 'REVIEWING' THEN 1
+                WHEN r.status = 'REJECTED' THEN 1
                 ELSE 2
                 END,
                 r.created_at DESC
@@ -120,21 +120,13 @@
         FROM reports r
         WHERE deleted_at IS NULL
           AND status = 'PENDING';
-
     </select>
 
-    <select id="countReviewing">
+    <select id="countApproved">
         SELECT COUNT(r.id)
         FROM reports r
         WHERE deleted_at IS NULL
-          AND status = 'REVIEWING';
-    </select>
-
-    <select id="countResolved">
-        SELECT COUNT(r.id)
-        FROM reports r
-        WHERE deleted_at IS NULL
-          AND status = 'RESOLVED';
+          AND status = 'APPROVED';
     </select>
 
     <select id="countRejected">
@@ -144,9 +136,9 @@
           AND status = 'REJECTED';
     </select>
 
-    <update id="resolveReports">
+    <update id="approveReports">
         UPDATE reports
-        SET status       = 'RESOLVED',
+        SET status       = 'APPROVED',
             processed_by = #{adminId},
             processed_at = CURRENT_TIMESTAMP
         WHERE target_type = #{targetType}
@@ -164,23 +156,33 @@
           AND status = 'PENDING';
     </update>
 
-    <update id="undoReportActions">
+    <update id="rejectApprovedReports">
         UPDATE reports
         SET status       = 'REJECTED',
             processed_by = #{adminId},
             processed_at = CURRENT_TIMESTAMP
         WHERE target_type = #{targetType}
           AND target_id = #{targetId}
-          AND status = 'RESOLVED';
+          AND status = 'APPROVED';
     </update>
 
-    <update id="reprocessReports">
+    <update id="approveRejectedReports">
         UPDATE reports
-        SET status       = 'RESOLVED',
+        SET status       = 'APPROVED',
             processed_by = #{adminId},
             processed_at = CURRENT_TIMESTAMP
         WHERE target_type = #{targetType}
           AND target_id = #{targetId}
           AND status = 'REJECTED';
+    </update>
+
+    <update id="resetToPending">
+        UPDATE reports
+        SET status       = 'PENDING',
+            processed_by = NULL,
+            processed_at = NULL
+        WHERE target_type = #{targetType}
+          AND target_id = #{targetId}
+          AND status != 'PENDING';
     </update>
 </mapper>

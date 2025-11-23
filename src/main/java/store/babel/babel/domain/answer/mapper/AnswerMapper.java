@@ -24,4 +24,8 @@ public interface AnswerMapper
     boolean existComments(Long answerId);
 
     void deleteAnswer(Long answerId);
+
+    void deleteAnswerByAdmin(Long answerId);
+
+    void restoreAnswerByAdmin(Long answerId);
 }

@@ -27,88 +27,98 @@ public class ReportService
     }
 
     @Transactional
-    public void updateReports(ReportUpdateCommand command)
+    public void approveReports(ReportUpdateCommand command)
     {
-        switch (command.getStatus())
-        {
-            case RESOLVED ->
-            {
-                reportMapper.resolveReports(command);
-                reportMapper.reprocessReports(command);
-                deleteContent(command);
-            }
-            case REJECTED ->
-            {
-                reportMapper.rejectReports(command);
-            }
-        }
+        reportMapper.approveReports(command);
+        deleteContentByAdmin(command);
     }
 
     @Transactional
-    public void reprocessReports(ReportUpdateCommand command)
+    public void rejectReports(ReportUpdateCommand command)
     {
-        reportMapper.reprocessReports(command);
-        postMapper.deletePost(command.getTargetId());
+        reportMapper.rejectReports(command);
     }
 
     @Transactional
-    public void undoReportActions(ReportUpdateCommand command)
+    public void approveRejectedReports(ReportUpdateCommand command)
     {
-        reportMapper.undoReportActions(command);
-        postMapper.restorePost(command.getTargetId());
+        reportMapper.approveRejectedReports(command);
+        deleteContentByAdmin(command);
     }
 
+    @Transactional
+    public void rejectApprovedReports(ReportUpdateCommand command)
+    {
+        reportMapper.rejectApprovedReports(command);
+        restoreContentByAdmin(command);
+    }
+
+    @Transactional
+    public void resetToPending(ReportUpdateCommand command)
+    {
+        reportMapper.resetToPending(command);
+        restoreContentByAdmin(command);
+    }
+
+    @Transactional(readOnly = true)
     public List<ReportCard> getReports(ReportSearchQuery query)
     {
         return reportMapper.getReports(query);
     }
 
-    public Long countAll()
-    {
-        return reportMapper.countAll();
-    }
-
-    public Long countPending()
-    {
-        return reportMapper.countPending();
-    }
-
-    public Long countRejected()
-    {
-        return reportMapper.countRejected();
-    }
-
-    public Long countResolved()
-    {
-        return reportMapper.countResolved();
-    }
-
-    public Long countReports(ReportCountQuery query)
-    {
-        return reportMapper.countReports(query);
-    }
-
+    @Transactional(readOnly = true)
     public String getDetailReason(Long reportId)
     {
         return reportMapper.getDetailReason(reportId);
     }
 
-    private void deleteContent(ReportUpdateCommand command)
+    @Transactional(readOnly = true)
+    public Long countAll()
+    {
+        return reportMapper.countAll();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countPending()
+    {
+        return reportMapper.countPending();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countRejected()
+    {
+        return reportMapper.countRejected();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countApproved()
+    {
+        return reportMapper.countApproved();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countReports(ReportCountQuery query)
+    {
+        return reportMapper.countReports(query);
+    }
+
+    private void deleteContentByAdmin(ReportUpdateCommand command)
     {
         switch (command.getTargetType())
         {
-            case POST ->
-            {
-                postMapper.deletePost(command.getTargetId());
-            }
-            case ANSWER ->
-            {
-                answerMapper.deleteAnswer(command.getTargetId());
-            }
-            case COMMENT ->
-            {
-                commentMapper.deleteComment(command.getTargetId());
-            }
+            case POST -> postMapper.deletePostByAdmin(command.getTargetId());
+            case ANSWER -> answerMapper.deleteAnswerByAdmin(command.getTargetId());
+            case COMMENT -> commentMapper.deleteCommentByAdmin(command.getTargetId());
+        }
+    }
+
+    private void restoreContentByAdmin(ReportUpdateCommand command)
+    {
+        switch (command.getTargetType())
+        {
+            case POST -> postMapper.restorePostByAdmin(command.getTargetId());
+            case ANSWER -> answerMapper.restoreAnswerByAdmin(command.getTargetId());
+            case COMMENT -> commentMapper.restoreCommentByAdmin(command.getTargetId());
         }
     }
 }

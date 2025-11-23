@@ -31,8 +31,11 @@ public interface PostMapper
     // 게시글 논리적 삭제
     void deletePost(Long postId);
 
-    // 삭제된 게시글 복원
-    void restorePost(Long postId);
+    // 운영자가 신고된 게시글 삭제
+    void deletePostByAdmin(Long postId);
+
+    // 운영자가 삭제된 게시글 복원
+    void restorePostByAdmin(Long postId);
 
     // 질문-좋아요 테이블에 저장된 유저인지 체크
     boolean hasUserLiked(Long postId, Long authorId);

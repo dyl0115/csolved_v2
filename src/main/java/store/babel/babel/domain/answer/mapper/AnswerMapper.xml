@@ -88,11 +88,29 @@
                       from comments
                       where answer_id = #{answerId})
     </select>
-
-
+    
     <update id="deleteAnswer">
         UPDATE answers
-        SET deleted_at = CURRENT_TIMESTAMP
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'SELF'
         WHERE id = #{answerId}
+          AND deleted_at IS NULL;
+    </update>
+
+    <update id="deleteAnswerByAdmin">
+        UPDATE answers
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'ADMIN'
+        WHERE id = #{answerId}
+          AND deleted_at IS NULL;
+    </update>
+
+    <update id="restoreAnswerByAdmin">
+        UPDATE answers
+        SET deleted_at   = NULL,
+            deleted_type = NULL
+        WHERE id = #{answerId}
+          AND deleted_at IS NOT NULL
+          AND deleted_type = 'ADMIN';
     </update>
 </mapper>

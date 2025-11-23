@@ -19,5 +19,9 @@ public interface CommentMapper
 
     void deleteComment(Long commentId);
 
+    void deleteCommentByAdmin(Long commentId);
+
+    void restoreCommentByAdmin(Long commentId);
+
     Comment getCommentForAdmin(Long commentId);
 }

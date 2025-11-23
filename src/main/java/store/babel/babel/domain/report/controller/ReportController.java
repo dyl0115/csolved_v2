@@ -14,9 +14,7 @@ import store.babel.babel.domain.report.dto.ReportCountQuery;
 import store.babel.babel.domain.report.dto.ReportSearchQuery;
 import store.babel.babel.domain.report.dto.ReportSearchRequest;
 import store.babel.babel.domain.report.service.ReportService;
-import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
-import store.babel.babel.global.utils.login.LoginUser;
 import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
@@ -60,7 +58,7 @@ public class ReportController
         model.addAttribute("totalCount", reportService.countAll());
         model.addAttribute("pendingCount", reportService.countPending());
         model.addAttribute("rejectedCount", reportService.countRejected());
-        model.addAttribute("resolvedCount", reportService.countResolved());
+        model.addAttribute("approvedCount", reportService.countApproved());
 
         return VIEW_REPORTS;
     }
