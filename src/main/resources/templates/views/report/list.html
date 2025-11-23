@@ -264,7 +264,9 @@
                                                 <button th:onclick="|viewDetailReason(${report.id})|"
                                                         class="text-blue-500 hover:text-blue-700 transition"
                                                         title="상세보기">
-                                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                                    <i data-lucide="eye"
+                                                       class="w-4 h-4">
+                                                    </i>
                                                 </button>
                                                 
                                                 <!-- PENDING: 신고된 글 삭제 -->
@@ -276,7 +278,9 @@
                                                    th:data-target-type="${report.targetType}"
                                                    th:data-target-id="${report.targetId}"
                                                    onclick="acceptReports(this); return false;">
-                                                    <i data-lucide="ban" class="w-4 h-4"></i>
+                                                    <i data-lucide="circle-x"
+                                                       class="w-4 h-4">
+                                                    </i>
                                                 </a>
                                                 
                                                 <!-- PENDING: 신고된 글 보존 -->
@@ -288,19 +292,23 @@
                                                    th:data-target-type="${report.targetType}"
                                                    th:data-target-id="${report.targetId}"
                                                    onclick="dismissReports(this); return false;">
-                                                    <i data-lucide="circle-check" class="w-4 h-4"></i>
+                                                    <i data-lucide="circle-check"
+                                                       class="w-4 h-4">
+                                                    </i>
                                                 </a>
                                                 
                                                 <!-- APPROVED: 신고된 글 복원 -->
                                                 <a th:if="${report.status == 'APPROVED'}"
                                                    href="#"
-                                                   class="text-green-500 hover:text-green-700 transition"
+                                                   class="text-blue-500 hover:text-blue-700 transition"
                                                    title="신고된 글 재복원"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
                                                    th:data-target-id="${report.targetId}"
                                                    onclick="undoReportAction(this); return false;">
-                                                    <i data-lucide="archive-restore" class="w-4 h-4"></i>
+                                                    <i data-lucide="circle-arrow-up"
+                                                       class="w-4 h-4">
+                                                    </i>
                                                 </a>
                                                 
                                                 <!-- REJECTED: 신고된 글 삭제 -->
@@ -312,19 +320,21 @@
                                                    th:data-target-type="${report.targetType}"
                                                    th:data-target-id="${report.targetId}"
                                                    onclick="reprocessReport(this); return false;">
-                                                    <i data-lucide="ban" class="w-4 h-4"></i>
+                                                    <i data-lucide="circle-x"
+                                                       class="w-4 h-4">
+                                                    </i>
                                                 </a>
                                                 
                                                 <!-- APPROVED/REJECTED -> PENDING으로-->
                                                 <a th:if="${report.status == 'REJECTED' || report.status == 'APPROVED'} "
                                                    href="#"
-                                                   class="text-red-500 hover:text-red-700 transition"
+                                                   class="text-purple-500 hover:text-purple-700 transition"
                                                    title="대기중으로 처리"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
                                                    th:data-target-id="${report.targetId}"
                                                    onclick="pendingReport(this); return false;">
-                                                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                                    <i data-lucide="circle-arrow-left" class="w-4 h-4"></i>
                                                 </a>
                                             </div>
                                         </td>
