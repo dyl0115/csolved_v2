@@ -36,6 +36,7 @@ public class PostController
     public final static String VIEWS_POST_UPDATE_FORM = "/views/post/update";
     public final static String VIEWS_POST_LIST = "/views/post/list";
     public final static String VIEWS_POST_DETAIL = "/views/post/detail";
+    public final static String VIEWS_POST_BEST = "/views/post/best";
 
     private final PostService postService;
     private final PopularPostService popularPostService;
@@ -126,5 +127,31 @@ public class PostController
         model.addAttribute("post", post);
 
         return VIEWS_POST_UPDATE_FORM;
+    }
+
+    @LoginRequest
+    @GetMapping("/best")
+    public String getBestPosts(@RequestParam(defaultValue = "WEEK") String period,
+                               @RequestParam(required = false) Long category,
+                               Model model)
+    {
+        PeriodType periodType = PeriodType.valueOf(period);
+
+        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(periodType, 50L);
+        List<Category> categories = categoryService.getAllCategories(POST.getCode());
+
+        // 카테고리 필터링
+        if (category != null)
+        {
+            bestPosts = bestPosts.stream()
+                    .filter(post -> post.getCategoryId() != null && post.getCategoryId().equals(category))
+                    .toList();
+        }
+
+        model.addAttribute("currentPeriod", period);
+        model.addAttribute("bestPosts", bestPosts);
+        model.addAttribute("categories", categories);
+
+        return VIEWS_POST_BEST;
     }
 }

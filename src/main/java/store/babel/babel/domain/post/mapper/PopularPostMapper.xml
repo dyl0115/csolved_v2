@@ -10,6 +10,7 @@
         <result property="likes" column="likes"/>
         <result property="createdAt" column="created_at"/>
         <result property="answerCount" column="answer_count"/>
+        <result property="categoryId" column="category_id"/>
     </resultMap>
 
     <select id="getBestByPeriod" resultMap="postSummaryMap">
@@ -19,6 +20,7 @@
                p.likes                                                  likes,
                p.answer_count                                           answer_count,
                p.created_at                                             created_at,
+               p.category_id                                            category_id,
                (p.views * 0.1) + (p.answer_count * 0.5) + (likes * 1.0) popularity
         FROM posts p
         WHERE p.created_at >= DATE_SUB(NOW(), INTERVAL #{periodType.days} DAY)
@@ -33,7 +35,8 @@
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
-               p.created_at   created_at
+               p.created_at   created_at,
+               p.category_id  category_id
         FROM posts p
         WHERE p.created_at >= DATE_SUB(NOW(), INTERVAL #{periodType.days} DAY)
           AND p.deleted_at IS NULL
@@ -47,7 +50,8 @@
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
-               p.created_at   created_at
+               p.created_at   created_at,
+               p.category_id  category_id
         FROM posts p
         WHERE p.created_at >= DATE_SUB(NOW(), INTERVAL #{periodType.days} DAY)
           AND p.deleted_at IS NULL
@@ -61,7 +65,8 @@
                p.views        views,
                p.likes        likes,
                p.answer_count answer_count,
-               p.created_at   created_at
+               p.created_at   created_at,
+               p.category_id  category_id
         FROM posts p
         WHERE p.created_at >= DATE_SUB(NOW(), INTERVAL #{periodType.days} DAY)
           AND p.deleted_at IS NULL

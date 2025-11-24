@@ -15,5 +15,6 @@ public class PostSummary
     private Integer likes;
     private Integer answerCount;
     private LocalDateTime createdAt;
+    private Long categoryId;
 
 }
