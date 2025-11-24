@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class Pagination
 {
-    private static final Long DEFAULT_RECORDS_PER_PAGE = 15L;
+    private static final Long DEFAULT_RECORDS_PER_PAGE = 12L;
 
     private final Long recordsPerPage;
     private final Long currentPage;

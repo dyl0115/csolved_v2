@@ -3,14 +3,17 @@ package store.babel.babel.domain.post.dto;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 public class PostSummary
 {
     private Long postId;
     private String title;
-    private Integer viewCount;
-    private Integer likeCount;
+    private Integer views;
+    private Integer likes;
     private Integer answerCount;
+    private LocalDateTime createdAt;
 
 }

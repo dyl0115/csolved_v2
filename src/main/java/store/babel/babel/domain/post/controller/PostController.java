@@ -8,10 +8,9 @@ import store.babel.babel.domain.answer.service.AnswerService;
 import store.babel.babel.domain.answer.dto.AnswerWithComments;
 import store.babel.babel.domain.category.dto.Category;
 import store.babel.babel.domain.category.service.CategoryService;
-import store.babel.babel.domain.post.dto.Post;
-import store.babel.babel.domain.post.dto.PostCard;
+import store.babel.babel.domain.post.dto.*;
+import store.babel.babel.domain.post.service.PopularPostService;
 import store.babel.babel.domain.post.service.PostService;
-import store.babel.babel.domain.post.dto.PostSearchQuery;
 import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.filter.FilterInfo;
@@ -39,6 +38,7 @@ public class PostController
     public final static String VIEWS_POST_DETAIL = "/views/post/detail";
 
     private final PostService postService;
+    private final PopularPostService popularPostService;
     private final AnswerService answerService;
     private final CategoryService categoryService;
 
@@ -55,10 +55,14 @@ public class PostController
         Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
         List<Category> categories = categoryService.getAllCategories(POST.getCode());
         List<PostCard> postCards = postService.getPostCards(query, pagination);
+        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(PeriodType.WEEK, 5L);
+        List<PostSummary> mostViewedPosts = popularPostService.getMostViewed(PeriodType.WEEK, 7L);
 
         model.addAttribute("pagination", pagination);
         model.addAttribute("categories", categories);
         model.addAttribute("postCards", postCards);
+        model.addAttribute("bestPosts", bestPosts);
+        model.addAttribute("mostViewedPosts", mostViewedPosts);
 
         return VIEWS_POST_LIST;
     }
