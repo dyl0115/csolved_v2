@@ -144,7 +144,7 @@
                             <span>
                                 댓글
                             </span>
-                            <span th:text="${answersWithComments.size()}">
+                            <span th:text="${notice.answerCount }">
                                 12
                             </span>
                         </button>
@@ -208,11 +208,11 @@
                                 </div>
                                 
                                 <!-- 댓글과 대댓글 -->
-                                <div class="flex gap-3 mb-6 pb-6 border-b border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
+                                <div class="flex gap-3 mb-6 pb-6 border-gray-200 border-l-2 border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
                                      th:each="answer:${answers}">
                                     
                                     <!-- 댓쓴이 프로필 -->
-                                    <div class="flex-shrink-0">
+                                    <div class="flex-shrink-0 ml-4">
                                         <img class="rounded-full w-10 h-10 object-cover"
                                              th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
                                              alt="프로필 이미지"/>
@@ -285,7 +285,7 @@
                                         </div>
                                         
                                         <!-- 댓글 액션 버튼들 -->
-                                        <div class="flex items-center gap-4 pt-1 border-t border-gray-100">
+                                        <div class="flex items-center gap-2 ">
                                             <!-- 좋아요 버튼 -->
                                             <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
                                                     th:data-answer-id="${answer.id}"
@@ -297,22 +297,22 @@
                                                     좋아요
                                                 </span>
                                                 <span th:id="|answer-like-count${answer.id}|"
-                                                      class="text-xs text-gray-400"
+                                                      class="font-medium"
                                                       th:text="${answer.likes}">
                                                     12
                                                 </span>
                                             </button>
                                             
                                             <!-- 댓글쓰기 버튼 -->
-                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200"
+                                            <button class="group inline-flex items-center gap-1.5 px-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200"
                                                     th:onclick="|toggleForm('comment-form'+${answer.id})|">
                                                 <i data-lucide="message-square"
-                                                   class="w-4 h-4 transition-colors duration-200">
+                                                   class="w-4 h-4 group-hover:fill-blue-500 transition-colors duration-200">
                                                 </i>
                                                 <span class="font-medium">
                                                     댓글
                                                 </span>
-                                                <span class="text-xs text-gray-400"
+                                                <span class="font-medium"
                                                       th:text="${answer.comments.size()}">
                                                     3
                                                 </span>
@@ -377,7 +377,7 @@
                                         </div>
                                         
                                         <!-- 대댓글 리스트 -->
-                                        <div class="flex gap-3 mt-4 pl-6 border-l-2 border-gray-200"
+                                        <div class="flex gap-3 mt-4 pb-4 pl-6 border-gray-200 border-l-2 border-gray-200"
                                              th:each="comment:${answer.comments}">
                                             
                                             <!-- 대댓쓴이 프로필 -->
