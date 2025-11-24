@@ -280,8 +280,18 @@
                                                     <th:block th:if="${answer.deletedAt != null}">
                                                         (삭제)
                                                     </th:block>
-                                                    <th:block th:if="${answer.deletedAt == null}"
-                                                              th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
+                                                    <th:block th:if="${answer.deletedAt == null}">
+                                                        <th:block th:if="${answer.anonymous}">
+                                                            <th:block th:if="${answer.authorId == post.authorId}">
+                                                                익명(글쓴이)
+                                                            </th:block>
+                                                            <th:block th:unless="${answer.authorId == post.authorId}">
+                                                                익명
+                                                            </th:block>
+                                                        </th:block>
+                                                        <th:block th:unless="${answer.anonymous}"
+                                                                  th:text="${answer.authorNickname}">
+                                                        </th:block>
                                                     </th:block>
                                                 </span>
                                                 
@@ -451,10 +461,22 @@
                                                 <div class="flex items-center justify-between mb-2">
                                                     <div class="flex items-center flex-wrap gap-2">
                                                         <!-- 대댓쓴이 닉네임 -->
-                                                        <span class="font-bold text-gray-800 text-sm"
-                                                              th:text="${comment.anonymous} ? '익명' : ${comment.authorNickname}">
-                                                            댓쓴이 닉네임
+                                                        <span class="font-bold text-gray-800 text-sm">
+                                                           
+                                                            <th:block th:if="${comment.anonymous}">
+                                                            <th:block th:if="${comment.authorId == post.authorId}">
+                                                                익명(글쓴이)
+                                                            </th:block>
+                                                            <th:block th:unless="${comment.authorId == post.authorId}">
+                                                                익명
+                                                            </th:block>
+                                                        </th:block>
+                                                        <th:block th:unless="${comment.anonymous}"
+                                                                  th:text="${comment.authorNickname}">
+                                                            대댓쓴이 닉네임
+                                                        </th:block>
                                                         </span>
+                                                        
                                                         
                                                         <!-- 대댓글 작성시간 -->
                                                         <span class="timeago text-gray-500 text-xs"
