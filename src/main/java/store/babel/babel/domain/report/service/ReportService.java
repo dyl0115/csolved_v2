@@ -107,8 +107,16 @@ public class ReportService
         switch (command.getTargetType())
         {
             case POST -> postMapper.deletePostByAdmin(command.getTargetId());
-            case ANSWER -> answerMapper.deleteAnswerByAdmin(command.getTargetId());
-            case COMMENT -> commentMapper.deleteCommentByAdmin(command.getTargetId());
+            case ANSWER ->
+            {
+                postMapper.decreaseAnswerCount(answerMapper.getPostId(command.getTargetId()));
+                answerMapper.deleteAnswerByAdmin(command.getTargetId());
+            }
+            case COMMENT ->
+            {
+                postMapper.decreaseAnswerCount(commentMapper.getPostId(command.getTargetId()));
+                commentMapper.deleteCommentByAdmin(command.getTargetId());
+            }
         }
     }
 
@@ -117,8 +125,16 @@ public class ReportService
         switch (command.getTargetType())
         {
             case POST -> postMapper.restorePostByAdmin(command.getTargetId());
-            case ANSWER -> answerMapper.restoreAnswerByAdmin(command.getTargetId());
-            case COMMENT -> commentMapper.restoreCommentByAdmin(command.getTargetId());
+            case ANSWER ->
+            {
+                postMapper.increaseAnswerCount(answerMapper.getPostId(command.getTargetId()));
+                answerMapper.restoreAnswerByAdmin(command.getTargetId());
+            }
+            case COMMENT ->
+            {
+                postMapper.increaseAnswerCount(commentMapper.getPostId(command.getTargetId()));
+                commentMapper.restoreCommentByAdmin(command.getTargetId());
+            }
         }
     }
 }
