@@ -9,7 +9,7 @@ import java.util.List;
 @Mapper
 public interface PopularPostMapper
 {
-    List<PostSummary> getBestByPeriod(PeriodType periodType, Long limit);
+    List<PostSummary> getBestByPeriod(PeriodType periodType, Long offset, Long limit);
 
     List<PostSummary> getMostLiked(PeriodType periodType, Long limit);
 

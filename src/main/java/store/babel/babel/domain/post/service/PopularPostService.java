@@ -16,9 +16,9 @@ public class PopularPostService
     private final PopularPostMapper popularPostMapper;
 
     @Transactional(readOnly = true)
-    public List<PostSummary> getBestByPeriod(PeriodType periodType, Long limit)
+    public List<PostSummary> getBestByPeriod(PeriodType periodType, Long offset, Long limit)
     {
-        return popularPostMapper.getBestByPeriod(periodType, limit);
+        return popularPostMapper.getBestByPeriod(periodType, offset, limit);
     }
 
     @Transactional(readOnly = true)

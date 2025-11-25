@@ -14,19 +14,21 @@
     </resultMap>
 
     <select id="getBestByPeriod" resultMap="postSummaryMap">
-        SELECT p.id                                                     id,
-               p.title                                                  title,
-               p.views                                                  views,
-               p.likes                                                  likes,
-               p.answer_count                                           answer_count,
-               p.created_at                                             created_at,
-               p.category_id                                            category_id,
-               (p.views * 0.1) + (p.answer_count * 0.5) + (likes * 1.0) popularity
+        SELECT p.id id,
+        p.title title,
+        p.views views,
+        p.likes likes,
+        p.answer_count answer_count,
+        p.created_at created_at,
+        p.category_id category_id,
+        (p.views * 0.1) + (p.answer_count * 0.5) + (likes * 1.0) popularity
         FROM posts p
-        WHERE p.created_at >= DATE_SUB(NOW(), INTERVAL #{periodType.days} DAY)
-          AND p.deleted_at IS NULL
+        WHERE p.deleted_at IS NULL
+        <if test="periodType.name() != 'ALL'">
+            AND p.created_at >= DATE_SUB(NOW(), INTERVAL #{periodType.days} DAY)
+        </if>
         ORDER BY popularity DESC
-        LIMIT #{limit};
+        LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <select id="getMostLiked" resultMap="postSummaryMap">

@@ -56,7 +56,7 @@ public class PostController
         Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
         List<Category> categories = categoryService.getAllCategories(POST.getCode());
         List<PostCard> postCards = postService.getPostCards(query, pagination);
-        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(PeriodType.WEEK, 5L);
+        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(PeriodType.WEEK, 0L, 5L);
         List<PostSummary> mostViewedPosts = popularPostService.getMostViewed(PeriodType.WEEK, 7L);
 
         model.addAttribute("pagination", pagination);
@@ -137,7 +137,7 @@ public class PostController
     {
         PeriodType periodType = PeriodType.valueOf(period);
 
-        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(periodType, 50L);
+        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(periodType, 0L, 20L);
         List<Category> categories = categoryService.getAllCategories(POST.getCode());
 
         // 카테고리 필터링
