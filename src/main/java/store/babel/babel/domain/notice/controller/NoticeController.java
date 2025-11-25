@@ -8,6 +8,7 @@ import store.babel.babel.domain.answer.dto.AnswerWithComments;
 import store.babel.babel.domain.answer.service.AnswerService;
 import store.babel.babel.domain.category.dto.Category;
 import store.babel.babel.domain.category.service.CategoryService;
+import store.babel.babel.domain.notice.controller.dto.NoticeSearchRequest;
 import store.babel.babel.domain.notice.dto.*;
 import store.babel.babel.domain.notice.service.NoticeService;
 import store.babel.babel.domain.post.dto.PostType;
@@ -34,13 +35,12 @@ public class NoticeController
 
     @LoginRequest
     @GetMapping("/notices")
-    public String getNoticeCards(@PageInfo Long pageNumber,
-                                 @SearchInfo Searching search,
-                                 Model model)
+    public String getNoticeCards(NoticeSearchRequest request, Model model)
     {
-        NoticeSearchQuery query = NoticeSearchQuery.from(pageNumber, search);
-        Pagination pagination = Pagination.from(pageNumber, noticeService.countNotices(query));
-        List<NoticeCard> noticeCards = noticeService.getNoticeCards(query, pagination);
+        Long total = noticeService.countNotices(NoticeCountQuery.from(request));
+        Pagination pagination = Pagination.from(request.getPage(), total);
+        NoticeSearchQuery query = NoticeSearchQuery.from(request, pagination);
+        List<NoticeCard> noticeCards = noticeService.getNoticeCards(query);
 
         model.addAttribute("notices", noticeCards);
         model.addAttribute("pagination", pagination);
@@ -70,7 +70,7 @@ public class NoticeController
     @GetMapping("/notice/createForm")
     public String getNoticeCreateForm(Model model)
     {
-        List<Category> categories = categoryService.getAllCategories(PostType.NOTICE.getCode());
+        List<Category> categories = categoryService.getAllCategories(PostType.NOTICE.getValue());
         model.addAttribute("categories", categories);
         return VIEWS_NOTICE_CREATE_FORM;
     }
@@ -80,7 +80,7 @@ public class NoticeController
     public String getNoticeUpdateForm(@PathVariable Long noticeId,
                                       Model model)
     {
-        List<Category> categories = categoryService.getAllCategories(PostType.NOTICE.getCode());
+        List<Category> categories = categoryService.getAllCategories(PostType.NOTICE.getValue());
         Notice notice = noticeService.getNotice(noticeId);
 
         model.addAttribute("categories", categories);

@@ -16,9 +16,9 @@ public interface NoticeMapper
 
     void updateNotice(NoticeUpdateCommand command);
 
-    Long countNotices(NoticeSearchQuery query);
+    Long countNotices(NoticeCountQuery query);
 
-    List<NoticeCard> getNoticeCards(NoticeSearchQuery query, Pagination pagination);
+    List<NoticeCard> getNoticeCards(NoticeSearchQuery query);
 
     Notice getNotice(Long noticeId);
 

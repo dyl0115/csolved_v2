@@ -26,7 +26,7 @@ public class PostCreateCommand
     public static PostCreateCommand from(PostCreateRequest request)
     {
         return PostCreateCommand.builder()
-                .postType(POST.getCode())
+                .postType(POST.getValue())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .authorId(request.getAuthorId())

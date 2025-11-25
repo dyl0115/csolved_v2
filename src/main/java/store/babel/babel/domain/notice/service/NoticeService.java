@@ -19,7 +19,7 @@ public class NoticeService
 {
     private final NoticeMapper noticeMapper;
 
-    public Long countNotices(NoticeSearchQuery query)
+    public Long countNotices(NoticeCountQuery query)
     {
         return noticeMapper.countNotices(query);
     }
@@ -35,10 +35,9 @@ public class NoticeService
         return noticeMapper.getNotice(noticeId);
     }
 
-    public List<NoticeCard> getNoticeCards(NoticeSearchQuery query,
-                                           Pagination pagination)
+    public List<NoticeCard> getNoticeCards(NoticeSearchQuery query)
     {
-        return noticeMapper.getNoticeCards(query, pagination);
+        return noticeMapper.getNoticeCards(query);
     }
 
     @Transactional

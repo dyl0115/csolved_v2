@@ -32,19 +32,6 @@ public class ReportController
     private final AnswerService answerService;
     private final CommentService commentService;
 
-
-    //TODO: 댓글, 대댓글, 게시글 테이블에 deleted_by를 추가하고, Enum으로 관리할 것.
-//관리자에 의해 삭제되었는지, 스스로 삭제했는지에 대한 구분이 필요함.
-//스스로 삭제했다면 -> 운영자도 조회 불가. - 이미 삭제된 글입니다. (not found 예외 던지기)
-//만약 운영자가 삭제했다면 -> 운영자는 조회 가능.
-//신고 처리 시: 본인 삭제된 글은 복구 불가, 신고 반려만 가능하도록 처리.
-
-    //신고 처리 상태:
-//- 대기중(PENDING): 아직 처리 안 됨
-//- 삭제 조치(DELETED): 운영자가 삭제함
-//- 반려(REJECTED): 문제없다고 판단
-//- 자동 종료(AUTO_CLOSED): 작성자가 스스로 삭제해서 처리 불필요
-
     @LoginRequest
     @GetMapping
     public String getReports(@Valid @ModelAttribute ReportSearchRequest request,

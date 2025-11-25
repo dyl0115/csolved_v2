@@ -99,26 +99,27 @@
         FROM posts p
         LEFT JOIN users u ON u.id = p.user_id
         WHERE p.deleted_at IS NULL
-        AND p.post_type = #{query.postType}
-        <if test="query.searchType == 'TITLE' and
-                  query.searchKeyword != null and
-                  query.searchKeyword != ''">
-            AND p.title LIKE CONCAT('%', #{query.searchKeyword}, '%')
+        AND p.post_type = 0
+        <if test="titleKeywordProvided">
+            AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
         </if>
-        ORDER BY
-        p.created_at DESC
-        LIMIT #{pagination.offset}, #{pagination.size}
+        <if test="authorKeywordProvided">
+            AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        ORDER BY p.created_at DESC
+        LIMIT #{limit} OFFSET #{offset};
     </select>
 
     <select id="countNotices">
         SELECT COUNT(p.id)
         FROM posts p
         WHERE p.deleted_at IS NULL
-        AND p.post_type = #{postType}
-        <if test="searchType == 'TITLE' and
-                  searchKeyword != null and
-                 searchKeyword != ''">
+        AND p.post_type = 0
+        <if test="titleKeywordProvided">
             AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        <if test="authorKeywordProvided">
+            AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%');
         </if>
     </select>
 

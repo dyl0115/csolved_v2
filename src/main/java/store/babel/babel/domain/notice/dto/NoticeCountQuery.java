@@ -3,31 +3,24 @@ package store.babel.babel.domain.notice.dto;
 import lombok.Builder;
 import lombok.Getter;
 import store.babel.babel.domain.notice.controller.dto.NoticeSearchRequest;
-import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.Objects;
 
-import static store.babel.babel.domain.post.dto.PostType.NOTICE;
-
 @Getter
 @Builder
-public class NoticeSearchQuery
+public class NoticeCountQuery
 {
     private String searchType;
     private String searchKeyword;
-    private Long limit;
-    private Long offset;
 
-    public static NoticeSearchQuery from(NoticeSearchRequest request, Pagination pagination)
+    public static NoticeCountQuery from(NoticeSearchRequest request)
     {
-        return NoticeSearchQuery.builder()
+        return NoticeCountQuery.builder()
                 .searchType(request.getSearchType())
                 .searchKeyword(request.getSearchKeyword())
-                .limit(pagination.getSize())
-                .offset(pagination.getOffset())
                 .build();
     }
-    
+
     public boolean isTitleKeywordProvided()
     {
         return Objects.equals(searchType, "TITLE")

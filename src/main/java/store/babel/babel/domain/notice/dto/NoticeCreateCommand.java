@@ -21,7 +21,7 @@ public class NoticeCreateCommand
     public static NoticeCreateCommand from(NoticeCreateRequest request)
     {
         return NoticeCreateCommand.builder()
-                .postType(NOTICE.getCode())
+                .postType(NOTICE.getValue())
                 .title(request.getTitle())
                 .content(request.getContent())
                 .authorId(request.getAuthorId())

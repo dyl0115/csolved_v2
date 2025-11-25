@@ -100,7 +100,7 @@
                                     이번 주 베스트
                                 </h3>
                             </div>
-
+                            
                             <a th:href="@{/post/best}"
                                class="flex items-center space-x-1 hover:underline">
                                 <span class="text-md">
@@ -320,20 +320,23 @@
                             <h3 class="font-semibold">검색</h3>
                         </div>
                         <div class="p-4">
-                            <form method="GET" th:action="@{/post/list}">
-                                <input type="hidden" name="page" value="1"/>
+                            <form method="GET"
+                                  th:action="@{/post/list}">
+                                <input type="hidden"
+                                       name="page"
+                                       value="1"/>
                                 
                                 <div class="space-y-3">
                                     <!-- 검색 타입 -->
                                     <select id="search-select"
                                             name="searchType"
                                             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800">
-                                        <option value="title"
-                                                th:selected="${param.searchType != null && param.searchType[0].equals('title')}">
+                                        <option value="TITLE"
+                                                th:selected="${param.searchType != null && param.searchType[0].equals('TITLE')}">
                                             제목
                                         </option>
-                                        <option value="author"
-                                                th:selected="${param.searchType != null && param.searchType[0].equals('author')}">
+                                        <option value="AUTHOR"
+                                                th:selected="${param.searchType != null && param.searchType[0].equals('AUTHOR')}">
                                             글쓴이
                                         </option>
                                     </select>
@@ -347,7 +350,9 @@
                                                th:value="${param.searchKeyword}"/>
                                         <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
                                                 type="submit">
-                                            <i data-lucide="search" class="w-5 h-5"></i>
+                                            <i data-lucide="search"
+                                               class="w-5 h-5">
+                                            </i>
                                         </button>
                                     </div>
                                 </div>
@@ -358,21 +363,27 @@
                     <!-- 정렬 위젯 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="arrow-up-down" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">정렬</h3>
+                            <i data-lucide="arrow-up-down"
+                               class="w-5 h-5">
+                            </i>
+                            <h3 class="font-semibold">
+                                정렬
+                            </h3>
                         </div>
                         <div class="p-4">
                             <form method="GET">
-                                <input type="hidden" name="page" value="1"/>
+                                <input type="hidden"
+                                       name="page"
+                                       value="1"/>
                                 <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
                                         name="sortType"
                                         onchange="this.form.submit()"
-                                        th:with="currentSortType=${param.sortType != null ? param.sortType[0] : 'recent'}">
-                                    <option value="recent" th:selected="${currentSortType == 'recent'}">최신순</option>
-                                    <option value="views" th:selected="${currentSortType == 'views'}">조회수 많은 순</option>
-                                    <option value="answers" th:selected="${currentSortType == 'answers'}">댓글 많은 순
+                                        th:with="currentSortType=${param.sortType != null ? param.sortType[0] : 'RECENT'}">
+                                    <option value="RECENT" th:selected="${currentSortType == 'RECENT'}">최신순</option>
+                                    <option value="VIEWS" th:selected="${currentSortType == 'VIEWS'}">조회수 많은 순</option>
+                                    <option value="ANSWERS" th:selected="${currentSortType == 'ANSWERS'}">댓글 많은 순
                                     </option>
-                                    <option value="likes" th:selected="${currentSortType == 'likes'}">좋아요 많은 순</option>
+                                    <option value="LIKES" th:selected="${currentSortType == 'LIKES'}">좋아요 많은 순</option>
                                 </select>
                             </form>
                         </div>
@@ -388,7 +399,7 @@
                             <ul class="space-y-2">
                                 <li th:each="category:*{categories}">
                                     <a class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 hover:bg-gray-50 px-3 py-2 rounded-lg transition"
-                                       th:href="@{/post/list(page=1,filterType='CATEGORY',filterValue=${category.id})}">
+                                       th:href="@{/post/list(page=1,categoryId=${category.id})}">
                                         <i data-lucide="chevron-right" class="w-4 h-4"></i>
                                         <span th:text="${category.name}">카테고리 이름</span>
                                     </a>

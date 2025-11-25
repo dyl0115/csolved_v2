@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.babel.babel.domain.post.dto.*;
+import store.babel.babel.domain.post.dto.PostCountQuery;
+import store.babel.babel.domain.post.dto.PostSearchQuery;
 import store.babel.babel.domain.post.mapper.PostMapper;
 import store.babel.babel.domain.tag.service.TagService;
 import store.babel.babel.global.exception.BabelException;
@@ -82,7 +84,7 @@ public class PostService
         return postMapper.getPostForAdmin(postId, userId);
     }
 
-    public Long countPosts(PostSearchQuery query)
+    public Long countPosts(PostCountQuery query)
     {
         return postMapper.countPosts(query);
     }
@@ -113,9 +115,10 @@ public class PostService
         return postMapper.getMyPosts(userId, pagination);
     }
 
-    public List<PostCard> getPostCards(PostSearchQuery query, Pagination pagination)
+    @Transactional(readOnly = true)
+    public List<PostCard> getPostCards(PostSearchQuery query)
     {
-        return postMapper.getPostCards(query, pagination);
+        return postMapper.getPostCards(query);
     }
 
     @Transactional

@@ -114,21 +114,28 @@
                     <!-- 검색 위젯 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
-                            <i data-lucide="search" class="w-5 h-5"></i>
-                            <h3 class="font-semibold">검색</h3>
+                            <i data-lucide="search"
+                               class="w-5 h-5">
+                            </i>
+                            <h3 class="font-semibold">
+                                검색
+                            </h3>
                         </div>
                         <div class="p-4">
-                            <form method="GET" th:action="@{/notices}">
-                                <input type="hidden" name="page" value="1"/>
+                            <form method="GET"
+                                  th:action="@{/notices}">
+                                <input type="hidden"
+                                       name="page"
+                                       value="1"/>
                                 
                                 <div class="space-y-3">
                                     <!-- 검색 타입 -->
                                     <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
                                             name="searchType">
-                                        <option value="title">
+                                        <option value="TITLE">
                                             제목
                                         </option>
-                                        <option value="author">
+                                        <option value="AUTHOR">
                                             글쓴이
                                         </option>
                                     </select>
@@ -142,7 +149,9 @@
                                                th:value="${param.searchKeyword}"/>
                                         <button class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
                                                 type="submit">
-                                            <i data-lucide="search" class="w-5 h-5"></i>
+                                            <i data-lucide="search"
+                                               class="w-5 h-5">
+                                            </i>
                                         </button>
                                     </div>
                                 </div>

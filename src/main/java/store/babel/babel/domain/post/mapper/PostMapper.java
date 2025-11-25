@@ -2,6 +2,8 @@ package store.babel.babel.domain.post.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import store.babel.babel.domain.post.dto.*;
+import store.babel.babel.domain.post.dto.PostCountQuery;
+import store.babel.babel.domain.post.dto.PostSearchQuery;
 import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
@@ -14,10 +16,10 @@ public interface PostMapper
     void updatePost(PostUpdateCommand command);
 
     // 게시글 개수 조회
-    Long countPosts(PostSearchQuery query);
+    Long countPosts(PostCountQuery query);
 
     // 게시글들 조회
-    List<PostCard> getPostCards(PostSearchQuery query, Pagination pagination);
+    List<PostCard> getPostCards(PostSearchQuery query);
 
     // 게시글 조회
     Post getPost(Long postId, Long userId);

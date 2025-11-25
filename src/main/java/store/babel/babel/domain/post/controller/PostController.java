@@ -9,19 +9,15 @@ import store.babel.babel.domain.answer.dto.AnswerWithComments;
 import store.babel.babel.domain.category.dto.Category;
 import store.babel.babel.domain.category.service.CategoryService;
 import store.babel.babel.domain.post.dto.*;
+import store.babel.babel.domain.post.dto.PostCountQuery;
+import store.babel.babel.domain.post.dto.PostSearchQuery;
+import store.babel.babel.domain.post.controller.dto.PostSearchRequest;
 import store.babel.babel.domain.post.service.PopularPostService;
 import store.babel.babel.domain.post.service.PostService;
 import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
-import store.babel.babel.global.utils.filter.FilterInfo;
-import store.babel.babel.global.utils.filter.Filtering;
 import store.babel.babel.global.utils.login.LoginUser;
-import store.babel.babel.global.utils.page.PageInfo;
 import store.babel.babel.global.utils.page.Pagination;
-import store.babel.babel.global.utils.search.SearchInfo;
-import store.babel.babel.global.utils.search.Searching;
-import store.babel.babel.global.utils.sort.SortInfo;
-import store.babel.babel.global.utils.sort.Sorting;
 
 import java.util.List;
 
@@ -45,17 +41,14 @@ public class PostController
 
     @LoginRequest
     @GetMapping("/list")
-    public String getPostCards(@PageInfo Long pageNumber,
-                               @SortInfo Sorting sort,
-                               @FilterInfo Filtering filter,
-                               @SearchInfo Searching search,
-                               Model model)
+    public String getPostCards(PostSearchRequest request, Model model)
     {
-        PostSearchQuery query = PostSearchQuery.from(pageNumber, sort, filter, search);
+        Long total = postService.countPosts(PostCountQuery.from(request));
+        Pagination pagination = Pagination.from(request.getPage(), total);
+        PostSearchQuery query = PostSearchQuery.from(request, pagination);
 
-        Pagination pagination = Pagination.from(pageNumber, postService.countPosts(query));
-        List<Category> categories = categoryService.getAllCategories(POST.getCode());
-        List<PostCard> postCards = postService.getPostCards(query, pagination);
+        List<Category> categories = categoryService.getAllCategories(POST.getValue());
+        List<PostCard> postCards = postService.getPostCards(query);
         List<PostSummary> bestPosts = popularPostService.getBestByPeriod(PeriodType.WEEK, 0L, 5L);
         List<PostSummary> mostViewedPosts = popularPostService.getMostViewed(PeriodType.WEEK, 7L);
 
@@ -105,8 +98,7 @@ public class PostController
     @GetMapping("/createForm")
     public String getCreateForm(Model model)
     {
-        List<Category> categories
-                = categoryService.getAllCategories(POST.getCode());
+        List<Category> categories = categoryService.getAllCategories(POST.getValue());
 
         model.addAttribute("categories", categories);
 
@@ -119,8 +111,7 @@ public class PostController
                                 @PathVariable Long postId,
                                 Model model)
     {
-        List<Category> categories
-                = categoryService.getAllCategories(POST.getCode());
+        List<Category> categories = categoryService.getAllCategories(POST.getValue());
         Post post = postService.getPost(postId, user.getId());
 
         model.addAttribute("categories", categories);
@@ -138,7 +129,7 @@ public class PostController
         PeriodType periodType = PeriodType.valueOf(period);
 
         List<PostSummary> bestPosts = popularPostService.getBestByPeriod(periodType, 0L, 20L);
-        List<Category> categories = categoryService.getAllCategories(POST.getCode());
+        List<Category> categories = categoryService.getAllCategories(POST.getValue());
 
         // 카테고리 필터링
         if (category != null)
