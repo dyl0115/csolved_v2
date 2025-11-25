@@ -11,12 +11,13 @@ import store.babel.babel.domain.category.service.CategoryService;
 import store.babel.babel.domain.notice.controller.dto.NoticeSearchRequest;
 import store.babel.babel.domain.notice.dto.*;
 import store.babel.babel.domain.notice.service.NoticeService;
+import store.babel.babel.domain.post.dto.PeriodType;
+import store.babel.babel.domain.post.dto.PostSummary;
 import store.babel.babel.domain.post.dto.PostType;
+import store.babel.babel.domain.post.service.PopularPostService;
 import store.babel.babel.global.utils.login.LoginRequest;
-import store.babel.babel.global.utils.page.PageInfo;
 import store.babel.babel.global.utils.page.Pagination;
-import store.babel.babel.global.utils.search.SearchInfo;
-import store.babel.babel.global.utils.search.Searching;
+
 
 import java.util.List;
 
@@ -32,6 +33,7 @@ public class NoticeController
     private final NoticeService noticeService;
     private final AnswerService answerService;
     private final CategoryService categoryService;
+    private final PopularPostService popularPostService;
 
     @LoginRequest
     @GetMapping("/notices")
@@ -41,9 +43,14 @@ public class NoticeController
         Pagination pagination = Pagination.from(request.getPage(), total);
         NoticeSearchQuery query = NoticeSearchQuery.from(request, pagination);
         List<NoticeCard> noticeCards = noticeService.getNoticeCards(query);
+        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(PeriodType.WEEK, 0L, 5L);
+        List<PostSummary> mostViewedPosts = popularPostService.getMostViewed(PeriodType.WEEK, 7L);
+
 
         model.addAttribute("notices", noticeCards);
         model.addAttribute("pagination", pagination);
+        model.addAttribute("bestPosts", bestPosts);
+        model.addAttribute("mostViewedPosts", mostViewedPosts);
 
         return VIEWS_NOTICE_LIST;
     }

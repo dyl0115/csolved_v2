@@ -29,9 +29,132 @@
         <div class="container mx-auto px-4 py-8"
              th:with="notices=${notices},
                         pagination=${pagination}">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- 왼쪽 사이드바 -->
+                <div class="hidden lg:block lg:col-span-3 space-y-4">
+                    
+                    <!-- 실시간 인기 게시글 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-red-500 justify-between text-white px-4 py-3 flex items-center space-x-2">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="flame"
+                                   class="w-5 h-5">
+                                </i>
+                                <h3 class="font-semibold">
+                                    인기 게시글
+                                </h3>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <ul class="space-y-3">
+                                <li class="group"
+                                    th:each="post,iterStat:${bestPosts}">
+                                    <a th:href="@{/post/{postId}(postId=${post.postId})}"
+                                       class="block hover:bg-gray-50 p-2 rounded-lg transition">
+                                        <div class="flex items-start space-x-2">
+                                            <span class="flex-shrink-0 w-6 h-6 text-white rounded-full flex items-center justify-center text-xs font-bold"
+                                                  th:classappend="${iterStat.count == 1 ? 'bg-red-500' : iterStat.count == 2 ? 'bg-orange-500' : iterStat.count == 3 ? 'bg-yellow-400' : iterStat.count == 4 ? 'bg-green-500' : iterStat.count == 5 ? 'bg-blue-500' : 'bg-gray-500'}"
+                                                  th:text="${iterStat.count}">
+                                                1
+                                            </span>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-gray-800 truncate group-hover:text-blue-600"
+                                                   th:text="${post.title}">
+                                                    베스트 게시물 제목
+                                                </p>
+                                                <div class="flex items-center space-x-2 text-xs text-gray-500 mt-1">
+                                                    <span class="flex items-center">
+                                                        <i data-lucide="eye"
+                                                           class="w-3 h-3 mr-1">
+                                                        </i>
+                                                        <span th:text="${post.views}">
+                                                            120
+                                                        </span>
+                                                    </span>
+                                                    <span class="flex items-center">
+                                                        <i data-lucide="heart"
+                                                           class="w-3 h-3 mr-1">
+                                                        </i>
+                                                        <span th:text="${post.likes}">
+                                                            30
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- 베스트 게시글 -->
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        <div class="bg-yellow-500 text-white px-4 py-3 flex justify-between items-center">
+                            <div class="flex items-center space-x-2">
+                                <i data-lucide="trophy"
+                                   class="w-5 h-5">
+                                </i>
+                                <h3 class="font-semibold">
+                                    이번 주 베스트
+                                </h3>
+                            </div>
+                            
+                            <a th:href="@{/post/best}"
+                               class="flex items-center space-x-1 hover:underline">
+                                <span class="text-md">
+                                    더보기
+                                </span>
+                                <i data-lucide="chevron-right"
+                                   class="w-4 h-4">
+                                </i>
+                            </a>
+                        </div>
+                        <div class="p-4">
+                            <ul class="space-y-3">
+                                <li th:each="post : ${mostViewedPosts}">
+                                    <a th:href="@{/post/{postId}(postId=${post.postId})}"
+                                       class="block hover:bg-gray-50 p-2 rounded-lg transition">
+                                        <p class="text-sm font-medium text-gray-800 line-clamp-2 hover:text-blue-600"
+                                           th:text="${post.title}">
+                                            베스트 포스트 제목
+                                        </p>
+                                        <div class="flex items-center space-x-2 text-xs text-gray-500 mt-1">
+                                            <span class="flex items-center">
+                                                <i data-lucide="eye"
+                                                   class="w-3 h-3 mr-1 text-blue-500">
+                                                </i>
+                                                <span th:text="${post.views}">
+                                                    30
+                                                </span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <i data-lucide="heart"
+                                                   class="w-3 h-3 mr-1 text-red-500">
+                                                </i>
+                                                <span th:text="${post.likes}">
+                                                    10
+                                                </span>
+                                            </span>
+                                            <span class="flex items-center">
+                                                <i data-lucide="clock-4"
+                                                   class="w-3 h-3 mr-1 text-gray-500">
+                                                </i>
+                                                <span class="timeago"
+                                                      th:data-date="${post.createdAt}">
+                                                    2일 전
+                                                </span>
+                                            </span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- 메인 콘텐츠 -->
-                <div class="lg:col-span-3">
+                <div class="lg:col-span-6">
                     <!-- 공지사항이 없는 경우 -->
                     <div th:if="${#lists.isEmpty(notices)}" class="bg-white rounded-lg shadow-md p-8 text-center">
                         <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
@@ -109,8 +232,8 @@
                     <div th:replace="~{/fragments/pagination::pagination(${pagination})}"></div>
                 </div>
                 
-                <!-- 사이드바 -->
-                <div class="lg:col-span-1 space-y-4">
+                <!-- 오른쪽 사이드바 -->
+                <div class="lg:col-span-3 space-y-4">
                     <!-- 검색 위젯 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-gray-800 text-white px-4 py-3 flex items-center space-x-2">
