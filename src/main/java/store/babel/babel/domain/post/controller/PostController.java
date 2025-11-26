@@ -122,26 +122,19 @@ public class PostController
 
     @LoginRequest
     @GetMapping("/best")
-    public String getBestPosts(@RequestParam(defaultValue = "WEEK") String period,
-                               @RequestParam(required = false) Long category,
+    public String getBestPosts(@RequestParam PeriodType periodType,
+                               @RequestParam Long page,
                                Model model)
     {
-        PeriodType periodType = PeriodType.valueOf(period);
 
-        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(periodType, 0L, 20L);
-        List<Category> categories = categoryService.getAllCategories(POST.getValue());
+        Long total = popularPostService.countBestByPeriod(periodType);
+        Pagination pagination = Pagination.from(page, total, 20L);
+        List<PostSummary> bestPosts = popularPostService.getBestByPeriod(periodType, pagination);
 
-        // 카테고리 필터링
-        if (category != null)
-        {
-            bestPosts = bestPosts.stream()
-                    .filter(post -> post.getCategoryId() != null && post.getCategoryId().equals(category))
-                    .toList();
-        }
-
-        model.addAttribute("currentPeriod", period);
+        model.addAttribute("currentPeriod", periodType.name());
+        model.addAttribute("postsCount", total);
         model.addAttribute("bestPosts", bestPosts);
-        model.addAttribute("categories", categories);
+        model.addAttribute("pagination", pagination);
 
         return VIEWS_POST_BEST;
     }

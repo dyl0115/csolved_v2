@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.babel.babel.domain.post.dto.PeriodType;
 import store.babel.babel.domain.post.dto.PostSummary;
 import store.babel.babel.domain.post.mapper.PopularPostMapper;
+import store.babel.babel.global.utils.page.Pagination;
 
 import java.util.List;
 
@@ -16,9 +17,21 @@ public class PopularPostService
     private final PopularPostMapper popularPostMapper;
 
     @Transactional(readOnly = true)
+    public Long countBestByPeriod(PeriodType periodType)
+    {
+        return popularPostMapper.countBestByPeriod(periodType);
+    }
+
+    @Transactional(readOnly = true)
     public List<PostSummary> getBestByPeriod(PeriodType periodType, Long offset, Long limit)
     {
         return popularPostMapper.getBestByPeriod(periodType, offset, limit);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostSummary> getBestByPeriod(PeriodType periodType, Pagination pagination)
+    {
+        return popularPostMapper.getBestByPeriod(periodType, pagination.getOffset(), pagination.getSize());
     }
 
     @Transactional(readOnly = true)

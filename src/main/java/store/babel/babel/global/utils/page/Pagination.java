@@ -21,7 +21,6 @@ public class Pagination
     public static Pagination from(Long requestPage,
                                   Long totalRecords)
     {
-        System.out.println("requestPage " + requestPage);
         return from(requestPage, totalRecords, DEFAULT_RECORDS_PER_PAGE);
     }
 
