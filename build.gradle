@@ -70,6 +70,9 @@ dependencies {
     // 모니터링을 위한 Actuator
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    // Claude AI
+    implementation("com.anthropic:anthropic-java:2.11.1")
 }
 
 tasks.named('test') {
