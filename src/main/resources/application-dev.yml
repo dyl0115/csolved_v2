@@ -43,4 +43,3 @@ aws:
 logging:
   level:
     root: INFO
-    store.csolved.csolved.domain.bookmark.mapper.BookmarkMapper: TRACE

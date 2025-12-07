@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import store.babel.babel.domain.category.dto.Category;
 import store.babel.babel.domain.category.service.CategoryService;
@@ -17,6 +18,7 @@ import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -45,9 +47,10 @@ public class ClaudePostController
     }
 
     @LoginRequest
-    @PostMapping("/ai/post/stream")
-    public void stream(@LoginUser User user,
-                       @RequestBody ClaudeMessage message)
+    @ResponseBody
+    @PostMapping("/ai/post/message")
+    public void processMessage(@LoginUser User user,
+                               @RequestBody ClaudeMessage message) throws IOException
     {
         claudePostService.stream(user.getId(), message);
     }
