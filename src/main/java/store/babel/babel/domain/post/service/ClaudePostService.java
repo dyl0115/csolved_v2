@@ -20,6 +20,7 @@ import store.babel.babel.domain.post.controller.claude.ClaudeSession;
 import store.babel.babel.domain.post.controller.claude.ClaudeSessionManager;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -47,14 +48,11 @@ public class ClaudePostService
         List<ClaudeMessage> history = session.getHistory();
 
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
-
+        String currentField = null;
 
         try (StreamResponse<BetaRawMessageStreamEvent> streamResponse
                      = claudeClient.beta().messages().createStreaming(createParams(history)))
         {
-            JsonFactory factory = new JsonFactory();
-            ObjectMapper mapper = new ObjectMapper();
-            StringBuilder jsonBuffer = new StringBuilder();
 
             streamResponse.stream()
                     .peek(accumulator::accumulate)
@@ -71,145 +69,7 @@ public class ClaudePostService
                                             .forEach(chunk ->
                                             {
                                                 // 여기부터 불완전한 파싱 시작
-                                                jsonBuffer.append(chunk);
-
-                                                try (JsonParser parser = factory.createParser(jsonBuffer.toString()))
-                                                {
-                                                    while (parser.nextToken() != null)
-                                                    {
-                                                        if (parser.currentToken() == JsonToken.FIELD_NAME)
-                                                        {
-                                                            String fieldName = parser.getCurrentName();
-                                                            parser.nextToken(); // 값으로 이동
-
-                                                            switch (fieldName)
-                                                            {
-                                                                case "title", "content", "message", "role" ->
-                                                                {
-                                                                    if (parser.currentToken() == JsonToken.VALUE_STRING)
-                                                                    {
-                                                                        // ✅ 필드별로 개별 JSON 생성
-                                                                        Map<String, Object> fieldData = new HashMap<>();
-                                                                        fieldData.put(fieldName, chunk);
-
-                                                                        log.info("Field update: " + chunk);
-                                                                        emitter.send(SseEmitter.event()
-                                                                                .name("message")
-                                                                                .data(fieldData)  // {content: "..."} 또는 {title: "..."}
-                                                                                .build());
-                                                                    }
-                                                                }
-                                                                case "tags" ->
-                                                                {
-                                                                    if (parser.currentToken() == JsonToken.START_ARRAY)
-                                                                    {
-                                                                        List<String> tags = new ArrayList<>();
-                                                                        while (parser.nextToken() != JsonToken.END_ARRAY)
-                                                                        {
-                                                                            if (parser.currentToken() == JsonToken.VALUE_STRING)
-                                                                            {
-                                                                                tags.add(parser.getText());
-                                                                            }
-                                                                        }
-
-                                                                        // ✅ tags도 개별 JSON으로
-                                                                        Map<String, Object> fieldData = new HashMap<>();
-                                                                        fieldData.put("tags", tags);
-
-                                                                        log.info("Field update: " + fieldData);
-                                                                        emitter.send(SseEmitter.event()
-                                                                                .name("message")
-                                                                                .data(fieldData)  // {tags: [...]}
-                                                                                .build());
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                catch (com.fasterxml.jackson.core.JsonParseException e)
-                                                {
-                                                    log.debug("Incomplete JSON, waiting...");
-                                                }
-                                                catch (IOException e)
-                                                {
-                                                    throw new RuntimeException(e);
-                                                }
-
-//                                                try
-//                                                {
-//                                                    JsonParser parser = factory.createParser(jsonBuffer.toString());
-//                                                    Map<String, Object> currentState = new HashMap<>();
-//
-//                                                    while (parser.nextToken() != null)
-//                                                    {
-//                                                        JsonToken token = parser.currentToken();
-//
-//                                                        // 필드 이름을 만났을 때,
-//                                                        if (token == JsonToken.FIELD_NAME)
-//                                                        {
-//                                                            String fieldName = parser.currentName();
-//
-//                                                            // 다음 토큰(값)으로 이동
-//                                                            parser.nextToken();
-//
-//                                                            switch (fieldName)
-//                                                            {
-//                                                                case "title" ->
-//                                                                {
-//                                                                    if (parser.currentToken() == JsonToken.VALUE_STRING)
-//                                                                    {
-//                                                                        currentState.put("title", parser.getText());
-//                                                                    }
-//                                                                }
-//
-//                                                                case "content" ->
-//                                                                {
-//                                                                    if (parser.currentToken() == JsonToken.VALUE_STRING)
-//                                                                    {
-//                                                                        currentState.put("content", parser.getText());
-//                                                                    }
-//                                                                }
-//
-//                                                                case "tags" ->
-//                                                                {
-//                                                                    if (parser.currentToken() == JsonToken.START_ARRAY)
-//                                                                    {
-//                                                                        List<String> tags = new ArrayList<>();
-//                                                                        while (parser.nextToken() != JsonToken.END_ARRAY)
-//                                                                        {
-//                                                                            if (parser.currentToken() == JsonToken.VALUE_STRING)
-//                                                                            {
-//                                                                                tags.add(parser.getText());
-//                                                                            }
-//                                                                        }
-//                                                                        currentState.put("tags", tags);
-//                                                                    }
-//                                                                }
-//                                                            }
-//                                                        }
-//                                                        parser.close();
-//
-//                                                        try
-//                                                        {
-//                                                            log.info(currentState.toString());
-//                                                            emitter.send(SseEmitter.event()
-//                                                                    .name("message")
-//                                                                    .data(currentState)
-//                                                                    .build());
-//                                                        }
-//                                                        catch (IOException e)
-//                                                        {
-//                                                            throw new RuntimeException(e);
-//                                                        }
-//                                                    }
-//                                                }
-//                                                catch (IOException e)
-//                                                {
-//                                                    throw new RuntimeException(e);
-//                                                }
-
-
+                                                log.info(chunk);
                                             });
                                 }
                             }
