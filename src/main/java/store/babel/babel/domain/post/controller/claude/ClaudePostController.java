@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.dto;
+package store.babel.babel.domain.post.controller.claude;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import store.babel.babel.domain.category.dto.Category;
 import store.babel.babel.domain.category.service.CategoryService;
-import store.babel.babel.domain.post.controller.claude.ClaudeMessage;
-import store.babel.babel.domain.post.dto.Post;
 import store.babel.babel.domain.post.dto.PostType;
 import store.babel.babel.domain.post.service.ClaudePostService;
 import store.babel.babel.domain.user.dto.User;

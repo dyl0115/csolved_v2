@@ -36,10 +36,14 @@ public class ClaudePostService
     @Async
     public void stream(Long userId, ClaudeMessage message) throws IOException
     {
+        log.info(message.toString());
         ClaudeSession session = claudeSessionManager.getSession(userId);
         SseEmitter emitter = session.getEmitter();
 
         session.addHistory(message);
+
+        log.info("history: " + session.getHistory().toString());
+        log.info("emitter: " + emitter);
         List<ClaudeMessage> history = session.getHistory();
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
 
@@ -60,6 +64,7 @@ public class ClaudePostService
                                             {
                                                 try
                                                 {
+                                                    log.info("text: " + text);
                                                     emitter.send(SseEmitter.event()
                                                             .name("message")
                                                             .data(text));
@@ -85,13 +90,13 @@ public class ClaudePostService
         ObjectMapper objectMapper = new ObjectMapper();
 
         ClaudeMessage claudeMessage = objectMapper.readValue(jsonText, ClaudeMessage.class);
-        System.out.println(claudeMessage);
+        session.addHistory(claudeMessage);
     }
 
     private StructuredMessageCreateParams<ClaudeMessage> createParams(List<ClaudeMessage> history)
     {
         StructuredMessageCreateParams.Builder<ClaudeMessage> builder = MessageCreateParams.builder()
-                .model(Model.CLAUDE_SONNET_4_5_20250929)
+                .model(Model.CLAUDE_HAIKU_4_5_20251001)
                 .maxTokens(2048L)
                 .outputFormat(ClaudeMessage.class);
 

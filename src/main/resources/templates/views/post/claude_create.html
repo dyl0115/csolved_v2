@@ -297,6 +297,13 @@
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
     
+    <script type="module">
+        // json-repair 라이브러리 import
+        import {jsonrepair} from 'https://esm.sh/jsonrepair@3.11.0';
+
+        window.jsonRepair = jsonrepair;
+    </script>
+    
     <script th:inline="javascript">
         // Sse 커넥션
         let eventSource = null;
@@ -307,6 +314,12 @@
         let formContainer = null;
         let aiContainer = null;
         let mainContainer = null;
+        // 이전 스트리밍 데이터 추적
+        let previousTitle = '';
+        let previousContent = '';
+        let previousTags = [];
+        let previousMessage = '';
+        let jsonBuffer = '';
 
 
         document.addEventListener('DOMContentLoaded', async function ()
@@ -407,7 +420,7 @@
             aiMessageCount++;
             const chatMessages = document.getElementById('chat-messages');
             const messageDiv = document.createElement('div');
-            messageTextId = "ai-message-" + aiMessageCount;
+            aiMessageTextId = "ai-message-" + aiMessageCount;
             messageDiv.className = 'chat-message flex justify-start mb-4';
             messageDiv.innerHTML = `
                 <div class="chat-bubble bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-200">
@@ -415,7 +428,7 @@
                         <i data-lucide="sparkles" class="w-3 h-3 text-blue-600"></i>
                         <span class="text-xs font-medium text-blue-600">AI 도우미</span>
                     </div>
-                    <p id="${messageTextId}" class="text-sm text-gray-700">${escapeHtml('생각 중... ')}</p>
+                    <p id="${aiMessageTextId}" class="text-sm text-gray-700">${escapeHtml('생각 중... ')}</p>
                 </div>
             `;
             chatMessages.appendChild(messageDiv);
@@ -495,6 +508,11 @@
             addUserMessage(message);
             messageInput.value = '';
 
+            console.log(JSON.stringify(quill.getContents()));
+
+            addAIMessage();
+            jsonBuffer = '';
+
             const data = {
                 role: "user",
                 title: title,
@@ -510,33 +528,96 @@
                 },
                 body: JSON.stringify(data)
             })
-
-            aiMessageTextId = addAIMessage();
         }
 
         function initSseConnect()
         {
             const titleInput = document.getElementById("title");
+            const tagHiddenInput = document.getElementById("tag-hidden-input");
 
             if (eventSource == null)
             {
                 eventSource = new EventSource("/ai/post/connect");
             }
 
-            eventSource.onmessage = (event) =>
+            eventSource.addEventListener('message', (event) =>
             {
-                console.log("server -> client:", event.data);
-                const parsed = JSON.parse(event.data);
-                if ("title" in parsed)
                 {
-                    titleInput.value += parsed.title;
-                } else if ("message" in parsed)
-                {
-                    const messageTextDiv = document.getElementById(messageTextId);
-                    messageTextDiv.textContent += parsed.message;
-                }
+                    let parsed;
+                    jsonBuffer += event.data;
+                    try
+                    {
+                        // 먼저 JSON 복구 시도
+                        const repairedJson = window.jsonRepair(jsonBuffer);
+                        parsed = JSON.parse(repairedJson);
+                    }
+                    catch (error)
+                    {
+                        // JSON 파싱 실패 시 조용히 무시 (다음 청크를 기다림)
+                        return;
+                    }
 
-            };
+                    console.log(parsed);
+
+                    // title 처리 - 전체 값을 비교하여 변경된 경우에만 업데이트
+                    if (parsed.title !== undefined && parsed.title !== previousTitle)
+                    {
+                        titleInput.value = parsed.title;
+                        previousTitle = parsed.title;
+                    }
+
+                    // content 처리 - 새로 추가된 부분만 타이핑 (Quill 에디터)
+                    if (parsed.content !== undefined && parsed.content !== previousContent)
+                    {
+                        // 새로 추가된 부분만 추출
+                        const newContent = parsed.content.substring(previousContent.length);
+                        if (newContent.length > 0)
+                        {
+                            appendToQuill(newContent);
+                        }
+                        previousContent = parsed.content;
+                    }
+
+                    // tags 처리 - JSON.stringify로 배열 비교
+                    if (parsed.tags !== undefined)
+                    {
+                        const tagsStr = JSON.stringify(parsed.tags);
+                        const prevTagsStr = JSON.stringify(previousTags);
+
+                        if (tagsStr !== prevTagsStr)
+                        {
+                            if (Array.isArray(parsed.tags))
+                            {
+                                tagHiddenInput.value = parsed.tags.join(',');
+                                previousTags = [...parsed.tags];
+                            }
+                        }
+                    }
+
+                    // message 처리 - 채팅 말풍선에 새로 추가된 부분만 타이핑
+                    if (parsed.message !== undefined && parsed.message !== previousMessage)
+                    {
+                        console.log("aiMessageTextId: ", aiMessageTextId);
+                        const messageTextDiv = document.getElementById(aiMessageTextId);
+                        messageTextDiv.textContent = parsed.message;
+                        previousMessage = parsed.message;
+                    }
+                }
+            })
+        }
+
+        // Quill 에디터에 텍스트를 추가하는 함수 (타이핑 효과)
+        function appendToQuill(text)
+        {
+            if (typeof quill !== 'undefined' && quill)
+            {
+                // 현재 커서 위치 (에디터의 끝)
+                const currentLength = quill.getLength() - 1; // -1은 마지막 newline 제외
+                // 텍스트 삽입
+                quill.insertText(currentLength, text);
+                // 내용을 hidden textarea에도 동기화
+                document.getElementById('content').value = quill.root.innerHTML;
+            }
         }
     </script>
     
