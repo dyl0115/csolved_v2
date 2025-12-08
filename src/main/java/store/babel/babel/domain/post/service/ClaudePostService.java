@@ -5,10 +5,6 @@ import com.anthropic.core.http.StreamResponse;
 import com.anthropic.helpers.BetaMessageAccumulator;
 import com.anthropic.models.beta.messages.*;
 import com.anthropic.models.messages.Model;
-import com.anthropic.models.messages.RawMessageStreamEvent;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +16,8 @@ import store.babel.babel.domain.post.controller.claude.ClaudeSession;
 import store.babel.babel.domain.post.controller.claude.ClaudeSessionManager;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Stream;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,14 +41,11 @@ public class ClaudePostService
 
         session.addHistory(message);
         List<ClaudeMessage> history = session.getHistory();
-
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
-        String currentField = null;
 
         try (StreamResponse<BetaRawMessageStreamEvent> streamResponse
                      = claudeClient.beta().messages().createStreaming(createParams(history)))
         {
-
             streamResponse.stream()
                     .peek(accumulator::accumulate)
                     .forEach(
@@ -62,14 +54,20 @@ public class ClaudePostService
                                 if (event.contentBlockDelta().isPresent())
                                 {
                                     event.contentBlockDelta().stream()
-                                            .flatMap(contentBlock -> contentBlock.delta()
-                                                    .text()
-                                                    .stream())
+                                            .flatMap(contentBlock -> contentBlock.delta().text().stream())
                                             .map(BetaTextDelta::text)
-                                            .forEach(chunk ->
+                                            .forEach(text ->
                                             {
-                                                // 여기부터 불완전한 파싱 시작
-                                                log.info(chunk);
+                                                try
+                                                {
+                                                    emitter.send(SseEmitter.event()
+                                                            .name("message")
+                                                            .data(text));
+                                                }
+                                                catch (IOException e)
+                                                {
+                                                    throw new RuntimeException(e);
+                                                }
                                             });
                                 }
                             }

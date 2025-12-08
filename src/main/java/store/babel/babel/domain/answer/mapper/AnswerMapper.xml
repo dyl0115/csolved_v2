@@ -124,7 +124,7 @@
                       WHERE answer_id = #{answerId}
                         AND user_id = #{userId});
     </select>
-    
+
     <update id="increaseLikes">
         UPDATE answers
         SET likes = likes + 1
@@ -133,8 +133,8 @@
 
     <insert id="addUserLike">
         INSERT INTO answer_likes(answer_id,
-                            user_id,
-                            created_at)
+                                 user_id,
+                                 created_at)
         VALUES (#{answerId},
                 #{userId},
                 CURRENT_TIMESTAMP);
