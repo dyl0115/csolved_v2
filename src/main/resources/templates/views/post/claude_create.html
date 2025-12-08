@@ -298,7 +298,6 @@
     </body>
     
     <script type="module">
-        // json-repair 라이브러리 import
         import {jsonrepair} from 'https://esm.sh/jsonrepair@3.11.0';
 
         window.jsonRepair = jsonrepair;
@@ -498,7 +497,7 @@
         function sendChatMessage()
         {
             const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
+            const content = JSON.stringify(quill.getContents());
             const tags = document.getElementById('tag-hidden-input').value;
             const messageInput = document.getElementById('chat-input');
 
@@ -507,8 +506,6 @@
 
             addUserMessage(message);
             messageInput.value = '';
-
-            console.log(JSON.stringify(quill.getContents()));
 
             addAIMessage();
             jsonBuffer = '';
@@ -557,7 +554,7 @@
                         return;
                     }
 
-                    console.log(parsed);
+                    // console.log(parsed);
 
                     // title 처리 - 전체 값을 비교하여 변경된 경우에만 업데이트
                     if (parsed.title !== undefined && parsed.title !== previousTitle)
@@ -569,11 +566,31 @@
                     // content 처리 - 새로 추가된 부분만 타이핑 (Quill 에디터)
                     if (parsed.content !== undefined && parsed.content !== previousContent)
                     {
-                        // 새로 추가된 부분만 추출
-                        const newContent = parsed.content.substring(previousContent.length);
-                        if (newContent.length > 0)
+                        let delta;
+
+                        try
                         {
-                            appendToQuill(newContent);
+                            // 먼저 ops 파싱 시도
+                            console.log("parsed.content" + parsed.content);
+                            delta = JSON.parse(parsed.content);
+                        }
+                        catch (error)
+                        {
+                            // 실패하면 repair 후 파싱
+                            try
+                            {
+                                delta = window.jsonRepair(parsed.content);
+                            }
+                            catch (error2)
+                            {
+                                return;
+                            }
+                        }
+
+                        if (delta?.ops)
+                        {
+                            console.log("delta ops" + JSON.stringify(delta.ops));
+                            quill.setContents(delta.ops);
                         }
                         previousContent = parsed.content;
                     }
@@ -597,7 +614,6 @@
                     // message 처리 - 채팅 말풍선에 새로 추가된 부분만 타이핑
                     if (parsed.message !== undefined && parsed.message !== previousMessage)
                     {
-                        console.log("aiMessageTextId: ", aiMessageTextId);
                         const messageTextDiv = document.getElementById(aiMessageTextId);
                         messageTextDiv.textContent = parsed.message;
                         previousMessage = parsed.message;
@@ -618,6 +634,8 @@
                 // 내용을 hidden textarea에도 동기화
                 document.getElementById('content').value = quill.root.innerHTML;
             }
+
+            quill.setContents(text);
         }
     </script>
     

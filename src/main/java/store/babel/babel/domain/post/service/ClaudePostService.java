@@ -118,20 +118,44 @@ public class ClaudePostService
     private String createStringMessage(ClaudeMessage message)
     {
         return """
-                클로드 당신은 게시글 작성을 도와주는 에이전트 입니다.
-                현재 사용자는 다음과 같이 게시글을 작성한 상황입니다.
-                역할: %s
-                제목: %s
-                내용: %s
-                태그: %s
-                메시지: %s
-                당신이 사용자의 메시지를 읽고
-                적절하게 제목, 내용, 태그를 수정하고 사용자에게 하고 싶은 말을 메시지에 담아 
-                응답하세요.
-                제목, 내용, 태그를 모두 작성할 필요는 없습니다. 
-                당신이 상황을 보고 3개 모두 수정해도 좋고, 일부만 수정하고 메시지를 작성해도 좋습니다.
-                단 메시지는 꼭 작성하세요.
-                """.formatted(message.getRole(),
+                당신은 게시글 작성을 도와주는 에이전트입니다.
+                
+                현재 사용자의 게시글 상태:
+                - 역할: %s
+                - 제목: %s
+                - 내용(Quill Delta): %s
+                - 태그: %s
+                
+                사용자 메시지: %s
+                
+                ## 응답 규칙
+                1. 제목, 내용, 태그는 필요한 것만 수정하세요.
+                2. 메시지는 반드시 작성하세요.
+                3. **내용(content)은 반드시 Quill Delta JSON 형식으로 작성하세요.**
+                
+                ## Quill Delta 형식 예시
+                {"ops":[{"insert":"굵은 텍스트","attributes":{"bold":true}},{"insert":"\\n일반 텍스트\\n"}]}
+                
+                ## 동영상 임베딩 규칙 (중요!)
+                YouTube 동영상을 삽입할 때:
+                - ❌ 잘못된 형식: https://www.youtube.com/watch?v=VIDEO_ID
+                - ✅ 올바른 형식: https://www.youtube.com/embed/VIDEO_ID
+                
+                동영상 insert 예시:
+                {"insert":{"video":"https://www.youtube.com/embed/mmCnQDUSO4I"}}
+                
+                **반드시 watch?v= 형식을 embed/ 형식으로 변환하세요!**
+                
+                ## 주의사항
+                - insert 값은 문자열, 이미지 객체, 또는 비디오 객체
+                - attributes는 bold, italic, underline 등 서식 정보
+                - 줄바꿈은 반드시 \\n으로 표현
+                - 기존 이미지/동영상이 있으면 그대로 유지
+                - YouTube URL은 항상 embed 형식으로 변환
+                
+                내용을 수정할 때는 위 형식을 절대 벗어나지 마세요.
+                """.formatted(
+                message.getRole(),
                 message.getTitle(),
                 message.getContent(),
                 message.getTags().toString(),
