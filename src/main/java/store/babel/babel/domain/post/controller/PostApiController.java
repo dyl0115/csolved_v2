@@ -2,6 +2,7 @@ package store.babel.babel.domain.post.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.post.controller.dto.PostCreateRequest;
 import store.babel.babel.domain.post.controller.dto.PostUpdateRequest;
@@ -12,6 +13,8 @@ import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
 import store.babel.babel.domain.user.dto.User;
 
+import java.util.Map;
+
 @RequestMapping("/api/post")
 @RequiredArgsConstructor
 @RestController
@@ -21,9 +24,10 @@ public class PostApiController
 
     @LoginRequest
     @PostMapping
-    public void createPost(@Valid @RequestBody PostCreateRequest request)
+    public ResponseEntity<Map<String, Object>> createPost(@Valid @RequestBody PostCreateRequest request)
     {
         postService.createPost(PostCreateCommand.from(request));
+        return ResponseEntity.ok(Map.of("message", "success"));
     }
 
     @LoginRequest

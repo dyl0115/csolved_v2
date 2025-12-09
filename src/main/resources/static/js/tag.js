@@ -95,13 +95,3 @@ document.addEventListener('DOMContentLoaded', function ()
         updateHiddenInput();
     }
 });
-
-// claude_create.html
-// document.getElementById('tag-hidden-input').addEventListener('change', function (event)
-// {
-//     const value = event.target.value;
-//     if (value.includes(' '))
-//     {
-//         handleTagInput(value.replace(' ', ''));
-//     }
-// });
