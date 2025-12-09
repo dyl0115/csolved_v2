@@ -554,7 +554,6 @@
                         return;
                     }
 
-                    // console.log(parsed);
 
                     // title 처리 - 전체 값을 비교하여 변경된 경우에만 업데이트
                     if (parsed.title !== undefined && parsed.title !== previousTitle)
@@ -564,34 +563,45 @@
                     }
 
                     // content 처리 - 새로 추가된 부분만 타이핑 (Quill 에디터)
-                    if (parsed.content !== undefined && parsed.content !== previousContent)
-                    {
-                        let delta;
+                    let deltaOps;
 
+                    try
+                    {
+                        // 1단계: parsed.content를 파싱 시도
+                        const delta = JSON.parse(parsed.content);
+
+                        if (delta?.ops && Array.isArray(delta.ops))
+                        {
+                            deltaOps = delta.ops;
+                        }
+                    }
+                    catch (error)
+                    {
+                        // 2단계: 파싱 실패 시 repair 후 다시 파싱
                         try
                         {
-                            // 먼저 ops 파싱 시도
-                            console.log("parsed.content" + parsed.content);
-                            delta = JSON.parse(parsed.content);
-                        }
-                        catch (error)
-                        {
-                            // 실패하면 repair 후 파싱
-                            try
-                            {
-                                delta = window.jsonRepair(parsed.content);
-                            }
-                            catch (error2)
-                            {
-                                return;
-                            }
-                        }
+                            const repairedContent = window.jsonRepair(parsed.content);
+                            console.log("repaired delta: " + repairedContent);
 
-                        if (delta?.ops)
-                        {
-                            console.log("delta ops" + JSON.stringify(delta.ops));
-                            quill.setContents(delta.ops);
+                            // repair된 문자열을 다시 파싱
+                            const delta = JSON.parse(repairedContent);
+
+                            if (delta?.ops && Array.isArray(delta.ops))
+                            {
+                                deltaOps = delta.ops;
+                            }
                         }
+                        catch (error2)
+                        {
+                            console.warn("Delta repair/parse failed:", error2);
+                            return;
+                        }
+                    }
+
+                    if (deltaOps)
+                    {
+                        console.log("deltaOps: " + JSON.stringify(deltaOps));
+                        quill.setContents(deltaOps);
                         previousContent = parsed.content;
                     }
 
@@ -620,22 +630,6 @@
                     }
                 }
             })
-        }
-
-        // Quill 에디터에 텍스트를 추가하는 함수 (타이핑 효과)
-        function appendToQuill(text)
-        {
-            if (typeof quill !== 'undefined' && quill)
-            {
-                // 현재 커서 위치 (에디터의 끝)
-                const currentLength = quill.getLength() - 1; // -1은 마지막 newline 제외
-                // 텍스트 삽입
-                quill.insertText(currentLength, text);
-                // 내용을 hidden textarea에도 동기화
-                document.getElementById('content').value = quill.root.innerHTML;
-            }
-
-            quill.setContents(text);
         }
     </script>
     
