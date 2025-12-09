@@ -1,14 +1,34 @@
-let eventSource;
+const status = {
+    eventSource: null,
+}
 
-export function connect()
+export function handleStream(chunkHandler)
 {
-    if (eventSource == null)
-    {
-        eventSource = new EventSource('/ai/post/connect');
-    }
+    if (status.eventSource) return;
 
-    eventSource.addEventListener('message', (event) =>
+    status.eventSource = new EventSource('/ai/post/connect');
+
+    status.eventSource.addEventListener('message', (event) =>
     {
-        여기에 비즈니스 로직들이 들어가야 하나.?
+        console.log('chatClient: ' + event.data);
+        chunkHandler(event.data);
     });
+}
+
+export async function sendMessage(request)
+{
+    const response = await fetch('/ai/post/message', {
+        method: "POST",
+        headers:
+            {
+                "Content-Type": "application/json"
+            },
+        body: JSON.stringify(request)
+    });
+
+    if (!response.ok)
+    {
+        const errorData = await response.json();
+        throw new Error(errorData.message || '알 수 없는 오류');
+    }
 }

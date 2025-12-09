@@ -9,7 +9,7 @@ export function initPostUI()
 
 async function postSubmit()
 {
-    const formData = {
+    const form = {
         categoryId: document.getElementById('categoryId').value,
         title: document.getElementById('title').value,
         authorId: document.getElementById('authorId').value,
@@ -20,7 +20,7 @@ async function postSubmit()
 
     try
     {
-        await postService.createPost(formData);
+        await postService.createPost(form);
         alert('작성이 완료되었습니다.');
         window.location.href = '/post/list?page=1';
     }
