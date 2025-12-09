@@ -28,6 +28,37 @@ export function sendMessage(form)
     return chatClient.sendMessage(request);
 }
 
+export function parseContent(content)
+{
+    try
+    {
+        const delta = JSON.parse(content);
+
+        if (delta?.ops && Array.isArray(delta.ops))
+        {
+            return delta.ops;
+        }
+    }
+    catch (error)
+    {
+        try
+        {
+            const repaired = window.jsonRepair(content);
+            const delta = JSON.parse(repaired);
+
+            if (delta?.ops && Arrays.isArray(delta.ops))
+            {
+                return delta.ops;
+            }
+        }
+        catch (error2)
+        {
+            return null;
+        }
+    }
+    return null;
+}
+
 
 function repairJsonChunk(jsonChunk)
 {

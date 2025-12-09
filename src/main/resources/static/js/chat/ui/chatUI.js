@@ -105,45 +105,13 @@ function updateTags(post)
 
 function updateContent(post)
 {
-    let deltaOps;
+    if (post.content === undefined || post.content === status.previousContent) return;
 
-    try
+    const deltaOps = chatService.parseContent(post.content);
+    if (deltaOps)
     {
-        // 1단계: post.content 문자열로 파싱 시도
-        const contentDelta = JSON.parse(post.content);
-
-        if (contentDelta?.ops && Array.isArray(contentDelta.ops))
-        {
-            deltaOps = contentDelta.ops;
-        }
-    }
-    catch (error)
-    {
-        // 2단계: 파싱 실패 시 repair 후 다시 파싱
-        try
-        {
-            const repairedContent = window.jsonRepair(post.content);
-            console.log("repairedContent: " + repairedContent);
-
-            // repair된 문자열을 다시 파싱
-            const delta = JSON.parse(repairedContent);
-
-            if (delta?.ops && Array.isArray(delta.ops))
-            {
-                deltaOps = delta.ops;
-            }
-        }
-        catch (error2)
-        {
-            console.warn("Delta repair/parse failed:", error2);
-            return;
-        }
-
-        if (deltaOps)
-        {
-            quill.setContents(deltaOps);
-            status.previousContent = post.content;
-        }
+        quill.setContents(deltaOps);
+        status.previousContent = post.content;
     }
 }
 
