@@ -4,9 +4,7 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>내 프로필 수정</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
         <style>
             .profile-image-container {
@@ -152,9 +150,14 @@
             </div>
         </div>
         
-        <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
-        <script src="/js/navigation.js"></script>
+        
+        <script type="module">
+            import * as navigationUI from '/js/common/navigationUI.js';
+
+            navigationUI.init();
+            lucide.createIcons();
+        </script>
         
         <script>
             // 전역 변수: 처리된 이미지 데이터 저장

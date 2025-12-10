@@ -4,14 +4,11 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>커뮤니티 게시판</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
         
         <!-- 게시판 배너 -->
@@ -418,16 +415,14 @@
         <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', async function ()
-        {
-            initNavigation();
-            lucide.createIcons();
-        });
+    <script type="module">
+        import * as navigationUI from '/js/common/navigationUI.js';
+
+        navigationUI.init();
+        lucide.createIcons();
     </script>
     
     <script src="/js/timeago.js"></script>
-    <script src="/js/navigation.js"></script>
     <script src="/js/pagination.js"></script>
     <script src="/js/sorting.js"></script>
 </html>

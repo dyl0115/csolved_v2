@@ -589,6 +589,15 @@
         <div th:replace="~{/fragments/report-modal :: reportModal(${user})}"></div>
         <div th:replace="~{/fragments/report-modal :: reportModalScript}"></div>
     </body>
+    
+    
+    <script type="module">
+        import * as navigationUI from '/js/common/navigationUI.js';
+
+        navigationUI.init();
+        lucide.createIcons();
+    </script>
+    
     <script th:inline="javascript">
 
         <!-- TODO: 이후 전역변수를 활용한 방식으로 리팩토링 하기 -->
@@ -599,7 +608,6 @@
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            initNavigation();
             lucide.createIcons();
         });
 
@@ -944,5 +952,4 @@
         }
     </script>
     <script src="/js/timeago.js"></script>
-    <script src="/js/navigation.js"></script>
 </html>

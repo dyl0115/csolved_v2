@@ -9,7 +9,7 @@ const status = {
     assistantMessageTextId: '',
 }
 
-export function initChatUI()
+export function init()
 {
     chatService.handleStream((post) =>
     {

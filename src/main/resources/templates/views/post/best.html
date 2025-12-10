@@ -199,19 +199,23 @@
                 </div>
             </div>
         </div>
-        
-        <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
+    
+    <script type="module">
+        import * as navigationUI from '/js/common/navigationUI.js';
+
+        navigationUI.init();
+
+        lucide.createIcons();
+    </script>
     <script th:inline="javascript">
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            initNavigation();
             lucide.createIcons();
         });
     </script>
     
     <script src="/js/timeago.js"></script>
-    <script src="/js/navigation.js"></script>
     <script src="/js/pagination.js"></script>
 </html>

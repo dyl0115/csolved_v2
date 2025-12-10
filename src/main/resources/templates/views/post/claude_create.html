@@ -314,12 +314,14 @@
     </template>
     
     <script type="module">
-        import {jsonrepair} from 'https://esm.sh/jsonrepair@3.11.0';
-        import {initPostUI} from "/js/post/ui/postUI.js";
-        import {initChatUI} from "/js/chat/ui/chatUI.js";
+        import {jsonrepair} from 'https://esm.sh/jsonrepair@3.1l1.0';
+        import * as postUI from "/js/post/ui/postUI.js";
+        import * as chatUI from "/js/chat/ui/chatUI.js";
+        import * as navigationUI from "/js/common/navigationUI.js";
 
-        initPostUI();
-        initChatUI();
+        navigationUI.init();
+        postUI.init();
+        chatUI.init();
         window.jsonRepair = jsonrepair;
     </script>
     
@@ -332,7 +334,6 @@
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            initNavigation();
             initQuillEditor('#editor');
             initResizer();
             lucide.createIcons();
@@ -406,5 +407,4 @@
     
     <!-- Page Utils -->
     <script src="/js/tag.js"></script>
-    <script src="/js/navigation.js"></script>
 </html>

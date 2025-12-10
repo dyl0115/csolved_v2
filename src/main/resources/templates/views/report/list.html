@@ -627,16 +627,16 @@
             <!-- 여기에 신고된 대댓글 상세 내용이 로드됨 -->
         </div>
     </body>
-    
     <div th:replace="~{/fragments/footer :: default-footer}"></div>
     
-    <script th:inline="javascript">
-        document.addEventListener('DOMContentLoaded', async function ()
-        {
-            initNavigation();
-            lucide.createIcons();
-        });
+    <script type="module">
+        import * as navigationUI from '/js/common/navigationUI.js';
 
+        navigationUI.init();
+        lucide.createIcons();
+    </script>
+    
+    <script th:inline="javascript">
         // 통합 검색 기능
         async function performSearch()
         {
@@ -897,5 +897,4 @@
     
     <script th:replace="~{/fragments/report-modal :: reportedCommenModalScript}"></script>
     <script th:replace="~{/fragments/report-modal :: reportedAnswerModalScript}"></script>
-    <script src="/js/navigation.js"></script>
 </html>

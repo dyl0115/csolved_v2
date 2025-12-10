@@ -51,7 +51,7 @@ public class AuthApiController
     @LoginRequest
     @DeleteMapping("/withdraw")
     @ResponseStatus(HttpStatus.OK)
-    public void processWithdraw(@LoginUser User user)
+    public void withdraw(@LoginUser User user)
     {
         authService.withdraw(user);
     }
