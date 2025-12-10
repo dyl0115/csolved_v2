@@ -129,7 +129,7 @@ function initQuillEditor(selector)
         }
     }
 
-    quill = new Quill(selector, config);
+    const quill = new Quill(selector, config);
     quill.root.style.minHeight = '300px';
     quill.root.setAttribute("spellcheck", 'false');
     quill.format('size', '15px');
