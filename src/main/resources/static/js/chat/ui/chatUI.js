@@ -13,7 +13,6 @@ export function init()
 {
     chatService.handleStream((post) =>
     {
-        console.log("chatUI: " + JSON.stringify(post));
         updateTitle(post);
         updateTags(post);
         updateMessage(post);
@@ -41,7 +40,7 @@ export function sendChatMessage()
 
     const form = {
         title: document.getElementById('title').value,
-        content: JSON.stringify(quill.getContents()),
+        content: JSON.stringify(document.getElementById('content').value),
         tags: document.getElementById('tag-hidden-input').value,
         message: message,
     }
@@ -110,7 +109,10 @@ function updateContent(post)
     const deltaOps = chatService.parseContent(post.content);
     if (deltaOps)
     {
+        // TODO: quill 의존성 제거 + 부분 업데이트 방식으로 개선해야 함.
         quill.setContents(deltaOps);
+        document.getElementById('content').textContent = deltaOps;
+
         status.previousContent = post.content;
     }
 }

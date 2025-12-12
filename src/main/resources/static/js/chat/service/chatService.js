@@ -1,4 +1,5 @@
 import *  as chatClient from '../client/chatClient.js'
+import {jsonrepair} from 'https://esm.sh/jsonrepair@3.1l1.0';
 
 const status = {
     jsonBuffer: '',
@@ -43,7 +44,7 @@ export function parseContent(content)
     {
         try
         {
-            const repaired = window.jsonRepair(content);
+            const repaired = jsonrepair(content);
             const delta = JSON.parse(repaired);
 
             if (delta?.ops && Arrays.isArray(delta.ops))
@@ -67,7 +68,7 @@ function repairJsonChunk(jsonChunk)
     try
     {
         // 우선 Json 복구 시도
-        const repairedJson = window.jsonRepair(status.jsonBuffer);
+        const repairedJson = jsonrepair(status.jsonBuffer);
         return JSON.parse(repairedJson);
     }
     catch (error)

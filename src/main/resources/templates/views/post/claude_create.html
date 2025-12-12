@@ -314,15 +314,21 @@
     </template>
     
     <script type="module">
-        import {jsonrepair} from 'https://esm.sh/jsonrepair@3.1l1.0';
         import * as postUI from "/js/post/ui/postUI.js";
         import * as chatUI from "/js/chat/ui/chatUI.js";
         import * as navigationUI from "/js/common/navigationUI.js";
+        import * as editor from "/js/editor/quill.js";
 
-        navigationUI.init();
-        postUI.init();
-        chatUI.init();
-        window.jsonRepair = jsonrepair;
+        document.addEventListener('DOMContentLoaded', async function ()
+        {
+            window.quill = editor.createEditor("#editor");
+
+            navigationUI.init();
+            postUI.init();
+            chatUI.init();
+            initResizer();
+            lucide.createIcons();
+        });
     </script>
     
     <script th:inline="javascript">
@@ -331,13 +337,6 @@
         let formContainer = null;
         let aiContainer = null;
         let mainContainer = null;
-
-        document.addEventListener('DOMContentLoaded', async function ()
-        {
-            initQuillEditor('#editor');
-            initResizer();
-            lucide.createIcons();
-        });
 
         function initResizer()
         {
@@ -399,11 +398,6 @@
             });
         }
     </script>
-    
-    <!-- Quill Editor -->
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-    <script src="/js/editor/quill-editor.js"></script>
-    <script src="/js/editor/quill-resize.js"></script>
     
     <!-- Page Utils -->
     <script src="/js/tag.js"></script>
