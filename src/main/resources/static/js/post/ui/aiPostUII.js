@@ -1,10 +1,10 @@
 import * as postService from '../service/postService.js';
 import {handleError} from "../../common/error/errorHandler.js";
 
-
 export function init()
 {
-    document.querySelector('.post-submit-btn')?.addEventListener('click', postSubmit);
+    document.querySelector('.post-submit-btn')
+        ?.addEventListener('click', postSubmit);
 }
 
 async function postSubmit()

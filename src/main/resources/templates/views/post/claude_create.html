@@ -213,6 +213,8 @@
                                 <textarea id="content" name="content" style="display:none;"></textarea>
                                 <div id="editor"></div>
                                 
+                                <input type="file" id="image-file-input" style="display:none;" accept="image/*">
+                                
                                 <span class="text-red-500 text-sm mt-1 hidden error-message">
                                     컨텐츠 에러 메시지
                                 </span>
@@ -311,17 +313,17 @@
     </template>
     
     <script type="module">
-        import * as postUI from "/js/post/ui/postUI.js";
-        import * as chatUI from "/js/chat/ui/chatUI.js";
+        import * as aiPostUI from "/js/post/ui/aiPostUI.js";
+        import * as aiChatUI from "/js/chat/ui/aiChatUI.js";
         import * as navigationUI from "/js/common/navigationUI.js";
-        import {QuillEditor} from "/js/editor/quill.js";
+        import * as quillUI from "/js/editor/quill.js";
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            const editor = new QuillEditor('#editor');
+            quillUI.init('#editor');
+            aiPostUI.init();
             navigationUI.init();
-            postUI.init();
-            chatUI.init();
+            aiChatUI.init();
             initResizer();
             lucide.createIcons();
         });

@@ -9,4 +9,3 @@ async function getReports()
 {
     adminService.getReports();
 }
-

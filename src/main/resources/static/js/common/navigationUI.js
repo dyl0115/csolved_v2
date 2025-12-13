@@ -5,9 +5,14 @@ import {handleError} from "../common/error/errorHandler.js";
 export function init()
 {
     createMobileMenu();
-    document.querySelector('.sign-out-btn')?.addEventListener('click', signOut);
-    document.querySelector('.withdraw-btn')?.addEventListener('click', withdraw);
-    document.querySelector('.report-list-btn')?.addEventListener('click', adminService.getReports);
+    document.querySelector('.sign-out-btn')
+        ?.addEventListener('click', signOut);
+
+    document.querySelector('.withdraw-btn')
+        ?.addEventListener('click', withdraw);
+
+    document.querySelector('.report-list-btn')
+        ?.addEventListener('click', adminService.getReports);
 }
 
 async function signOut()

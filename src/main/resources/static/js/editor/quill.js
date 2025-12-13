@@ -1,103 +1,113 @@
-export class QuillEditor
+import * as fileClient from '../file/client/fileClient.js';
+import {handleError} from "../common/error/errorHandler.js";
+
+let quill = null;
+
+export function init(selector)
 {
-    constructor(selector)
-    {
-        this.quill = null;
-        this.imageUploadUrl = 'http://localhost:8080/api/image';
-        this.init(selector);
-    }
-
-    init(selector)
-    {
-        this.quill = new Quill(selector, {
-            theme: 'snow',
-            modules: {
-                toolbar: {
-                    container: [
-                        ['bold', 'italic', 'underline'],
-                        ['link', 'image', 'video'],
-                        [{'list': 'ordered'}, {'list': 'bullet'}]
-                    ],
-                    handlers: {
-                        image: () => this.imageHandler()
-                    }
-                },
-                resize: {
-                    modules: ['Resize', 'DisplaySize']
+    quill = new Quill(selector, {
+        theme: 'snow',
+        modules: {
+            toolbar: {
+                container: [
+                    ['bold', 'italic', 'underline'],
+                    ['link', 'image', 'video'],
+                    [{'list': 'ordered'}, {'list': 'bullet'}]
+                ],
+                handlers: {
+                    image: imageHandler
                 }
-            }
-        });
-
-        this.setStyles();
-        this.setOriginalContent();
-        this.setEvents();
-    }
-
-    setStyles()
-    {
-        this.quill.root.style.minHeight = '300px';
-        this.quill.root.spellcheck = false;
-    }
-
-    setOriginalContent()
-    {
-        const originalContent = document.getElementById('content').value;
-        if (originalContent)
-        {
-            this.quill.root.innerHTML = originalContent;
-        }
-    }
-
-    setEvents()
-    {
-        this.quill.on('text-change', () =>
-        {
-            document.getElementById('content').value = this.quill.root.innerHTML;
-        });
-    }
-
-    async imageHandler()
-    {
-        const input = document.createElement('input');
-        input.setAttribute('type', 'file');
-        input.setAttribute('accept', 'image/*');
-        input.click();
-
-        input.onchange = async () =>
-        {
-            const file = input.files[0];
-            if (!file) return;
-
-            const range = this.quill.getSelection();
-            this.quill.insertText(range.index, '업로드 중...');
-
-            const formData = new FormData();
-            formData.append('image', file);
-
-            try
-            {
-                const response = await fetch(this.imageUploadUrl, {
-                    method: 'POST',
-                    body: formData
-                })
-
-                const data = await response.json();
-                const awsS3Url = data.imageUrl;
-
-                this.quill.deleteText(range.index, 6); // '업로드 중...' 삭제
-                this.quill.insertEmbed(range.index, 'image', awsS3Url);
-                this.quill.setSelection(range.index + 1);
-
-            }
-            catch (error)
-            {
-                alert('이미지 업로드에 실패했습니다.');
-                this.quill.deleteText(range.index, 6);
+            },
+            resize: {
+                modules: ['Resize', 'DisplaySize']
             }
         }
+    });
+
+    setStyles();
+    setOriginalContent();
+    setEvents();
+}
+
+function setStyles()
+{
+    quill.root.style.minHeight = '300px';
+    quill.root.spellcheck = false;
+}
+
+function setOriginalContent()
+{
+    const originalContent = document.getElementById('content').value;
+    if (originalContent)
+    {
+        quill.root.innerHTML = originalContent;
     }
 }
 
+function setEvents()
+{
+    quill.on('text-change', () =>
+    {
+        document.getElementById('content').value = quill.root.innerHTML;
+    });
+}
+
+function selectFile(accept)
+{
+    return new Promise((resolve) =>
+    {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = accept;
+        input.onchange = () => resolve(input.files[0] || null);
+        input.click();
+    });
+}
+
+function showLoading(index)
+{
+    quill.insertText(index, '업로드 중...');
+}
+
+function hideLoading(index)
+{
+    quill.deleteText(index, 6);
+}
+
+async function uploadFile(file)
+{
+    const formData = new FormData();
+    formData.append('image', file);
+    return await fileClient.uploadImage(formData);
+}
+
+function insertImage(index, url)
+{
+    quill.insertEmbed(index, 'image', url);
+    quill.setSelection(index + 1);
+}
+
+async function imageHandler()
+{
+    const file = await selectFile('image/*');
+    if (!file) return;
+
+    const range = quill.getSelection();
+
+    showLoading(range.index);
+
+    try
+    {
+        const imageUrl = await uploadFile(file);
+        hideLoading(range.index);
+        insertImage(range.index, imageUrl);
+    }
+    catch (error)
+    {
+        hideLoading(range.index);
+        handleError(error);
+    }
+}
 
 // function videoHandler()
 // {
