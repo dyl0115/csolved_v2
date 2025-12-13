@@ -4,15 +4,12 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>게시글 작성</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
-        <!-- Quill Editor CSS -->
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
-        <!-- Quill Resize CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.css" rel="stylesheet">
-        
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.min.css" rel="stylesheet">
         <style>
             .main-container {
                 display: flex;
@@ -317,12 +314,11 @@
         import * as postUI from "/js/post/ui/postUI.js";
         import * as chatUI from "/js/chat/ui/chatUI.js";
         import * as navigationUI from "/js/common/navigationUI.js";
-        import * as editor from "/js/editor/quill.js";
+        import {QuillEditor} from "/js/editor/quill.js";
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            window.quill = editor.createEditor("#editor");
-
+            const editor = new QuillEditor('#editor');
             navigationUI.init();
             postUI.init();
             chatUI.init();
@@ -332,7 +328,6 @@
     </script>
     
     <script th:inline="javascript">
-        // 리사이저 기능
         let isResizing = false;
         let formContainer = null;
         let aiContainer = null;
@@ -398,7 +393,5 @@
             });
         }
     </script>
-    
-    <!-- Page Utils -->
     <script src="/js/tag.js"></script>
 </html>
