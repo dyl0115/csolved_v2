@@ -1,6 +1,6 @@
-import * as authService from '../auth/service/authService.js';
-import * as adminService from '../admin/service/adminService.js';
-import {handleError} from "../common/error/errorHandler.js";
+import * as authService from '../../auth/service/authService.js';
+import * as adminService from '../../admin/service/adminService.js';
+import {handleError} from "../error/errorHandler.js";
 
 export function init()
 {

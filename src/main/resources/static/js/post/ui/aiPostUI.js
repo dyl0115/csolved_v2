@@ -1,5 +1,5 @@
 import * as postService from '../service/postService.js';
-import {handleError} from "../../common/error/errorHandler.js";
+import {handleError} from "../../global/error/errorHandler.js";
 
 let isResizing = false;
 

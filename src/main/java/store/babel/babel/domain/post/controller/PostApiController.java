@@ -24,10 +24,9 @@ public class PostApiController
 
     @LoginRequest
     @PostMapping
-    public ResponseEntity<Map<String, Object>> createPost(@Valid @RequestBody PostCreateRequest request)
+    public void createPost(@Valid @RequestBody PostCreateRequest request)
     {
         postService.createPost(PostCreateCommand.from(request));
-        return ResponseEntity.ok(Map.of("message", "success"));
     }
 
     @LoginRequest

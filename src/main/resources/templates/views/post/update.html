@@ -3,21 +3,17 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>게시글 수정</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
-        <!-- Quill Editor CSS -->
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
-        <!-- Quill Resize CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.min.css" rel="stylesheet">
+        <title>게시글 수정</title>
     </head>
     
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
-        
         <div class="max-w-5xl mx-auto py-8 px-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <!-- 헤더 -->
@@ -37,7 +33,6 @@
                             <input class="hidden" id="postId"
                                    th:value="${post.id}">
                         </label>
-                        
                         
                         <label for="categoryId" class="block text-sm font-medium text-gray-700 mb-2">
                             <div class="flex items-center gap-2">
@@ -118,11 +113,10 @@
                                    th:value="${post.tagString}">
                             
                             <!-- 사용자가 태그를 입력하는 영역 -->
-                            <input
-                                    type="text"
-                                    class="tag-input flex-grow border-0 p-0 outline-none focus:ring-0"
-                                    id="tag-input"
-                                    placeholder="태그를 입력하고 스페이스/엔터를 누르세요">
+                            <input id="tag-input"
+                                   type="text"
+                                   class="tag-input flex-grow border-0 p-0 outline-none focus:ring-0"
+                                   placeholder="태그를 입력하고 스페이스/엔터를 누르세요">
                         </div>
                         <span class="text-red-500 text-sm mt-1 hidden error-message">
                             태그 에러 메시지
@@ -153,94 +147,51 @@
                     
                     <!-- 버튼 그룹 -->
                     <div class="flex items-center justify-end gap-3 pt-4 border-t">
-                        <button
-                                type="button"
+                        <button type="button"
                                 class="flex items-center gap-2 px-5 py-2.5 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors font-medium"
                                 onclick="history.back()">
-                            <i data-lucide="x" class="w-4 h-4"></i>
+                            <i data-lucide="x"
+                               class="w-4 h-4">
+                            </i>
                             <span>취소</span>
                         </button>
-                        <button
-                                onclick="updatePost()"
+                        <button id="post-update-btn"
                                 class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                            <i data-lucide="check" class="w-4 h-4"></i>
+                            <i data-lucide="check"
+                               class="w-4 h-4">
+                            </i>
                             <span>수정완료</span>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
     
-    <script type="module">
-        import * as navigationUI from '/js/common/navigationUI.js';
-
-        navigationUI.init();
-        lucide.createIcons();
-    </script>
+    <template id="tag-template">
+    <span class="tag-badge inline-flex items-center gap-2 px-3 py-1 mr-1 mb-1 text-sm font-medium text-white bg-blue-600 rounded-full">
+        <span class="tag-text"></span>
+        <button type="button"
+                class="inline-flex items-center justify-center w-4 h-4 text-white hover:text-gray-200 focus:outline-none transition-colors"
+                aria-label="Remove">×</button>
+    </span>
+    </template>
     
-    <script th:inline="javascript">
+    <script type="module">
+        import * as navigationUI from '/js/global/utils/navigationUI.js';
+        import * as quillUI from '/js/editor/quill.js';
+        import * as postUI from '/js/post/ui/postUI.js';
+        import * as tagUI from '/js/global/utils/tagUI.js';
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            createEditor('#editor');
+            navigationUI.init();
+            quillUI.init('#editor');
+            postUI.init();
+            tagUI.init();
+            lucide.createIcons();
         });
-
-        async function updatePost()
-        {
-            const postId = document.getElementById('postId').value;
-            const categoryId = document.getElementById('categoryId').value;
-            const title = document.getElementById('title').value;
-            const authorId = document.getElementById('authorId').value;
-            const anonymous = document.getElementById('anonymousToggle').checked;
-            const tags = document.getElementById('tag-hidden-input').value;
-            const content = document.getElementById('content').value;
-            const redirectUrl = `/post/${postId}`;
-
-            const request = {
-                id: parseInt(postId),
-                categoryId: parseInt(categoryId),
-                title: title,
-                authorId: parseInt(authorId),
-                anonymous: anonymous,
-                tags: tags,
-                content: content
-            };
-
-            try
-            {
-                const response = await fetch(`/api/post`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(request)
-                });
-
-                if (response.ok)
-                {
-                    alert("수정이 완료되었습니다.");
-                    window.location.href = redirectUrl;
-                } else
-                {
-                    const errorData = await response.json();
-                    alert('수정 실패: ' + (errorData.message || '알 수 없는 오류가 발생했습니다.'));
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('서버와의 통신 중 오류가 발생했습니다.');
-            }
-        }
-    </script>
-    <!-- Quill Editor -->
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-    <script src="/js/editor/quill.js"></script>
-    <script src="/js/editor/quill-resize.js"></script>
     
-    <!-- Page Utils -->
-    <script src="/js/common/tagUI.js"></script>
+    </script>
 </html>

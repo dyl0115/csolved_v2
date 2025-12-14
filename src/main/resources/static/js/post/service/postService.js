@@ -10,5 +10,21 @@ export async function createPost(form)
         tags: form.tags,
         content: form.content
     }
+
     return postClient.createPost(request);
+}
+
+export async function updatePost(form)
+{
+    const request = {
+        id: parseInt(form.postId),
+        categoryId: parseInt(form.categoryId),
+        title: form.title,
+        authorId: parseInt(form.authorId),
+        anonymous: form.anonymous,
+        tags: form.tags,
+        content: form.content
+    };
+
+    return postClient.updatePost(request);
 }

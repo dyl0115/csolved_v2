@@ -134,7 +134,7 @@
                             <i data-lucide="x" class="w-4 h-4"></i>
                             <span>취소</span>
                         </button>
-                        <button
+                        <button id="post-submit-btn"
                                 type="button"
                                 class="post-submit-btn flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
                             <i data-lucide="check" class="w-4 h-4"></i>
@@ -158,9 +158,9 @@
     
     <script type="module">
         import * as postUI from "/js/post/ui/postUI.js";
-        import * as navigationUI from "/js/common/navigationUI.js";
+        import * as navigationUI from "/js/global/utils/navigationUI.js";
         import * as quillUI from "/js/editor/quill.js";
-        import * as tagUI from "/js/common/tagUI.js";
+        import * as tagUI from "/js/global/utils/tagUI.js";
 
         document.addEventListener('DOMContentLoaded', async function ()
         {

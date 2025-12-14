@@ -1,5 +1,5 @@
 import * as fileClient from '../file/client/fileClient.js';
-import {handleError} from "../common/error/errorHandler.js";
+import {handleError} from "../global/error/errorHandler.js";
 
 let quill = null;
 

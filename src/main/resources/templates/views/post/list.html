@@ -370,21 +370,16 @@
                             </h3>
                         </div>
                         <div class="p-4">
-                            <form method="GET">
-                                <input type="hidden"
-                                       name="page"
-                                       value="1"/>
-                                <select class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
-                                        name="sortType"
-                                        onchange="this.form.submit()"
-                                        th:with="currentSortType=${param.sortType != null ? param.sortType[0] : 'RECENT'}">
-                                    <option value="RECENT" th:selected="${currentSortType == 'RECENT'}">최신순</option>
-                                    <option value="VIEWS" th:selected="${currentSortType == 'VIEWS'}">조회수 많은 순</option>
-                                    <option value="ANSWERS" th:selected="${currentSortType == 'ANSWERS'}">댓글 많은 순
-                                    </option>
-                                    <option value="LIKES" th:selected="${currentSortType == 'LIKES'}">좋아요 많은 순</option>
-                                </select>
-                            </form>
+                            <select id="sort-select"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                    name="sortType"
+                                    th:with="currentSortType=${param.sortType != null ? param.sortType[0] : 'RECENT'}">
+                                <option value="RECENT" th:selected="${currentSortType == 'RECENT'}">최신순</option>
+                                <option value="VIEWS" th:selected="${currentSortType == 'VIEWS'}">조회수 많은 순</option>
+                                <option value="ANSWERS" th:selected="${currentSortType == 'ANSWERS'}">댓글 많은 순
+                                </option>
+                                <option value="LIKES" th:selected="${currentSortType == 'LIKES'}">좋아요 많은 순</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -413,16 +408,17 @@
     </body>
     
     <script type="module">
-        import * as navigationUI from '/js/common/navigationUI.js';
-        import * as timeUI from '/js/common/timeUI.js';
-        import * as paginationUI from '/js/common/paginationUI.js';
+        import * as navigationUI from '/js/global/utils/navigationUI.js';
+        import * as timeUI from '/js/global/utils/timeUI.js';
+        import * as paginationUI from '/js/global/utils/paginationUI.js';
+        import * as sortUI from '/js/global/utils/sortUI.js'
 
         navigationUI.init();
         paginationUI.init();
+        sortUI.init();
         timeUI.init();
+
         lucide.createIcons();
     </script>
-    
-    <script src="/js/sorting.js"></script>
 </html>
 

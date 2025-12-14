@@ -5,23 +5,19 @@ export function init()
     const pageInput = document.getElementById('page-number-input');
 
     previousBtn?.addEventListener('click', () =>
-        getPageContents(previousBtn.value));
+        getPagedContents(previousBtn.value));
+
+    nextBtn?.addEventListener('click', () =>
+        getPagedContents(nextBtn.value)
+    );
 
     pageInput?.addEventListener('keyup', (event) =>
     {
-        if (event.key === 'Enter')
-        {
-            getPageContents(pageInput.value);
-        }
-    });
-
-    nextBtn?.addEventListener('click', () =>
-    {
-        getPageContents(nextBtn.value);
+        if (event.key === 'Enter') getPagedContents(pageInput.value);
     });
 }
 
-function getPageContents(pageNumber)
+function getPagedContents(pageNumber)
 {
     const url = new URL(window.location.href);
     url.searchParams.set('page', pageNumber);

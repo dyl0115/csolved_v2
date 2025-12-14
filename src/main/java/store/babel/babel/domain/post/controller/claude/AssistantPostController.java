@@ -21,9 +21,9 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
-public class ClaudePostController
+public class AssistantPostController
 {
-    private static final String VIEW_AI_POST_CREATE_FORM = "/views/post/claude_create";
+    private static final String VIEW_AI_POST_CREATE_FORM = "/views/post/assistant_create";
 
     private final ClaudePostService claudePostService;
     private final CategoryService categoryService;

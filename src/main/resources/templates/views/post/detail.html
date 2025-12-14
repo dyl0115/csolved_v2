@@ -8,9 +8,7 @@
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
-        
         <div class="container mx-auto px-4 py-8">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <div class="lg:col-span-3">
@@ -592,9 +590,11 @@
     
     
     <script type="module">
-        import * as navigationUI from '/js/common/navigationUI.js';
+        import * as navigationUI from '/js/global/utils/navigationUI.js';
+        import * as timeUI from '/js/global/utils/timeUI.js';
 
         navigationUI.init();
+        timeUI.init();
         lucide.createIcons();
     </script>
     
@@ -951,5 +951,4 @@
             lucide.createIcons();
         }
     </script>
-    <script src="/js/common/timeUI.js"></script>
 </html>
