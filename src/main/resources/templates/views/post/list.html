@@ -3,15 +3,12 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>커뮤니티 게시판</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
+        <title>커뮤니티 게시판</title>
     </head>
-    
     <body class="bg-gray-50">
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
-        
-        <!-- 게시판 배너 -->
         <div class="w-full bg-gradient-to-r from-gray-800 to-gray-900 text-white py-12 px-4">
             <div class="container mx-auto">
                 <div class="flex items-center space-x-3">
@@ -412,18 +409,20 @@
                 </div>
             </div>
         </div>
-        <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
+    
     <script type="module">
         import * as navigationUI from '/js/common/navigationUI.js';
+        import * as timeUI from '/js/common/timeUI.js';
+        import * as paginationUI from '/js/common/paginationUI.js';
 
         navigationUI.init();
+        paginationUI.init();
+        timeUI.init();
         lucide.createIcons();
     </script>
     
-    <script src="/js/timeago.js"></script>
-    <script src="/js/pagination.js"></script>
     <script src="/js/sorting.js"></script>
 </html>
 

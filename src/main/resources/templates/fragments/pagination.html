@@ -6,9 +6,11 @@
          class="mt-8 flex items-center justify-center space-x-4">
         
         <!-- 이전 페이지 -->
-        <button class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+        <button id="previous-page-btn"
+                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
                 th:if="${currentPage > 1}"
-                th:onclick="|goToPage(${currentPage - 1})|">
+                th:value="${currentPage - 1}"
+                th:max="${maxPage}">
             <i data-lucide="chevron-left" class="w-4 h-4"></i>
             <span>이전</span>
         </button>
@@ -21,10 +23,9 @@
         
         <!-- 페이지 입력 -->
         <div class="flex items-center space-x-2">
-            <input class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800"
+            <input id="page-number-input"
+                   class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800"
                    type="number"
-                   onkeyup="if(event.key === 'Enter') goToPage(this.value)"
-                   onblur="goToPage(this.value)"
                    th:value="${currentPage}"
                    th:min="1"
                    th:max="${maxPage}">
@@ -32,9 +33,11 @@
         </div>
         
         <!-- 다음 페이지 -->
-        <button class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+        <button id="next-page-btn"
+                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
                 th:if="${currentPage < maxPage}"
-                th:onclick="|goToPage(${currentPage + 1})|">
+                th:value="${currentPage + 1}"
+                th:max="${maxPage}">
             <span>다음</span>
             <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </button>

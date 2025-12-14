@@ -260,11 +260,21 @@
         </div>
     </template>
     
+    <template id="tag-template">
+    <span class="tag-badge inline-flex items-center gap-2 px-3 py-1 mr-1 mb-1 text-sm font-medium text-white bg-blue-600 rounded-full">
+        <span class="tag-text"></span>
+        <button type="button"
+                class="inline-flex items-center justify-center w-4 h-4 text-white hover:text-gray-200 focus:outline-none transition-colors"
+                aria-label="Remove">×</button>
+    </span>
+    </template>
+    
     <script type="module">
         import * as aiPostUI from "/js/post/ui/aiPostUI.js";
         import * as aiChatUI from "/js/chat/ui/aiChatUI.js";
         import * as navigationUI from "/js/common/navigationUI.js";
         import * as quillUI from "/js/editor/quill.js";
+        import * as tagUI from "/js/common/tagUI.js";
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
@@ -272,9 +282,8 @@
             quillUI.init('#editor');
             aiPostUI.init();
             aiChatUI.init();
+            tagUI.init();
             lucide.createIcons();
         });
     </script>
-    
-    <script src="/js/tag.js"></script>
 </html>

@@ -1,13 +1,16 @@
-document.addEventListener('DOMContentLoaded', function ()
+let tags = new Set();
+let tagContainer, tagInput, tagHiddenInput, tagTemplate;
+
+export function init()
 {
-    const tagContainer = document.getElementById('tags-container');
-    const tagHiddenInput = document.getElementById('tag-hidden-input');
-    const tagInput = document.getElementById('tag-input');
-    const tags = new Set();
+    tagContainer = document.getElementById('tags-container');
+    tagInput = document.getElementById('tag-input');
+    tagHiddenInput = document.getElementById('tag-hidden-input');
+    tagTemplate = document.getElementById('tag-template');
 
-    if (!tagContainer || !tagInput || !tagHiddenInput) return;
+    if (!tagContainer || !tagInput || !tagHiddenInput || !tagTemplate) return;
 
-    // 게시글 수정시 서버에서 전송된 tagHiddenInput 태그 정보를 tagInput에 등록
+    // 기존 태그 로드 (수정 시)
     if (tagHiddenInput.value)
     {
         tagHiddenInput.value
@@ -17,81 +20,82 @@ document.addEventListener('DOMContentLoaded', function ()
             .forEach(addTag);
     }
 
-    // tagHiddenInput 업데이트
-    function updateHiddenInput()
+    // 엔터키
+    tagInput.addEventListener('keydown', (e) =>
     {
-        const tagsArray = Array.from(tags);
-        tagHiddenInput.value = tagsArray.length > 0 ? tagsArray.join(',') : '';
-    }
-
-    // 엔터를 누를 때, 태그 정보 입력
-    tagInput.addEventListener('keydown', function (event)
-    {
-        if (event.key === 'Enter')
+        if (e.key === 'Enter')
         {
-            event.preventDefault();
+            e.preventDefault();
             handleTagInput(tagInput.value);
         }
     });
 
-    // 스페이스바를 누를 때, 태그 정보 입력
-    tagInput.addEventListener('input', function (event)
+    // 스페이스바
+    tagInput.addEventListener('input', (e) =>
     {
-        const value = event.target.value;
-        if (value.includes(' '))
+        if (e.target.value.includes(' '))
         {
-            handleTagInput(value.replace(' ', ''));
+            handleTagInput(e.target.value.replace(' ', ''));
         }
     });
 
-    // 태그 입력 처리
-    function handleTagInput(tagText)
+    // 컨테이너 클릭 → input 포커스
+    tagContainer.addEventListener('click', (e) =>
     {
-        tagText = tagText.trim();
-
-        if (tagText === '') return;
-        if (tags.has(tagText))
+        if (e.target === tagContainer)
         {
-            alert('이미 존재하는 태그입니다.');
-            return;
+            tagInput.focus();
         }
-        addTag(tagText);
-        tagInput.value = '';
-    }
-
-    tagContainer.addEventListener('click', () =>
-    {
-        tagInput.focus();
     });
 
-    function addTag(tagText)
+    // x버튼 클릭 (이벤트 위임)
+    tagContainer.addEventListener('click', (e) =>
     {
-        tags.add(tagText);
-
-        // 태그 뱃지 생성
-        const tag = document.createElement('span');
-        tag.classList.add('inline-flex', 'items-center', 'gap-2', 'px-3', 'py-1', 'mr-1', 'mb-1', 'text-sm', 'font-medium', 'text-white', 'bg-blue-600', 'rounded-full');
-        tag.textContent = tagText;
-
-        // 태그 삭제 버튼 생성
-        const removeButton = document.createElement('button');
-        removeButton.type = 'button';
-        removeButton.classList.add('inline-flex', 'items-center', 'justify-center', 'w-4', 'h-4', 'text-white', 'hover:text-gray-200', 'focus:outline-none', 'transition-colors');
-        removeButton.setAttribute('aria-label', 'Remove');
-        removeButton.innerHTML = '×';
-
-        // 삭제 버튼 클릭 시
-        removeButton.onclick = () =>
+        if (e.target.matches('.tag-badge button'))
         {
-            tags.delete(tagText);  // Set에서 제거
-            tag.remove();       // DOM에서 제거
-            updateHiddenInput();// hidden input 업데이트
-        };
+            const tag = e.target.closest('.tag-badge');
+            tags.delete(tag.dataset.tag);
+            tag.remove();
+            updateHiddenInput();
+        }
+    });
+}
 
-        tag.appendChild(removeButton);
-        tagContainer.insertBefore(tag, tagInput);
-        tagInput.value = '';
+function handleTagInput(text)
+{
+    text = text.trim();
+    if (!isValidTag(text)) return;
 
-        updateHiddenInput();
+    addTag(text);
+    tagInput.value = '';
+}
+
+function isValidTag(text)
+{
+    if (text === '') return false;
+    if (tags.has(text))
+    {
+        alert('이미 존재하는 태그입니다.');
+        return false;
     }
-});
+    return true;
+}
+
+function addTag(tagText)
+{
+    tags.add(tagText);
+
+    const clone = tagTemplate.content.cloneNode(true);
+    const badge = clone.querySelector('.tag-badge');
+
+    badge.dataset.tag = tagText;
+    badge.querySelector('.tag-text').textContent = tagText;
+
+    tagContainer.insertBefore(badge, tagInput);
+    updateHiddenInput();
+}
+
+function updateHiddenInput()
+{
+    tagHiddenInput.value = [...tags].join(',');
+}
