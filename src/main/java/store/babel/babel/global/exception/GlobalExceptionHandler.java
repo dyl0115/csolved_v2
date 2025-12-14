@@ -14,7 +14,7 @@ import java.util.Map;
 public class GlobalExceptionHandler
 {
     @ExceptionHandler(BabelException.class)
-    public ResponseEntity<ExceptionResponse> handleCsovledException(BabelException exception)
+    public ResponseEntity<ExceptionResponse> handleBabelException(BabelException exception)
     {
         ExceptionResponse exceptionResponse
                 = ExceptionResponse.from(exception.getCode());

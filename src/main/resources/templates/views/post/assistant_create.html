@@ -271,7 +271,7 @@
     </template>
     
     <script type="module">
-        import * as aiPostUI from "/js/post/ui/aiPostUI.js";
+        import * as postAssistantUI from "/js/post/ui/postAssistantUI.js";
         import * as aiChatUI from "/js/chat/ui/aiChatUI.js";
         import * as navigationUI from "/js/global/utils/navigationUI.js";
         import * as quillUI from "/js/editor/quill.js";
@@ -279,9 +279,9 @@
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
+            postAssistantUI.init();
             navigationUI.init();
             quillUI.init('#editor');
-            aiPostUI.init();
             aiChatUI.init();
             tagUI.init();
             lucide.createIcons();

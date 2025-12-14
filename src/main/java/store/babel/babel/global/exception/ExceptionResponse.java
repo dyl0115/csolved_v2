@@ -14,9 +14,9 @@ public class ExceptionResponse
     String message;
     HttpStatus status;
 
-    public static ExceptionResponse from(ExceptionCode exceptionCode)
+    public static ExceptionResponse from(ExceptionCode code)
     {
-        return new ExceptionResponse(exceptionCode.getCode(), exceptionCode.getMessage(), exceptionCode.getStatus());
+        return new ExceptionResponse(code.getCode(), code.getMessage(), code.getStatus());
     }
 
     public static ExceptionResponse from(IOException exception)
