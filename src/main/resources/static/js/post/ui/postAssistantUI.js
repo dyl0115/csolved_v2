@@ -5,7 +5,7 @@ let isResizing = false;
 
 export function init()
 {
-    document.querySelector('.post-submit-btn')
+    document.getElementById('post-submit-btn')
         ?.addEventListener('click', postSubmit);
 
     document.getElementById('resizer')

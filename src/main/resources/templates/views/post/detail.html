@@ -43,7 +43,7 @@
                                         
                                         <!-- 드롭다운 메뉴 -->
                                         <div id="post-menu"
-                                             class="post-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                             class="toggle-menu post-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                                             <div class="py-1">
                                                 <!-- 수정하기 (작성자만) -->
                                                 <a th:if="${post.authorId == user.id}"
@@ -161,10 +161,9 @@
                             </span>
                         </button>
                         
-                        <!-- 답변하기 버튼 -->
-                        <button class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition shadow-sm"
-                                id="toggle-answer-form"
-                                th:onclick="|toggleForm('answer-form-card')|">
+                        <!-- 댓글 작성 버튼 -->
+                        <button id="toggle-answer-create-form"
+                                class="inline-flex items-center space-x-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition shadow-sm">
                             <i data-lucide="message-square"
                                class="w-5 h-5">
                             </i>
@@ -193,8 +192,8 @@
                     </div>
                     
                     <!-- 댓글 작성 폼 -->
-                    <div class="bg-white rounded-lg shadow-md mb-6 hidden"
-                         id="answer-form-card">
+                    <div id="answer-create-form"
+                         class="toggle-form bg-white rounded-lg shadow-md mb-6 hidden">
                         <div class="p-4">
                             <form id="answer-form"
                                   class="flex flex-col">
@@ -223,9 +222,9 @@
                                             익명으로 댓글 달기
                                         </label>
                                     </div>
-                                    <button type="button"
-                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-                                            onclick="submitAnswer()">
+                                    <button id="answer-create-btn"
+                                            type="button"
+                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                                         <i data-lucide="send" class="w-4 h-4"></i>
                                         <span>등록</span>
                                     </button>
@@ -249,8 +248,9 @@
                                 </div>
                                 
                                 <!-- 댓글과 대댓글 -->
-                                <div class="flex gap-3 mb-6 pb-6 border-gray-200 border-l-2 border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
-                                     th:each="answer:${answers}">
+                                <div class="answer-container flex gap-3 mb-6 pb-6 border-gray-200 border-l-2 border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
+                                     th:each="answer:${answers}"
+                                     th:data-answer-id="${answer.id}">
                                     
                                     <!-- 댓쓴이 프로필 -->
                                     <div class="flex-shrink-0 ml-4">
@@ -300,12 +300,10 @@
                                             </div>
                                             
                                             <!-- 댓글 메뉴 (드롭다운) -->
-                                            <div class="relative flex-shrink-0">
+                                            <div class="answer-menu-container relative flex-shrink-0">
                                                 <!-- 댓글 메뉴 버튼 -->
                                                 <button th:if="${answer.deletedAt == null}"
-                                                        th:onclick="|toggleMenu('answer-menu' + ${answer.id})|"
-                                                        class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
-                                                        id="answer-menu-button">
+                                                        class="answer-menu-btn flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150">
                                                     <i data-lucide="ellipsis"
                                                        class="w-5 h-5">
                                                     </i>
@@ -313,12 +311,11 @@
                                                 
                                                 <!-- 댓글 드롭다운 메뉴 -->
                                                 <div th:id="answer-menu + ${answer.id}"
-                                                     class="answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                     class="toggle-menu answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                                                     <div class="py-1">
                                                         <!-- 댓글 삭제하기 (작성자만) -->
                                                         <button th:if="${answer.authorId == user.id}"
-                                                                th:onclick="|deleteAnswer(${answer.id})|"
-                                                                class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                                class="answer-delete-btn w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
                                                             <i data-lucide="trash-2"
                                                                class="w-4 h-4">
                                                             </i>
@@ -351,19 +348,18 @@
                                         </div>
                                         
                                         <!-- 댓글 액션 버튼들 -->
-                                        <div class="flex items-center gap-2 ">
+                                        <div class="flex items-center gap-2"
+                                             th:classappend="${answer.deletedAt != null} ? 'pointer-events-none opacity-50 select-none' : ''">
                                             <!-- 좋아요 버튼 -->
-                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
-                                                    th:data-answer-id="${answer.id}"
-                                                    onclick="addAnswerLike(this)">
+                                            <button class="answer-like-btn group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
+                                                    th:data-answer-id="${answer.id}">
                                                 <i data-lucide="heart"
                                                    class="w-4 h-4 group-hover:fill-red-500 transition-all duration-200">
                                                 </i>
                                                 <span class="font-medium">
                                                     좋아요
                                                 </span>
-                                                <span th:id="|answer-like-count${answer.id}|"
-                                                      class="font-medium"
+                                                <span class="answer-like-count font-medium"
                                                       th:text="${answer.likes}">
                                                     12
                                                 </span>
@@ -386,7 +382,7 @@
                                         </div>
                                         
                                         <!-- 대댓글 작성 폼 -->
-                                        <div class="bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
+                                        <div class="toggle-form bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
                                              th:id="|comment-form${answer.id}|">
                                             <form class="flex flex-col">
                                                 <!-- 게시글 아이디  -->
@@ -493,7 +489,7 @@
                                                         
                                                         <!-- 댓글 드롭다운 메뉴 -->
                                                         <div th:id="comment-menu + ${comment.id}"
-                                                             class="comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                             class="toggle-menu comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                                                             <div class="py-1">
                                                                 <!-- 댓글 삭제하기 (작성자만) -->
                                                                 <button th:if="${comment.authorId == user.id}"
@@ -591,11 +587,13 @@
         import * as navigationUI from '/js/global/utils/navigationUI.js';
         import * as timeUI from '/js/global/utils/timeUI.js';
         import * as postDetailUI from '/js/post/ui/postDetailUI.js';
+        import * as answerUI from '/js/answer/ui/answerUI.js';
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
             postDetailUI.init();
             navigationUI.init();
+            answerUI.init();
             timeUI.init();
             lucide.createIcons();
         });
@@ -669,85 +667,10 @@
             }
         }
 
-        async function submitAnswer()
-        {
-            const postId = document.getElementById('postId').textContent;
-            const createAnswerUrl = `/api/answer`;
-            const getPostRedirectUrl = `/post/${postId}?skipView=true`;
-            const answerAuthorId = document.getElementById('answer-author-id').value;
-            const answerAnonymous = document.getElementById('answer-anonymous').checked;
-            const answerContent = document.getElementById('answer-content').value;
-            const answerError = document.getElementById('answer-error');
-
-            const request = {
-                postId: parseInt(postId),
-                authorId: parseInt(answerAuthorId),
-                anonymous: answerAnonymous,
-                content: answerContent,
-            }
-
-            try
-            {
-                const response = await fetch(createAnswerUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(request)
-                });
-
-                if (response.ok)
-                {
-                    window.location.href = getPostRedirectUrl;
-                } else
-                {
-                    const errorData = await response.json();
-                    answerError.classList.toggle('hidden');
-                    answerError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('서버와의 통신 중 오류가 발생했습니다.');
-            }
-        }
-
         async function deleteComment(commentId)
         {
             const postId = document.getElementById('postId').textContent;
             const requestUrl = `/api/comment/${commentId}`;
-            const redirectUrl = `/post/${postId}?skipView=true`;
-
-            if (confirm('댓글을 삭제하시겠습니까?'))
-            {
-                try
-                {
-                    const response = await fetch(requestUrl, {
-                        method: 'DELETE'
-                    });
-
-                    if (response.ok)
-                    {
-                        window.location.href = redirectUrl;
-                    } else
-                    {
-                        const errorData = await response.json();
-                        alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
-                    }
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                    alert('서버와의 통신 중 오류가 발생했습니다.');
-                }
-            }
-        }
-
-        async function deleteAnswer(answerId)
-        {
-            const postId = document.getElementById('postId').textContent;
-            const requestUrl = `/api/answer/${answerId}`;
             const redirectUrl = `/post/${postId}?skipView=true`;
 
             if (confirm('댓글을 삭제하시겠습니까?'))
@@ -805,20 +728,5 @@
                 alert('서버와의 통신 중 오류가 발생했습니다.');
             }
         }
-
-        // function toggleMenu(menuId)
-        // {
-        //     const menu = document.getElementById(menuId);
-        //
-        //     if (uiState.openMenu && uiState.openMenu !== menu)
-        //     {
-        //         uiState.openMenu.classList.add('hidden');
-        //     }
-        //
-        //     menu.classList.toggle('hidden');
-        //     uiState.openMenu = menu.classList.contains('hidden') ? null : menu;
-        //
-        //     lucide.createIcons();
-        // }
     </script>
 </html>

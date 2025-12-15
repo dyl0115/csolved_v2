@@ -15,8 +15,7 @@ export function init()
     document.getElementById('post-menu-btn')
         ?.addEventListener('click', togglePostMenu);
 
-    document.addEventListener('click', (event) =>
-        closeAllMenu(event));
+    document.addEventListener('click', closeAllToggleMenu);
 }
 
 async function deletePost()
@@ -89,17 +88,14 @@ async function toggleBookmark()
 function togglePostMenu(event)
 {
     event.stopPropagation();
+    closeAllToggleMenu();
+
     document.getElementById('post-menu')
         .classList.toggle('hidden');
 }
 
-function closeAllMenu(event)
+function closeAllToggleMenu()
 {
-    const postMenuBtn = document.getElementById('post-menu-btn');
-    const postMenu = document.getElementById('post-menu');
-
-    if (!postMenu.contains(event.target) && !postMenuBtn.contains(event.target))
-    {
-        postMenu.classList.add('hidden');
-    }
+    document.querySelectorAll('.toggle-menu')
+        .forEach(menu => menu.classList.add('hidden'));
 }
