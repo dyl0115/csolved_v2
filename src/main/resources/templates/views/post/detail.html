@@ -18,7 +18,7 @@
                             <div class="mb-6">
                                 
                                 <div class="hidden"
-                                     id="postId"
+                                     id="post-id"
                                      th:text="${post.id}">
                                     게시글 아이디
                                 </div>
@@ -366,8 +366,7 @@
                                             </button>
                                             
                                             <!-- 댓글쓰기 버튼 -->
-                                            <button class="group inline-flex items-center gap-1.5 px-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200"
-                                                    th:onclick="|toggleForm('comment-form'+${answer.id})|">
+                                            <button class="toggle-comment-create-btn group inline-flex items-center gap-1.5 px-1.5 py-1.5 text-sm text-gray-600 hover:text-blue-500 transition-colors duration-200">
                                                 <i data-lucide="message-square"
                                                    class="w-4 h-4 group-hover:fill-blue-500 transition-colors duration-200">
                                                 </i>
@@ -382,36 +381,30 @@
                                         </div>
                                         
                                         <!-- 대댓글 작성 폼 -->
-                                        <div class="toggle-form bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full"
-                                             th:id="|comment-form${answer.id}|">
+                                        <div class="toggle-form comment-create-form bg-gray-50 rounded-lg p-4 mt-3 hidden comment-form w-full">
                                             <form class="flex flex-col">
                                                 <!-- 게시글 아이디  -->
-                                                <input th:id="|comment-post${answer.id}|"
-                                                       type="hidden"
+                                                <input class="comment-create-post-id hidden"
                                                        th:name="postId"
                                                        th:value="${postId}"/>
                                                 
                                                 <!-- 답변 아이디 -->
-                                                <input th:id="|comment-answer${answer.id}|"
-                                                       type="hidden"
+                                                <input class="comment-create-answer-id hidden"
                                                        th:name="answerId"
                                                        th:value="${answer.id}"/>
                                                 
                                                 <!-- 답변자 아이디 -->
-                                                <input th:id="|comment-author${answer.id}|"
-                                                       type="hidden"
+                                                <input class="comment-create-author-id hidden"
                                                        th:name="authorId"
                                                        th:value="${user.id}"/>
                                                 
                                                 <!-- 대댓글 내용 -->
                                                 <textarea
-                                                        th:id="|comment-content${answer.id}|"
-                                                        class="small-editor w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
+                                                        class="comment-create-content w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 mb-3"
                                                         rows="3"
                                                         placeholder="답변에 대한 댓글을 작성하세요!"></textarea>
                                                 
-                                                <div th:id="|comment-error${answer.id}|"
-                                                     class="text-red-500 text-sm mb-3 hidden">
+                                                <div class="comment-create-error text-red-500 text-sm mb-3 hidden">
                                                     대댓글 오류 메시지
                                                 </div>
                                                 
@@ -419,7 +412,7 @@
                                                     <!-- 대댓글 익명/실명 선택-->
                                                     <div class="flex items-center">
                                                         <input th:id="|comment-anonymous${answer.id}|"
-                                                               class="w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
+                                                               class="comment-create-anonymous w-4 h-4 text-gray-800 border-gray-300 rounded focus:ring-gray-800"
                                                                type="checkbox">
                                                         <label class="ml-2 text-sm text-gray-700"
                                                                th:for="|comment-anonymous${answer.id}|">
@@ -429,8 +422,7 @@
                                                     
                                                     <!-- 대댓글 등록 버튼 -->
                                                     <button type="button"
-                                                            class="inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-                                                            th:onclick="|submitComment(${answer.id})|">
+                                                            class="comment-create-btn inline-flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
                                                         <i data-lucide="send" class="w-4 h-4"></i>
                                                         <span>등록</span>
                                                     </button>
@@ -439,8 +431,9 @@
                                         </div>
                                         
                                         <!-- 대댓글 리스트 -->
-                                        <div class="flex gap-3 mt-4 pb-4 pl-6 border-gray-200 border-l-2 border-gray-200"
-                                             th:each="comment:${answer.comments}">
+                                        <div class="comment-container flex gap-3 mt-4 pb-4 pl-6 border-gray-200 border-l-2 border-gray-200"
+                                             th:each="comment:${answer.comments}"
+                                             th:data-comment-id="${comment.id}">
                                             
                                             <!-- 대댓쓴이 프로필 -->
                                             <div class="flex-shrink-0">
@@ -477,24 +470,20 @@
                                                     </div>
                                                     
                                                     <!-- 대댓글 메뉴 (드롭다운) -->
-                                                    <div class="relative flex-shrink-0">
+                                                    <div class="comment-menu-container relative flex-shrink-0">
                                                         <!-- 대댓글 메뉴 버튼 -->
-                                                        <button th:onclick="|toggleMenu('comment-menu' + ${comment.id})|"
-                                                                class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
-                                                                id="comment-menu-button">
+                                                        <button class="comment-menu-btn flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150">
                                                             <i data-lucide="ellipsis"
                                                                class="w-5 h-5">
                                                             </i>
                                                         </button>
                                                         
                                                         <!-- 댓글 드롭다운 메뉴 -->
-                                                        <div th:id="comment-menu + ${comment.id}"
-                                                             class="toggle-menu comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                        <div class="toggle-menu comment-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                                                             <div class="py-1">
                                                                 <!-- 댓글 삭제하기 (작성자만) -->
                                                                 <button th:if="${comment.authorId == user.id}"
-                                                                        th:onclick="|deleteComment(${comment.id})|"
-                                                                        class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                                        class="comment-delete-btn w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
                                                                     <i data-lucide="trash-2"
                                                                        class="w-4 h-4">
                                                                     </i>
@@ -582,151 +571,21 @@
         <div th:replace="~{/fragments/report-modal :: reportModalScript}"></div>
     </body>
     
-    
     <script type="module">
         import * as navigationUI from '/js/global/utils/navigationUI.js';
         import * as timeUI from '/js/global/utils/timeUI.js';
         import * as postDetailUI from '/js/post/ui/postDetailUI.js';
         import * as answerUI from '/js/answer/ui/answerUI.js';
+        import * as commentUI from '/js/comment/ui/commentUI.js';
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
             postDetailUI.init();
             navigationUI.init();
-            answerUI.init();
+            answerUI.init('post');
+            commentUI.init('post');
             timeUI.init();
             lucide.createIcons();
         });
-    
-    </script>
-    
-    <script th:inline="javascript">
-
-        const uiState = {
-            openMenu: null,
-            openForm: null,
-        }
-
-        function toggleForm(formId)
-        {
-            const form = document.getElementById(formId);
-
-            if (uiState.openForm && uiState.openForm !== form)
-            {
-                uiState.openForm.classList.add('hidden');
-            }
-
-            form.classList.toggle('hidden');
-            uiState.openForm = form.classList.contains('hidden') ? null : form;
-
-            lucide.createIcons();
-        }
-
-        async function submitComment(answerId)
-        {
-            const postId = document.getElementById('postId').textContent;
-            const createCommentUrl = `/api/comment`;
-            const getPostRedirectUrl = `/post/${postId}?skipView=true`;
-            const commentAuthorId = document.getElementById(`comment-author${answerId}`).value;
-            const commentContent = document.getElementById(`comment-content${answerId}`).value;
-            const commentAnonymous = document.getElementById(`comment-anonymous${answerId}`).checked;
-            const commentError = document.getElementById(`comment-error${answerId}`);
-
-            const request = {
-                postId: parseInt(postId),
-                answerId: parseInt(answerId),
-                authorId: parseInt(commentAuthorId),
-                content: commentContent,
-                anonymous: commentAnonymous
-            }
-
-            try
-            {
-                const response = await fetch(createCommentUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(request)
-                });
-
-                if (response.ok)
-                {
-                    window.location.href = getPostRedirectUrl;
-                } else
-                {
-                    const errorData = await response.json();
-                    commentError.classList.toggle('hidden');
-                    commentError.textContent = errorData.message || '알 수 없는 오류가 발생했습니다.';
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('서버와의 통신 중 오류가 발생했습니다.');
-            }
-        }
-
-        async function deleteComment(commentId)
-        {
-            const postId = document.getElementById('postId').textContent;
-            const requestUrl = `/api/comment/${commentId}`;
-            const redirectUrl = `/post/${postId}?skipView=true`;
-
-            if (confirm('댓글을 삭제하시겠습니까?'))
-            {
-                try
-                {
-                    const response = await fetch(requestUrl, {
-                        method: 'DELETE'
-                    });
-
-                    if (response.ok)
-                    {
-                        window.location.href = redirectUrl;
-                    } else
-                    {
-                        const errorData = await response.json();
-                        alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
-                    }
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                    alert('서버와의 통신 중 오류가 발생했습니다.');
-                }
-            }
-        }
-
-        async function addAnswerLike(element)
-        {
-            const answerId = element.dataset.answerId;
-            const likeCount = document.getElementById(`answer-like-count${answerId}`);
-            let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
-
-            try
-            {
-                const response = await fetch(`/api/answer/${answerId}/likes`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (response.ok)
-                {
-                    likeCount.textContent = ++likeCountInt;
-                } else
-                {
-                    const errorData = await response.json();
-                    alert(errorData.message || '알 수 없는 오류가 발생했습니다.');
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('서버와의 통신 중 오류가 발생했습니다.');
-            }
-        }
     </script>
 </html>

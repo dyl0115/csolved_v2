@@ -3,15 +3,12 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>공지사항 게시판</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
+        <title>공지사항</title>
     </head>
     
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
         
         <!-- 게시판 배너 -->
@@ -286,16 +283,23 @@
         </div>
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
-    <script type="module">
-        import * as navigationUI from '/js/common/navigationUI.js';
-
-        navigationUI.init();
-
-        lucide.createIcons();
-    </script>
     
-    <script src="/js/global/utils/timeUI.js"></script>
-    <script src="/js/global/utils/paginationUI.js"></script>
-    <script src="/js/global/utils/sortUI.js"></script>
+    <script type="module">
+        import * as navigationUI from '/js/global/utils/navigationUI.js';
+        import * as paginationUI from '/js/global/utils/paginationUI.js';
+        import * as sortUI from '/js/global/utils/sortUI.js';
+        import * as timeUI from '/js/global/utils/timeUI.js';
+
+        document.addEventListener('DOMContentLoaded', async function ()
+        {
+            navigationUI.init();
+            paginationUI.init();
+            sortUI.init();
+            timeUI.init();
+
+            lucide.createIcons();
+        });
+    
+    </script>
 </html>
 

@@ -88,10 +88,13 @@ async function toggleBookmark()
 function togglePostMenu(event)
 {
     event.stopPropagation();
+
+    const postMenu = document.getElementById('post-menu');
+    const isHidden = postMenu.classList.contains('hidden');
+
     closeAllToggleMenu();
 
-    document.getElementById('post-menu')
-        .classList.toggle('hidden');
+    if (isHidden) postMenu.classList.remove('hidden');
 }
 
 function closeAllToggleMenu()

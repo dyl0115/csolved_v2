@@ -1,8 +1,14 @@
 import * as answerService from '../service/answerService.js';
 import {handleError} from "../../global/error/errorHandler.js";
 
-export function init()
+const target = {
+    type: null,
+}
+
+export function init(targetType)
 {
+    target.type = targetType;
+
     document.getElementById('answer-create-btn')
         ?.addEventListener('click', createAnswer);
 
@@ -23,13 +29,12 @@ export function init()
 
 function toggleAnswerCreateForm()
 {
-    const form = document.getElementById('answer-create-form');
-    const isHidden = form.classList.contains('hidden');
+    const answerCreateForm = document.getElementById('answer-create-form');
+    const isHidden = answerCreateForm.classList.contains('hidden');
 
     closeAllToggleForm();
 
-    // 원래 닫혀있었으면 열기
-    if (isHidden) form.classList.remove('hidden');
+    if (isHidden) answerCreateForm.classList.remove('hidden');
 }
 
 function closeAllToggleForm()
@@ -42,10 +47,13 @@ function toggleAnswerMenu(event)
 {
     event.stopPropagation();
 
-    closeAllToggleMenu();
     const menuContainer = event.currentTarget.closest('.answer-menu-container');
     const menu = menuContainer.querySelector('.answer-menu');
-    menu.classList.toggle('hidden');
+    const isHidden = menu.classList.contains('hidden');
+
+    closeAllToggleMenu();
+
+    if (isHidden) menu.classList.remove('hidden');
 }
 
 function closeAllToggleMenu()
@@ -56,11 +64,11 @@ function closeAllToggleMenu()
 
 async function createAnswer()
 {
-    const postId = document.getElementById('postId').textContent;
+    const targetId = document.getElementById('post-id').textContent;
     const answerError = document.getElementById('answer-error');
 
     const form = {
-        postId: document.getElementById('postId').textContent,
+        postId: targetId,
         answerAuthorId: document.getElementById('answer-author-id').value,
         answerAnonymous: document.getElementById('answer-anonymous').checked,
         answerContent: document.getElementById('answer-content').value
@@ -69,7 +77,7 @@ async function createAnswer()
     try
     {
         await answerService.createAnswer(form);
-        window.location.href = `/post/${postId}?skipView=true`;
+        window.location.href = `/${target.type}/${targetId}?skipView=true`;
     }
     catch (error)
     {
@@ -80,7 +88,7 @@ async function createAnswer()
 
 async function deleteAnswer(event)
 {
-    const postId = document.getElementById('postId').textContent;
+    const targetId = document.getElementById('post-id').textContent;
     const answerContainer = event.currentTarget.closest('.answer-container');
     const answerId = answerContainer.dataset.answerId;
 
@@ -89,7 +97,7 @@ async function deleteAnswer(event)
         try
         {
             await answerService.deleteAnswer(answerId);
-            window.location.href = `/post/${postId}?skipView=true`;
+            window.location.href = `/${target.type}/${targetId}?skipView=true`;
         }
         catch (error)
         {

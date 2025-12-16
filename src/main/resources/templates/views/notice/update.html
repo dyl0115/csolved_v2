@@ -3,19 +3,16 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>게시글 수정</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
-        <!-- Quill Editor CSS -->
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet"/>
-        <!-- Quill Resize CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.css" rel="stylesheet">
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/quill-resize-module@2.0.8/dist/resize.min.css" rel="stylesheet">
+        <title>게시글 수정</title>
     </head>
     
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
         
         <div class="max-w-5xl mx-auto py-8 px-4">
@@ -124,8 +121,7 @@
                             <i data-lucide="x" class="w-4 h-4"></i>
                             <span>취소</span>
                         </button>
-                        <button
-                                onclick="updateNotice()"
+                        <button id="notice-update-btn"
                                 class="flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
                             <i data-lucide="check" class="w-4 h-4"></i>
                             <span>수정완료</span>
@@ -134,78 +130,22 @@
                 </div>
             </div>
         </div>
-        <!-- 푸터 -->
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
     </body>
     
     <script type="module">
-        import * as navigationUI from '/js/common/navigationUI.js';
-
-        navigationUI.init();
-
-        lucide.createIcons();
-    </script>
-    
-    <script th:inline="javascript">
+        import * as navigationUI from '/js/global/utils/navigationUI.js';
+        import * as editorUI from '/js/editor/quill.js';
+        import * as noticeUI from '/js/notice/ui/noticeCreateUpdateUI.js';
+        import * as tagUI from '/js/global/utils/tagUI.js';
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            createEditor('#editor');
+            navigationUI.init();
+            editorUI.init('#editor');
+            noticeUI.init();
+            tagUI.init();
             lucide.createIcons();
         });
-
-        async function updateNotice()
-        {
-            const categoryId = document.getElementById('categoryId').value;
-            const noticeId = document.getElementById('noticeId').value;
-            const title = document.getElementById('title').value;
-            const authorId = document.getElementById('authorId').value;
-            const anonymous = document.getElementById('anonymousToggle').checked;
-            const content = document.getElementById('content').value;
-            const requestUrl = `/api/notice`;
-            const redirectUrl = `/notice/${noticeId}`;
-
-            const request = {
-                categoryId: categoryId,
-                id: noticeId,
-                title: title,
-                authorId: parseInt(authorId),
-                anonymous: anonymous,
-                content: content
-            };
-
-            try
-            {
-                const response = await fetch(requestUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(request)
-                });
-
-                if (response.ok)
-                {
-                    alert("수정이 완료되었습니다.");
-                    window.location.href = redirectUrl;
-                } else
-                {
-                    const errorData = await response.json();
-                    alert('수정 실패: ' + (errorData.message || '알 수 없는 오류가 발생했습니다.'));
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('서버와의 통신 중 오류가 발생했습니다.');
-            }
-        }
     </script>
-    <!-- Quill Editor -->
-    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-    <script src="/js/editor/quill.js"></script>
-    <script src="/js/editor/quill-resize.js"></script>
-    
-    <!-- Page Utils -->
-    <script src="/js/global/utils/tagUI.js"></script>
 </html>
