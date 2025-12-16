@@ -63,7 +63,7 @@ public class UserActivityController
     @LoginRequest
     @GetMapping("/bookmark")
     public String getBookmarksAndPage(@LoginUser User user,
-                                      @PageInfo(type = "bookmarkPage") Long pageNumber,
+                                      @PageInfo Long pageNumber,
                                       Model model)
     {
         Long bookmarkCount = bookmarkService.countBookmarks(user.getId());
@@ -79,7 +79,7 @@ public class UserActivityController
     @LoginRequest
     @GetMapping("/myPost")
     public String getUserPosts(@LoginUser User user,
-                               @PageInfo(type = "myPostPage") Long myPostPage,
+                               @PageInfo Long myPostPage,
                                Model model)
     {
         Long myPostCount = postService.countMyPosts(user.getId());
@@ -95,7 +95,7 @@ public class UserActivityController
     @LoginRequest
     @GetMapping("/replied")
     public String getRepliedPost(@LoginUser User user,
-                                 @PageInfo(type = "repliedPage") Long repliedPage,
+                                 @PageInfo Long repliedPage,
                                  Model model)
     {
         Long repliedCount = postService.countAnsweredPosts(user.getId());

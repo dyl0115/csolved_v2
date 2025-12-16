@@ -3,15 +3,12 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>내 활동</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
+        <title>내 활동</title>
     </head>
     
     <body class="bg-gray-50">
-        <!-- 네비게이션 -->
         <div th:replace="~{/fragments/navigation :: navigation(${user})}"></div>
         
         <!-- 페이지 배너 -->
@@ -28,18 +25,18 @@
         <!-- 메인 컨텐츠 -->
         <div class="container mx-auto px-4 py-8">
             <!-- 탭 네비게이션 -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+            <div id="activity-tab-navigation"
+                 class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
                 <ul class="flex border-b border-gray-200" id="activityTab" role="tablist">
                     <li class="flex-1" role="presentation">
                         <button class="w-full flex items-center justify-center space-x-2 px-4 py-4 text-gray-800 font-semibold border-b-2 border-gray-800 bg-gray-50 transition hover:bg-gray-100"
                                 id="bookmarks-tab"
                                 data-bs-toggle="tab"
-                                data-bs-target="#bookmarkList"
+                                data-bs-target="#bookmark-list"
                                 type="button"
                                 role="tab"
                                 aria-controls="bookmarks"
-                                aria-selected="true"
-                                onclick="switchTab('bookmarks')">
+                                aria-selected="true">
                             <i data-lucide="bookmark" class="w-5 h-5"></i>
                             <span>북마크</span>
                         </button>
@@ -52,8 +49,7 @@
                                 type="button"
                                 role="tab"
                                 aria-controls="posts"
-                                aria-selected="false"
-                                onclick="switchTab('posts')">
+                                aria-selected="false">
                             <i data-lucide="file-text" class="w-5 h-5"></i>
                             <span>작성한 글</span>
                         </button>
@@ -66,8 +62,7 @@
                                 type="button"
                                 role="tab"
                                 aria-controls="comments"
-                                aria-selected="false"
-                                onclick="switchTab('comments')">
+                                aria-selected="false">
                             <i data-lucide="message-circle" class="w-5 h-5"></i>
                             <span>댓글 단 글</span>
                         </button>
@@ -79,7 +74,7 @@
             <div id="activityTabContent">
                 <!-- 북마크 탭 -->
                 <div class="block"
-                     id="bookmarkList"
+                     id="bookmark-list"
                      role="tabpanel"
                      aria-labelledby="bookmarks-tab"
                      th:fragment="bookmarkList"
@@ -155,49 +150,9 @@
                             </div>
                         </a>
                     </div>
-                    
-                    <!-- 페이지네이션 -->
-                    <div class="mt-8 flex items-center justify-center space-x-4">
-                        <!-- 이전 페이지 -->
-                        <button th:if="${bookmarkPagination.currentPage > 1}"
-                                th:onclick="|updateBookmarkList(${bookmarkPagination.currentPage - 1})|"
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            <span>이전</span>
-                        </button>
-                        <button th:unless="${bookmarkPagination.currentPage > 1}"
-                                disabled
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            <span>이전</span>
-                        </button>
-                        
-                        <!-- 페이지 입력 -->
-                        <div class="flex items-center space-x-2">
-                            <input type="number"
-                                   th:value="${bookmarkPagination.currentPage}"
-                                   th:min="1"
-                                   th:max="${bookmarkPagination.totalPages}"
-                                   onchange="updateBookmarkList(this.value)"
-                                   class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${bookmarkPagination.totalPages}">/ 10</span>
-                        </div>
-                        
-                        <!-- 다음 페이지 -->
-                        <button th:if="${bookmarkPagination.currentPage < bookmarkPagination.totalPages}"
-                                th:onclick="|updateBookmarkList(${bookmarkPagination.currentPage + 1})|"
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-                            <span>다음</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                        <button th:unless="${bookmarkPagination.currentPage < bookmarkPagination.totalPages}"
-                                disabled
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                            <span>다음</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                    </div>
+                    <div th:replace="~{/fragments/pagination::pagination('bookmark-pagination' ,${bookmarkPagination})}"></div>
                 </div>
+                
                 
                 <!-- 작성한 글 탭 -->
                 <div class="hidden"
@@ -278,47 +233,7 @@
                         </a>
                     </div>
                     
-                    <!-- 페이지네이션 -->
-                    <div class="mt-8 flex items-center justify-center space-x-4">
-                        <!-- 이전 페이지 -->
-                        <button th:if="${myPostPagination.currentPage > 1}"
-                                th:onclick="|updateUserPostList(${myPostPagination.currentPage - 1})|"
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            <span>이전</span>
-                        </button>
-                        <button th:unless="${myPostPagination.currentPage > 1}"
-                                disabled
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            <span>이전</span>
-                        </button>
-                        
-                        <!-- 페이지 입력 -->
-                        <div class="flex items-center space-x-2">
-                            <input type="number"
-                                   th:value="${myPostPagination.currentPage}"
-                                   th:min="1"
-                                   th:max="${myPostPagination.totalPages}"
-                                   onchange="updateUserPostList(this.value)"
-                                   class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${myPostPagination.totalPages}">/ 10</span>
-                        </div>
-                        
-                        <!-- 다음 페이지 -->
-                        <button th:if="${myPostPagination.currentPage < myPostPagination.totalPages}"
-                                th:onclick="|updateUserPostList(${myPostPagination.currentPage + 1})|"
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-                            <span>다음</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                        <button th:unless="${myPostPagination.currentPage < myPostPagination.totalPages}"
-                                disabled
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                            <span>다음</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                    </div>
+                    <div th:replace="~{/fragments/pagination::pagination('my-post-pagination',${myPostPagination})}"></div>
                 </div>
                 
                 <!-- 댓글 단 글 탭 -->
@@ -399,171 +314,21 @@
                             </div>
                         </a>
                     </div>
-                    
-                    <!-- 페이지네이션 -->
-                    <div class="mt-8 flex items-center justify-center space-x-4">
-                        <!-- 이전 페이지 -->
-                        <button th:if="${repliedPagination.currentPage > 1}"
-                                th:onclick="|updateRepliedPostList(${repliedPagination.currentPage - 1})|"
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            <span>이전</span>
-                        </button>
-                        <button th:unless="${repliedPagination.currentPage > 1}"
-                                disabled
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i>
-                            <span>이전</span>
-                        </button>
-                        
-                        <!-- 페이지 입력 -->
-                        <div class="flex items-center space-x-2">
-                            <input type="number"
-                                   th:value="${repliedPagination.currentPage}"
-                                   th:min="1"
-                                   th:max="${repliedPagination.totalPages}"
-                                   onchange="updateRepliedPostList(this.value)"
-                                   class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800">
-                            <span class="text-gray-500" th:text="'/ ' + ${repliedPagination.totalPages}">/ 10</span>
-                        </div>
-                        
-                        <!-- 다음 페이지 -->
-                        <button th:if="${repliedPagination.currentPage < repliedPagination.totalPages}"
-                                th:onclick="|updateRepliedPostList(${repliedPagination.currentPage + 1})|"
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition">
-                            <span>다음</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                        <button th:unless="${repliedPagination.currentPage < repliedPagination.totalPages}"
-                                disabled
-                                class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed">
-                            <span>다음</span>
-                            <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                        </button>
-                    </div>
+                    <div th:replace="~{/fragments/pagination::pagination('reply-pagination', ${repliedPagination})}"></div>
                 </div>
             </div>
         </div>
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
-        <script src="/js/global/utils/timeUI.js"></script>
         
         <script type="module">
-            import * as navigationUI from '/js/common/navigationUI.js';
+            import * as userActivityUI from '/js/user/ui/userActivityUI.js';
 
-            navigationUI.init();
-            lucide.createIcons();
-        </script>
-        
-        <script th:inline="javascript">
-
-            // 탭 전환 함수
-            function switchTab(tabName)
+            document.addEventListener('DOMContentLoaded', async function ()
             {
-                const tabs = document.querySelectorAll('[role="tab"]');
-                const tabPanes = document.querySelectorAll('[role="tabpanel"]');
+                userActivityUI.init();
 
-                // 모든 탭 비활성화
-                tabs.forEach(tab =>
-                {
-                    tab.classList.remove('border-gray-800', 'bg-gray-50', 'text-gray-800');
-                    tab.classList.add('border-transparent', 'text-gray-500');
-                    tab.setAttribute('aria-selected', 'false');
-                });
-
-                // 모든 탭 패널 숨기기
-                tabPanes.forEach(pane =>
-                {
-                    pane.classList.add('hidden');
-                    pane.classList.remove('block');
-                });
-
-                // 선택된 탭 활성화
-                if (tabName === 'bookmarks')
-                {
-                    document.getElementById('bookmarks-tab').classList.remove('border-transparent', 'text-gray-500');
-                    document.getElementById('bookmarks-tab').classList.add('border-gray-800', 'bg-gray-50', 'text-gray-800');
-                    document.getElementById('bookmarks-tab').setAttribute('aria-selected', 'true');
-                    document.getElementById('bookmarkList').classList.remove('hidden');
-                    document.getElementById('bookmarkList').classList.add('block');
-                } else if (tabName === 'posts')
-                {
-                    document.getElementById('posts-tab').classList.remove('border-transparent', 'text-gray-500');
-                    document.getElementById('posts-tab').classList.add('border-gray-800', 'bg-gray-50', 'text-gray-800');
-                    document.getElementById('posts-tab').setAttribute('aria-selected', 'true');
-                    document.getElementById('userPostList').classList.remove('hidden');
-                    document.getElementById('userPostList').classList.add('block');
-                } else if (tabName === 'comments')
-                {
-                    document.getElementById('comments-tab').classList.remove('border-transparent', 'text-gray-500');
-                    document.getElementById('comments-tab').classList.add('border-gray-800', 'bg-gray-50', 'text-gray-800');
-                    document.getElementById('comments-tab').setAttribute('aria-selected', 'true');
-                    document.getElementById('repliedPostList').classList.remove('hidden');
-                    document.getElementById('repliedPostList').classList.add('block');
-                }
-
-                // 아이콘 재초기화
-                updateAllTimeAgos();
                 lucide.createIcons();
-            }
-
-            async function updateBookmarkList(pageNumber)
-            {
-                try
-                {
-                    const response = await fetch(`/user/activity/bookmark?bookmarkPage=${pageNumber}`);
-                    document.getElementById('bookmarkList').outerHTML = await response.text();
-
-                    // 탭 상태 복원
-                    switchTab('bookmarks');
-
-                    // 아이콘 재초기화
-                    updateAllTimeAgos();
-                    lucide.createIcons();
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                }
-            }
-
-            async function updateUserPostList(pageNumber)
-            {
-                try
-                {
-                    const response = await fetch(`/user/activity/myPost?myPostPage=${pageNumber}`);
-                    document.getElementById('userPostList').outerHTML = await response.text();
-
-                    // 탭 상태 복원
-                    switchTab('posts');
-
-                    // 아이콘 재초기화
-                    lucide.createIcons();
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                }
-            }
-
-            async function updateRepliedPostList(pageNumber)
-            {
-                try
-                {
-                    const response = await fetch(`/user/activity/replied?repliedPage=${pageNumber}`);
-                    document.getElementById('repliedPostList').outerHTML = await response.text();
-
-                    // 탭 상태 복원
-                    switchTab('comments');
-
-                    // 아이콘 재초기화
-                    updateAllTimeAgos();
-                    lucide.createIcons();
-                }
-                catch (error)
-                {
-                    console.error('Error:', error);
-                }
-            }
+            });
         </script>
     </body>
 </html>

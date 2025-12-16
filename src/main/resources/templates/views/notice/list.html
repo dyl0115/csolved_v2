@@ -225,8 +225,7 @@
                         </a>
                     </div>
                     
-                    <!-- 페이지네이션 -->
-                    <div th:replace="~{/fragments/pagination::pagination(${pagination})}"></div>
+                    <div th:replace="~{/fragments/pagination::pagination('notice-pagination',${pagination})}"></div>
                 </div>
                 
                 <!-- 오른쪽 사이드바 -->
@@ -285,18 +284,11 @@
     </body>
     
     <script type="module">
-        import * as navigationUI from '/js/global/utils/navigationUI.js';
-        import * as paginationUI from '/js/global/utils/paginationUI.js';
-        import * as sortUI from '/js/global/utils/sortUI.js';
-        import * as timeUI from '/js/global/utils/timeUI.js';
+        import * as noticeListUI from '/js/notice/ui/noticeListUI.js';
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
-            navigationUI.init();
-            paginationUI.init();
-            sortUI.init();
-            timeUI.init();
-
+            noticeListUI.init();
             lucide.createIcons();
         });
     

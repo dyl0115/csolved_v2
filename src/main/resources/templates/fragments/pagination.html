@@ -1,49 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <div th:fragment="pagination(pagination)"
-         th:with="currentPage=${pagination.currentPage},
-                  maxPage=${pagination.totalPages}"
-         class="mt-8 flex items-center justify-center space-x-4">
+    <div th:fragment="pagination(paginationId, pagination)"
+         th:id="${paginationId}"
+         th:data-current-page="${pagination.currentPage}"
+         th:data-max-page="${pagination.totalPages}"
+         class="pagination mt-8 flex items-center justify-center space-x-4">
         
         <!-- 이전 페이지 -->
-        <button id="previous-page-btn"
-                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-                th:if="${currentPage > 1}"
-                th:value="${currentPage - 1}"
-                th:max="${maxPage}">
+        <button class="previous-btn flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                th:if="${pagination.currentPage > 1}">
             <i data-lucide="chevron-left" class="w-4 h-4"></i>
             <span>이전</span>
         </button>
         <button class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
                 disabled
-                th:unless="${currentPage > 1}">
+                th:unless="${pagination.currentPage > 1}">
             <i data-lucide="chevron-left" class="w-4 h-4"></i>
             <span>이전</span>
         </button>
         
         <!-- 페이지 입력 -->
         <div class="flex items-center space-x-2">
-            <input id="page-number-input"
-                   class="w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800"
+            <input class="number-input w-16 px-3 py-2 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-gray-800"
                    type="number"
-                   th:value="${currentPage}"
+                   th:value="${pagination.currentPage}"
                    th:min="1"
-                   th:max="${maxPage}">
-            <span class="text-gray-500" th:text="'/ ' + ${maxPage}">/ 10</span>
+                   th:max="${pagination.totalPages}">
+            <span class="text-gray-500" th:text="'/ ' + ${pagination.totalPages}">/ 10</span>
         </div>
         
         <!-- 다음 페이지 -->
-        <button id="next-page-btn"
-                class="flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
-                th:if="${currentPage < maxPage}"
-                th:value="${currentPage + 1}"
-                th:max="${maxPage}">
+        <button class="next-btn flex items-center space-x-2 px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition"
+                th:if="${pagination.currentPage < pagination.totalPages}"
+                th:max="${pagination.totalPages}">
             <span>다음</span>
             <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </button>
         <button class="flex items-center space-x-2 px-4 py-2 bg-gray-300 text-gray-500 rounded-lg cursor-not-allowed"
                 disabled
-                th:unless="${currentPage < maxPage}">
+                th:unless="${pagination.currentPage < pagination.totalPages}">
             <span>다음</span>
             <i data-lucide="chevron-right" class="w-4 h-4"></i>
         </button>
