@@ -5,71 +5,85 @@
 <mapper namespace="store.babel.babel.domain.user.mapper.UserMapper">
 
     <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
-        insert into users(email, password, nickname,
+        INSERT INTO users(email, password, nickname,
                           company, admin)
-        values (#{email}, #{password}, #{nickname},
+        VALUES (#{email}, #{password}, #{nickname},
                 #{company}, #{admin})
     </insert>
 
     <select id="findUserById">
-        select *
-        from users
-        where id = #{id}
-          and deleted_at is null
+        SELECT *
+        FROM users
+        WHERE id = #{id}
+          AND deleted_at IS NULL
     </select>
 
     <select id="findUserByEmail">
-        select *
-        from users
-        where email = #{email}
-          and deleted_at is null;
+        SELECT *
+        FROM users
+        WHERE email = #{email}
+          AND deleted_at IS NULL;
+    </select>
+
+    <select id="findPasswordById">
+        SELECT password
+        FROM users
+        WHERE id = #{id}
+          AND deleted_at IS NULL;
     </select>
 
     <select id="findPasswordByEmail">
-        select password
-        from users
-        where email = #{email}
-          and deleted_at is null;
+        SELECT password
+        FROM users
+        WHERE email = #{email}
+          AND deleted_at IS NULL;
     </select>
 
     <select id="getUserCount" resultType="long">
-        select count(*)
-        from users
-        where deleted_at is null
+        SELECT COUNT(*)
+        FROM users
+        WHERE deleted_at IS NULL
     </select>
 
     <select id="existsByEmail" resultType="boolean">
-        select exists(select 1
-                      from users
-                      where email = #{email});
+        SELECT EXISTS(SELECT 1
+                      FROM users
+                      WHERE email = #{email});
     </select>
 
     <select id="existsByNickname" resultType="boolean">
-        select exists(select 1
-                      from users
-                      where nickname = #{nickname}
-                        and deleted_at is null);
+        SELECT EXISTS(SELECT 1
+                      FROM users
+                      WHERE nickname = #{nickname}
+                        AND deleted_at IS NULL);
 
     </select>
 
     <update id="updateProfileImage">
-        update users
-        set profile_image = #{profileImage},
-            modified_at   = current_timestamp
-        where id = #{userId}
+        UPDATE users
+        SET profile_image = #{profileImage},
+            modified_at   = CURRENT_TIMESTAMP
+        WHERE id = #{userId}
     </update>
 
     <update id="updateNickname">
-        update users
-        set nickname    = #{nickname},
-            modified_at = current_timestamp
-        where id = #{userId}
+        UPDATE users
+        SET nickname    = #{nickname},
+            modified_at = CURRENT_TIMESTAMP
+        WHERE id = #{userId}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE users
+        SET password    = #{password},
+            modified_at = CURRENT_TIMESTAMP
+        WHERE id = #{userId}
     </update>
 
     <update id="delete">
-        update users
-        set deleted_at = CURRENT_TIMESTAMP
-        where id = #{id}
+        UPDATE users
+        SET deleted_at = CURRENT_TIMESTAMP
+        WHERE id = #{id}
     </update>
 
 </mapper>

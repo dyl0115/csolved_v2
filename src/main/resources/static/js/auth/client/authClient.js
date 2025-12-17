@@ -12,12 +12,28 @@ export async function signOut()
     }
 }
 
-export async function withdraw()
+export async function withdraw(request)
 {
     const response = await fetch('/api/auth/withdraw', {
         method: 'DELETE',
-        headers: {'Content-Type': 'application/json'}
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(request)
     });
+
+    if (!response.ok)
+    {
+        throw await response.json();
+    }
+}
+
+export async function updatePassword(request)
+{
+    const response = await fetch('/api/auth/password',
+        {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(request)
+        })
 
     if (!response.ok)
     {

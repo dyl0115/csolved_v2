@@ -12,6 +12,8 @@ public interface UserMapper
 
     User findUserByEmail(String email);
 
+    String findPasswordById(Long id);
+
     String findPasswordByEmail(String Email);
 
     boolean existsByEmail(String email);
@@ -21,6 +23,8 @@ public interface UserMapper
     void updateProfileImage(Long userId, String profileImage);
 
     void updateNickname(Long userId, String nickname);
+
+    void updatePassword(Long userId, String password);
 
     void delete(Long id);
 }

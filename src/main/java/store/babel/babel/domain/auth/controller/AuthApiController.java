@@ -4,17 +4,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import store.babel.babel.domain.auth.controller.dto.SignInResponse;
-import store.babel.babel.domain.auth.controller.dto.SignOutResponse;
-import store.babel.babel.domain.auth.controller.dto.SignUpResponse;
+import store.babel.babel.domain.auth.controller.dto.*;
 import store.babel.babel.domain.auth.service.command.SignInCommand;
 import store.babel.babel.domain.auth.service.command.SignUpCommand;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.domain.auth.service.AuthService;
 import store.babel.babel.global.utils.login.LoginUser;
 import store.babel.babel.domain.user.dto.User;
-import store.babel.babel.domain.auth.controller.dto.SignInRequest;
-import store.babel.babel.domain.auth.controller.dto.SignUpRequest;
 
 @RequiredArgsConstructor
 @RestController
@@ -40,6 +36,14 @@ public class AuthApiController
     }
 
     @LoginRequest
+    @PutMapping("/password")
+    public void updatePassword(@LoginUser User user,
+                               @Valid @RequestBody PasswordUpdateRequest request)
+    {
+        authService.updatePassword(user.getId(), PasswordUpdateCommand.from(request));
+    }
+
+    @LoginRequest
     @PostMapping("/signOut")
     @ResponseStatus(HttpStatus.OK)
     public SignOutResponse signOut()
@@ -51,8 +55,11 @@ public class AuthApiController
     @LoginRequest
     @DeleteMapping("/withdraw")
     @ResponseStatus(HttpStatus.OK)
-    public void withdraw(@LoginUser User user)
+    public void withdraw(@LoginUser User user,
+                         @Valid @RequestBody WithdrawRequest request)
     {
-        authService.withdraw(user);
+        authService.withdraw(user, WithdrawCommand.from(request));
     }
+
+
 }

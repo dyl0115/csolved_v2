@@ -3,6 +3,8 @@ package store.babel.babel.domain.auth.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import store.babel.babel.domain.auth.controller.dto.PasswordUpdateCommand;
+import store.babel.babel.domain.auth.controller.dto.WithdrawCommand;
 import store.babel.babel.domain.auth.service.command.SignInCommand;
 import store.babel.babel.domain.auth.service.command.SignUpCommand;
 import store.babel.babel.domain.user.dto.User;
@@ -44,6 +46,25 @@ public class AuthService
         userMapper.insertUser(User.from(command, hashedPassword));
     }
 
+    @Transactional
+    public void updatePassword(Long userId, PasswordUpdateCommand command)
+    {
+        String storedPassword = userMapper.findPasswordById(userId);
+
+        if (storedPassword == null || !passwordManager.verifyPassword(command.getCurrentPassword(), storedPassword))
+        {
+            throw new BabelException(ExceptionCode.INVALID_PASSWORD);
+        }
+
+        if (!Objects.equals(command.getNewPasswordConfirm(), command.getNewPassword()))
+        {
+            throw new BabelException(ExceptionCode.PASSWORD_MISMATCH);
+        }
+
+        String hashedPassword = passwordManager.hashPassword(command.getNewPassword());
+        userMapper.updatePassword(userId, hashedPassword);
+    }
+
     public void signIn(SignInCommand command)
     {
         User user = userMapper.findUserByEmail(command.getEmail());
@@ -69,8 +90,15 @@ public class AuthService
     }
 
     @Transactional
-    public void withdraw(User user)
+    public void withdraw(User user, WithdrawCommand command)
     {
+        String storedPassword = userMapper.findPasswordById(user.getId());
+
+        if (storedPassword == null || !passwordManager.verifyPassword(command.getPassword(), storedPassword))
+        {
+            throw new BabelException(ExceptionCode.INVALID_PASSWORD);
+        }
+
         authSessionManager.invalidateSession();
         userMapper.delete(user.getId());
     }

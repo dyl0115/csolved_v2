@@ -5,11 +5,9 @@ import {handleError} from "../error/errorHandler.js";
 export function init()
 {
     createMobileMenu();
-    document.querySelector('.sign-out-btn')
-        ?.addEventListener('click', signOut);
 
-    document.querySelector('.withdraw-btn')
-        ?.addEventListener('click', withdraw);
+    document.querySelectorAll('.sign-out-btn')
+        ?.forEach(btn => btn.addEventListener('click', signOut));
 
     document.querySelectorAll('.report-list-btn')
         ?.forEach(btn => btn.addEventListener('click', adminService.getReports));
@@ -22,22 +20,6 @@ async function signOut()
     try
     {
         await authService.signOut();
-        window.location.replace('/auth/signIn');
-    }
-    catch (error)
-    {
-        handleError(error);
-    }
-}
-
-async function withdraw()
-{
-    if (!confirm('정말 탈퇴하시겠습니까?')) return;
-
-    try
-    {
-        await authService.withdraw();
-        alert('회원탈퇴가 완료되었습니다.');
         window.location.replace('/auth/signIn');
     }
     catch (error)

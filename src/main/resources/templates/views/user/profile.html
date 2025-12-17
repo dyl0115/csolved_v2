@@ -134,77 +134,78 @@
                     </div>
                     
                     <div class="p-6">
-                        <form id="passwordChangeForm" th:action="@{/users/password}" method="POST">
+                        <div id="password-update-container">
                             
                             <!-- 현재 비밀번호 -->
                             <div class="mb-5">
-                                <label for="currentPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="current-password"
+                                       class="block text-sm font-semibold text-gray-700 mb-2">
                                     현재 비밀번호
                                 </label>
-                                <div class="relative">
+                                <div class="relative password-input-container">
                                     <input type="password"
-                                           id="currentPassword"
-                                           name="currentPassword"
-                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
+                                           id="current-password"
+                                           name="current-password"
+                                           class="password-input w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
                                            placeholder="현재 비밀번호를 입력하세요">
                                     <button type="button"
-                                            onclick="togglePassword('currentPassword')"
-                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                        <i data-lucide="eye" class="w-5 h-5" id="currentPasswordIcon"></i>
+                                            id="current-password-toggle-btn"
+                                            class="password-toggle-btn absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i data-lucide="eye" class="password-icon w-5 h-5" id="currentPasswordIcon"></i>
                                     </button>
                                 </div>
-                                <p id="currentPasswordError" class="mt-2 text-sm text-red-600 hidden">
+                                <p id="current-password-error" class="mt-2 text-sm text-red-600 hidden">
                                     <i data-lucide="alert-circle" class="w-4 h-4 inline"></i>
-                                    <span id="currentPasswordErrorMessage"></span>
+                                    <span id="current-password-error-message"></span>
                                 </p>
                             </div>
                             
                             <!-- 새 비밀번호 -->
                             <div class="mb-5">
-                                <label for="newPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+                                <label for="new-password-input" class="block text-sm font-semibold text-gray-700 mb-2">
                                     새 비밀번호
                                 </label>
-                                <div class="relative">
+                                <div class="relative password-input-container">
                                     <input type="password"
-                                           id="newPassword"
-                                           name="newPassword"
-                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
-                                           placeholder="새 비밀번호를 입력하세요"
-                                           oninput="checkPasswordStrength(this.value)">
+                                           id="new-password-input"
+                                           name="new-password"
+                                           class="password-input w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
+                                           placeholder="새 비밀번호를 입력하세요">
                                     <button type="button"
+                                            id="new-password-toggle-btn"
                                             onclick="togglePassword('newPassword')"
-                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                        <i data-lucide="eye" class="w-5 h-5" id="newPasswordIcon"></i>
+                                            class="password-toggle-btn absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i data-lucide="eye" class="password-icon w-5 h-5" id="newPasswordIcon"></i>
                                     </button>
                                 </div>
                                 <!-- 비밀번호 강도 표시 -->
-                                <div id="passwordStrength" class="mt-3 hidden">
+                                <div id="password-strength" class="mt-3 hidden">
                                     <div class="flex items-center space-x-2 mb-2">
                                         <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                            <div id="strengthBar" class="h-full transition-all duration-300"
+                                            <div id="strength-bar" class="h-full transition-all duration-300"
                                                  style="width: 0%"></div>
                                         </div>
-                                        <span id="strengthText" class="text-xs font-medium w-16"></span>
+                                        <span id="strength-text" class="text-xs font-medium w-16"></span>
                                     </div>
                                     <ul class="text-xs text-gray-600 space-y-1">
-                                        <li id="lengthCheck" class="flex items-center space-x-1">
-                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                        <li id="length-check" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="check-icon w-3 h-3"></i>
                                             <span>8자 이상</span>
                                         </li>
-                                        <li id="uppercaseCheck" class="flex items-center space-x-1">
-                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                        <li id="uppercase-check" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="check-icon w-3 h-3"></i>
                                             <span>대문자 포함</span>
                                         </li>
-                                        <li id="lowercaseCheck" class="flex items-center space-x-1">
-                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                        <li id="lowercase-check" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="check-icon w-3 h-3"></i>
                                             <span>소문자 포함</span>
                                         </li>
-                                        <li id="numberCheck" class="flex items-center space-x-1">
-                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                        <li id="number-check" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="check-icon w-3 h-3"></i>
                                             <span>숫자 포함</span>
                                         </li>
-                                        <li id="specialCheck" class="flex items-center space-x-1">
-                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                        <li id="special-check" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="check-icon w-3 h-3"></i>
                                             <span>특수문자 포함</span>
                                         </li>
                                     </ul>
@@ -212,55 +213,56 @@
                             </div>
                             
                             <!-- 새 비밀번호 확인 -->
-                            <div class="mb-6">
-                                <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+                            <div class="mb-6 password-">
+                                <label for="new-password-confirm-input"
+                                       class="block text-sm font-semibold text-gray-700 mb-2">
                                     새 비밀번호 확인
                                 </label>
-                                <div class="relative">
+                                <div class="relative password-input-container">
                                     <input type="password"
-                                           id="confirmPassword"
+                                           id="new-password-confirm-input"
                                            name="confirmPassword"
-                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
-                                           placeholder="새 비밀번호를 다시 입력하세요"
-                                           oninput="checkPasswordMatch()">
+                                           class="password-input w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
+                                           placeholder="새 비밀번호를 다시 입력하세요">
                                     <button type="button"
-                                            onclick="togglePassword('confirmPassword')"
-                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
-                                        <i data-lucide="eye" class="w-5 h-5" id="confirmPasswordIcon"></i>
+                                            id="new-password-confirm-toggle-btn"
+                                            onclick="togglePassword('new-password-confirm')"
+                                            class="password-toggle-btn absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i data-lucide="eye" class="password-icon w-5 h-5" id="confirmPasswordIcon"></i>
                                     </button>
                                 </div>
-                                <p id="passwordMatchError" class="mt-2 text-sm text-red-600 hidden">
+                                <p id="password-match-error" class="mt-2 text-sm text-red-600 hidden">
                                     <i data-lucide="alert-circle" class="w-4 h-4 inline"></i>
                                     <span>비밀번호가 일치하지 않습니다</span>
                                 </p>
-                                <p id="passwordMatchSuccess" class="mt-2 text-sm text-green-600 hidden">
+                                <p id="password-match-success" class="mt-2 text-sm text-green-600 hidden">
                                     <i data-lucide="check-circle" class="w-4 h-4 inline"></i>
                                     <span>비밀번호가 일치합니다</span>
                                 </p>
                             </div>
                             
                             <!-- 비밀번호 변경 성공 메시지 -->
-                            <div id="passwordSuccessMessage"
+                            <div id="password-success-message"
                                  class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3 hidden">
                                 <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
                                 <p class="text-green-800 font-medium">비밀번호가 성공적으로 변경되었습니다!</p>
                             </div>
                             
                             <!-- 비밀번호 변경 에러 메시지 -->
-                            <div id="passwordErrorMessage"
+                            <div id="password-error-message"
                                  class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3 hidden">
                                 <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
-                                <p class="text-red-800 font-medium" id="passwordErrorText"></p>
+                                <p class="text-red-800 font-medium" id="password-error-text"></p>
                             </div>
                             
                             <!-- 버튼 -->
                             <button type="submit"
-                                    id="passwordSubmitButton"
+                                    id="password-submit-btn"
                                     class="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 transition">
                                 <i data-lucide="shield-check" class="w-5 h-5"></i>
                                 <span>비밀번호 변경</span>
                             </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
                 
@@ -278,7 +280,7 @@
                             계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
                         </p>
                         <button type="button"
-                                onclick="showDeleteModal()"
+                                id="withdraw-btn"
                                 class="flex items-center space-x-2 px-4 py-2 border-2 border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-500 hover:text-white transition">
                             <i data-lucide="trash-2" class="w-4 h-4"></i>
                             <span>계정 삭제하기</span>
@@ -298,7 +300,8 @@
         </div>
         
         <!-- 계정 삭제 확인 모달 -->
-        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div id="delete-modal"
+             class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
             <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
                 <div class="p-6">
                     <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
@@ -309,30 +312,36 @@
                         이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.
                     </p>
                     
-                    <form id="deleteAccountForm" th:action="@{/users/delete}" method="POST">
+                    <div id="delete-account-container">
                         <div class="mb-4">
                             <label class="block text-sm font-semibold text-gray-700 mb-2">
                                 확인을 위해 비밀번호를 입력하세요
                             </label>
                             <input type="password"
                                    name="password"
-                                   id="deleteConfirmPassword"
+                                   id="delete-confirm-password"
                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                                    placeholder="비밀번호">
+                        </div>
+                        <div id="withdraw-error-message"
+                             class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3 hidden">
+                            <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+                            <p class="text-red-800 font-medium" id="withdraw-error-text"></p>
                         </div>
                         
                         <div class="flex space-x-3">
                             <button type="button"
-                                    onclick="hideDeleteModal()"
+                                    id="withdraw-cancel-btn"
                                     class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
                                 취소
                             </button>
                             <button type="submit"
+                                    id="withdraw-confirm-btn"
                                     class="flex-1 px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">
                                 삭제하기
                             </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
