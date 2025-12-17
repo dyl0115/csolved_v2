@@ -3,52 +3,9 @@
     <head>
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-        <title>내 프로필 수정</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
-        <style>
-            .profile-image-container {
-                position: relative;
-                width: 150px;
-                height: 150px;
-                margin: 0 auto;
-            }
-
-            .profile-image {
-                width: 150px;
-                height: 150px;
-                border-radius: 50%;
-                object-fit: cover;
-                border: 4px solid #e5e7eb;
-            }
-
-            .camera-icon {
-                position: absolute;
-                bottom: 0;
-                right: 0;
-                width: 48px;
-                height: 48px;
-                background-color: #1f2937;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                border: 3px solid white;
-            }
-
-            .camera-icon:hover {
-                background-color: #374151;
-                transform: scale(1.05);
-            }
-
-            .camera-icon svg {
-                width: 24px;
-                height: 24px;
-                color: white;
-            }
-        </style>
+        <title>내 프로필 수정</title>
     </head>
     
     <body class="bg-gray-50">
@@ -62,41 +19,61 @@
                     <i data-lucide="user-circle" class="w-8 h-8"></i>
                     <h1 class="text-3xl font-bold">내 프로필 수정</h1>
                 </div>
-                <p class="mt-2 text-gray-300">프로필 이미지와 닉네임을 변경하세요</p>
+                <p class="mt-2 text-gray-300">프로필 정보와 비밀번호를 관리하세요</p>
             </div>
         </div>
         
         <!-- 메인 컨텐츠 -->
         <div class="container mx-auto px-4 py-8">
-            <div class="max-w-lg mx-auto">
-                <div class="bg-white rounded-lg shadow-md p-8">
-                    <form id="profileUpdateForm" th:action="@{/users/profile}" th:object="${updateProfileForm}"
-                          method="POST" enctype="multipart/form-data">
-                        
+            <div class="max-w-2xl mx-auto space-y-6">
+                
+                <!-- 프로필 정보 카드 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="border-b border-gray-200 px-6 py-4 bg-gray-50">
+                        <h2 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
+                            <i data-lucide="user" class="w-5 h-5"></i>
+                            <span>프로필 정보</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="p-6">
                         <!-- 프로필 이미지 -->
-                        <div class="profile-image-container mb-8">
-                            <img th:if="*{currentProfileImage != null}"
-                                 th:src="@{*{currentProfileImage}}"
-                                 alt="프로필 이미지"
-                                 class="profile-image"
-                                 id="profileImagePreview">
-                            <img th:unless="*{currentProfileImage != null}"
-                                 th:src="@{/images/default-profile.png}"
-                                 alt="기본 프로필 이미지"
-                                 class="profile-image"
-                                 id="profileImagePreview">
-                            <label class="camera-icon" title="프로필 이미지 변경">
-                                <input type="file"
-                                       class="hidden"
-                                       accept="image/*"
-                                       id="profileImageInput"
-                                       onchange="handleImageSelect(this)">
-                                <i data-lucide="camera" class="w-6 h-6"></i>
-                            </label>
+                        <div class="flex justify-center mb-8">
+                            <div class="relative w-36 h-36">
+                                <img th:src="@{${updateProfileForm.currentProfileImage} ?: '/images/default-profile.png'}"
+                                     alt="프로필 이미지"
+                                     class="w-36 h-36 rounded-full object-cover border-4 border-gray-200 shadow-md"
+                                     id="profile-image-preview">
+                                <label class="absolute bottom-0 right-0 w-11 h-11 bg-gray-800 rounded-full flex items-center justify-center cursor-pointer border-3 border-white shadow-lg hover:bg-gray-700 hover:scale-105 transition-all duration-300"
+                                       title="프로필 이미지 변경">
+                                    <input type="file"
+                                           class="hidden"
+                                           accept="image/*"
+                                           id="profile-image-input"
+                                           name="profileImage">
+                                    <i data-lucide="camera" class="w-5 h-5 text-white"></i>
+                                </label>
+                            </div>
                         </div>
                         
                         <!-- 회원 아이디 -->
                         <input type="hidden" id="userId" th:value="${user.id}"/>
+                        
+                        <!-- 이메일 (읽기 전용) -->
+                        <div class="mb-5">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                이메일
+                            </label>
+                            <div class="flex items-center">
+                                <div class="flex-1 px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600">
+                                    <span th:text="${user.email}">user@example.com</span>
+                                </div>
+                                <span class="ml-3 text-xs text-gray-500 flex items-center">
+                                    <i data-lucide="lock" class="w-3 h-3 mr-1"></i>
+                                    변경 불가
+                                </span>
+                            </div>
+                        </div>
                         
                         <!-- 닉네임 입력 -->
                         <div class="mb-6">
@@ -105,307 +82,265 @@
                             </label>
                             <input type="text"
                                    id="nickname"
-                                   th:value="*{nickname}"
-                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800"
+                                   name="nickname"
+                                   th:value="${updateProfileForm.nickname}"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
                                    placeholder="닉네임을 입력하세요">
-                            <p id="nicknameError" class="mt-2 text-sm text-red-600 flex items-center space-x-1 hidden">
-                                <i data-lucide="alert-circle" class="w-4 h-4"></i>
-                                <span id="nicknameErrorMessage"></span>
+                            <p id="nickname-error" class="mt-2 text-sm text-red-600 items-center space-x-1 hidden">
+                                <i data-lucide="alert-circle" class="w-4 h-4 inline"></i>
+                                <span id="nickname-error-message"></span>
                             </p>
                         </div>
                         
                         <!-- 프로필 업데이트 확인 메시지 -->
-                        <div id="successMessage"
+                        <div id="profile-success-message"
                              class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3 hidden">
                             <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
-                            <div class="flex-1">
-                                <p class="text-green-800 font-medium" id="successMessageText">프로필이 성공적으로 업데이트되었습니다!</p>
-                            </div>
+                            <p class="text-green-800 font-medium">프로필이 성공적으로 업데이트되었습니다!</p>
                         </div>
                         
-                        <!-- 에러 메시지 -->
-                        <div id="errorMessage"
+                        <!-- 프로필 에러 메시지 -->
+                        <div id="profile-error-message"
                              class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3 hidden">
                             <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
-                            <div class="flex-1">
-                                <p class="text-red-800 font-medium" id="errorMessageText"></p>
-                            </div>
+                            <p class="text-red-800 font-medium" id="profileErrorText"></p>
                         </div>
                         
                         <!-- 버튼 -->
                         <div class="flex space-x-3">
-                            <button type="submit"
-                                    id="submitButton"
-                                    class="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 transition">
+                            <button type="button"
+                                    id="profile-submit-btn"
+                                    class="flex-1 flex items-center justify-center space-x-2 px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 transition">
                                 <i data-lucide="save" class="w-5 h-5"></i>
-                                <span>수정하기</span>
+                                <span>프로필 저장</span>
                             </button>
-                            <a th:href="@{/user/activity}"
-                               class="flex items-center justify-center px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
-                                <i data-lucide="x" class="w-5 h-5"></i>
-                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 비밀번호 변경 카드 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="border-b border-gray-200 px-6 py-4 bg-gray-50">
+                        <h2 class="text-lg font-semibold text-gray-800 flex items-center space-x-2">
+                            <i data-lucide="key" class="w-5 h-5"></i>
+                            <span>비밀번호 변경</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="p-6">
+                        <form id="passwordChangeForm" th:action="@{/users/password}" method="POST">
+                            
+                            <!-- 현재 비밀번호 -->
+                            <div class="mb-5">
+                                <label for="currentPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    현재 비밀번호
+                                </label>
+                                <div class="relative">
+                                    <input type="password"
+                                           id="currentPassword"
+                                           name="currentPassword"
+                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
+                                           placeholder="현재 비밀번호를 입력하세요">
+                                    <button type="button"
+                                            onclick="togglePassword('currentPassword')"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i data-lucide="eye" class="w-5 h-5" id="currentPasswordIcon"></i>
+                                    </button>
+                                </div>
+                                <p id="currentPasswordError" class="mt-2 text-sm text-red-600 hidden">
+                                    <i data-lucide="alert-circle" class="w-4 h-4 inline"></i>
+                                    <span id="currentPasswordErrorMessage"></span>
+                                </p>
+                            </div>
+                            
+                            <!-- 새 비밀번호 -->
+                            <div class="mb-5">
+                                <label for="newPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    새 비밀번호
+                                </label>
+                                <div class="relative">
+                                    <input type="password"
+                                           id="newPassword"
+                                           name="newPassword"
+                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
+                                           placeholder="새 비밀번호를 입력하세요"
+                                           oninput="checkPasswordStrength(this.value)">
+                                    <button type="button"
+                                            onclick="togglePassword('newPassword')"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i data-lucide="eye" class="w-5 h-5" id="newPasswordIcon"></i>
+                                    </button>
+                                </div>
+                                <!-- 비밀번호 강도 표시 -->
+                                <div id="passwordStrength" class="mt-3 hidden">
+                                    <div class="flex items-center space-x-2 mb-2">
+                                        <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div id="strengthBar" class="h-full transition-all duration-300"
+                                                 style="width: 0%"></div>
+                                        </div>
+                                        <span id="strengthText" class="text-xs font-medium w-16"></span>
+                                    </div>
+                                    <ul class="text-xs text-gray-600 space-y-1">
+                                        <li id="lengthCheck" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                            <span>8자 이상</span>
+                                        </li>
+                                        <li id="uppercaseCheck" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                            <span>대문자 포함</span>
+                                        </li>
+                                        <li id="lowercaseCheck" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                            <span>소문자 포함</span>
+                                        </li>
+                                        <li id="numberCheck" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                            <span>숫자 포함</span>
+                                        </li>
+                                        <li id="specialCheck" class="flex items-center space-x-1">
+                                            <i data-lucide="circle" class="w-3 h-3"></i>
+                                            <span>특수문자 포함</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <!-- 새 비밀번호 확인 -->
+                            <div class="mb-6">
+                                <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">
+                                    새 비밀번호 확인
+                                </label>
+                                <div class="relative">
+                                    <input type="password"
+                                           id="confirmPassword"
+                                           name="confirmPassword"
+                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-800 focus:border-transparent transition"
+                                           placeholder="새 비밀번호를 다시 입력하세요"
+                                           oninput="checkPasswordMatch()">
+                                    <button type="button"
+                                            onclick="togglePassword('confirmPassword')"
+                                            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                        <i data-lucide="eye" class="w-5 h-5" id="confirmPasswordIcon"></i>
+                                    </button>
+                                </div>
+                                <p id="passwordMatchError" class="mt-2 text-sm text-red-600 hidden">
+                                    <i data-lucide="alert-circle" class="w-4 h-4 inline"></i>
+                                    <span>비밀번호가 일치하지 않습니다</span>
+                                </p>
+                                <p id="passwordMatchSuccess" class="mt-2 text-sm text-green-600 hidden">
+                                    <i data-lucide="check-circle" class="w-4 h-4 inline"></i>
+                                    <span>비밀번호가 일치합니다</span>
+                                </p>
+                            </div>
+                            
+                            <!-- 비밀번호 변경 성공 메시지 -->
+                            <div id="passwordSuccessMessage"
+                                 class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start space-x-3 hidden">
+                                <i data-lucide="check-circle" class="w-5 h-5 text-green-600 mt-0.5"></i>
+                                <p class="text-green-800 font-medium">비밀번호가 성공적으로 변경되었습니다!</p>
+                            </div>
+                            
+                            <!-- 비밀번호 변경 에러 메시지 -->
+                            <div id="passwordErrorMessage"
+                                 class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 flex items-start space-x-3 hidden">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+                                <p class="text-red-800 font-medium" id="passwordErrorText"></p>
+                            </div>
+                            
+                            <!-- 버튼 -->
+                            <button type="submit"
+                                    id="passwordSubmitButton"
+                                    class="w-full flex items-center justify-center space-x-2 px-6 py-3 bg-gray-800 text-white font-semibold rounded-lg hover:bg-gray-700 focus:ring-4 focus:ring-gray-300 transition">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                <span>비밀번호 변경</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- 계정 삭제 카드 -->
+                <div class="bg-white rounded-xl shadow-md overflow-hidden border border-red-100">
+                    <div class="border-b border-red-100 px-6 py-4 bg-red-50">
+                        <h2 class="text-lg font-semibold text-red-800 flex items-center space-x-2">
+                            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                            <span>계정 삭제</span>
+                        </h2>
+                    </div>
+                    
+                    <div class="p-6">
+                        <p class="text-gray-600 mb-4">
+                            계정을 삭제하면 모든 데이터가 영구적으로 삭제되며 복구할 수 없습니다.
+                        </p>
+                        <button type="button"
+                                onclick="showDeleteModal()"
+                                class="flex items-center space-x-2 px-4 py-2 border-2 border-red-500 text-red-500 font-semibold rounded-lg hover:bg-red-500 hover:text-white transition">
+                            <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            <span>계정 삭제하기</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 돌아가기 버튼 -->
+                <div class="text-center">
+                    <a th:href="@{/user/activity}"
+                       class="inline-flex items-center space-x-2 text-gray-600 hover:text-gray-800 transition">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        <span>내 활동으로 돌아가기</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 계정 삭제 확인 모달 -->
+        <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+            <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full">
+                        <i data-lucide="alert-triangle" class="w-8 h-8 text-red-600"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-center text-gray-900 mb-2">정말 계정을 삭제하시겠습니까?</h3>
+                    <p class="text-gray-600 text-center mb-6">
+                        이 작업은 되돌릴 수 없습니다. 모든 데이터가 영구적으로 삭제됩니다.
+                    </p>
+                    
+                    <form id="deleteAccountForm" th:action="@{/users/delete}" method="POST">
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                확인을 위해 비밀번호를 입력하세요
+                            </label>
+                            <input type="password"
+                                   name="password"
+                                   id="deleteConfirmPassword"
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                   placeholder="비밀번호">
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button type="button"
+                                    onclick="hideDeleteModal()"
+                                    class="flex-1 px-4 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition">
+                                취소
+                            </button>
+                            <button type="submit"
+                                    class="flex-1 px-4 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition">
+                                삭제하기
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
-        
         <div th:replace="~{/fragments/footer :: default-footer}"></div>
         
         <script type="module">
-            import * as navigationUI from '/js/common/navigationUI.js';
+            import * as userProfileUI from '/js/user/ui/userProfileUI.js';
 
-            navigationUI.init();
-            lucide.createIcons();
-        </script>
-        
-        <script>
-            // 전역 변수: 처리된 이미지 데이터 저장
-            let processedImageData = null;
-            let processedImageFileName = null;
-
-            // Lucide 아이콘 초기화
             document.addEventListener('DOMContentLoaded', function ()
             {
+                userProfileUI.init();
                 lucide.createIcons();
-
-                // form submit 이벤트 리스너 추가
-                const form = document.getElementById('profileUpdateForm');
-                form.addEventListener('submit', handleFormSubmit);
             });
-
-            class ImageProcessor
-            {
-                constructor(maxSize = 256, quality = 0.8)
-                {
-                    this.maxSize = maxSize;
-                    this.quality = quality;
-                }
-
-                async processImage(file)
-                {
-                    try
-                    {
-                        const resizedBlob = await this.resize(file);
-                        return await this.compress(resizedBlob);
-                    }
-                    catch (error)
-                    {
-                        console.error('이미지 처리 중 오류 발생:', error);
-                        throw error;
-                    }
-                }
-
-                resize(file)
-                {
-                    return new Promise((resolve) =>
-                    {
-                        const reader = new FileReader();
-                        reader.onload = (e) =>
-                        {
-                            const img = new Image();
-                            img.onload = () =>
-                            {
-                                const {width, height} = this.calculateDimensions(img);
-                                const canvas = document.createElement('canvas');
-                                canvas.width = width;
-                                canvas.height = height;
-
-                                const ctx = canvas.getContext('2d');
-                                ctx.drawImage(img, 0, 0, width, height);
-
-                                canvas.toBlob(resolve, 'image/jpeg');
-                            };
-                            img.src = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                }
-
-                calculateDimensions(img)
-                {
-                    let {width, height} = img;
-                    if (width > height)
-                    {
-                        if (width > this.maxSize)
-                        {
-                            height *= this.maxSize / width;
-                            width = this.maxSize;
-                        }
-                    } else
-                    {
-                        if (height > this.maxSize)
-                        {
-                            width *= this.maxSize / height;
-                            height = this.maxSize;
-                        }
-                    }
-                    return {width: Math.round(width), height: Math.round(height)};
-                }
-
-                compress(blob)
-                {
-                    return new Promise((resolve) =>
-                    {
-                        const img = new Image();
-                        img.onload = () =>
-                        {
-                            const canvas = document.createElement('canvas');
-                            canvas.width = img.width;
-                            canvas.height = img.height;
-
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0);
-
-                            canvas.toBlob((compressedBlob) =>
-                            {
-                                resolve({
-                                    blob: compressedBlob,
-                                    dataUrl: canvas.toDataURL('image/jpeg', this.quality)
-                                });
-                            }, 'image/jpeg', this.quality);
-
-                            URL.revokeObjectURL(img.src);
-                        };
-                        img.src = URL.createObjectURL(blob);
-                    });
-                }
-            }
-
-            async function handleImageSelect(input)
-            {
-                if (input.files && input.files[0])
-                {
-                    try
-                    {
-                        const processor = new ImageProcessor();
-                        const result = await processor.processImage(input.files[0]);
-
-                        // 미리보기 업데이트
-                        const imgElement = input.closest('.profile-image-container').querySelector('img');
-                        imgElement.src = result.dataUrl;
-
-                        // 전역 변수에 Base64 데이터 저장
-                        processedImageData = result.dataUrl;
-                        processedImageFileName = input.files[0].name;
-                    }
-                    catch (error)
-                    {
-                        showError('이미지 처리 중 오류가 발생했습니다.');
-                    }
-                }
-            }
-
-            async function handleFormSubmit(event)
-            {
-                event.preventDefault(); // form의 기본 제출 동작 막기
-
-                // 메시지 초기화
-                hideMessages();
-
-                // 버튼 비활성화
-                const submitButton = document.getElementById('submitButton');
-                const originalButtonText = submitButton.innerHTML;
-                submitButton.disabled = true;
-                submitButton.innerHTML = '<span>처리 중...</span>';
-
-                // 요청 데이터 생성
-                const requestData = {
-                    userId: document.getElementById('userId').value,
-                    nickname: document.getElementById('nickname').value,
-                    profileImageBase64: processedImageData,
-                    profileImageFileName: processedImageFileName
-                };
-
-                try
-                {
-                    const response = await fetch('/users/profile/api', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(requestData)
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok && result.success)
-                    {
-                        showSuccess(result.message || '프로필이 성공적으로 업데이트되었습니다.');
-
-                        // 이미지 데이터 초기화
-                        processedImageData = null;
-                        processedImageFileName = null;
-
-                        // 2초 후 페이지 새로고침 또는 리다이렉트
-                        setTimeout(() =>
-                        {
-                            window.location.reload();
-                        }, 2000);
-                    } else
-                    {
-                        // 유효성 검증 오류 처리
-                        if (result.errors)
-                        {
-                            if (result.errors.nickname)
-                            {
-                                showFieldError('nickname', result.errors.nickname);
-                            }
-                        } else
-                        {
-                            showError(result.message || '프로필 업데이트에 실패했습니다.');
-                        }
-                    }
-                }
-                catch (error)
-                {
-                    console.error('프로필 업데이트 오류:', error);
-                    showError('서버와 통신 중 오류가 발생했습니다.');
-                } finally
-                {
-                    // 버튼 활성화
-                    submitButton.disabled = false;
-                    submitButton.innerHTML = originalButtonText;
-                    lucide.createIcons(); // 아이콘 재생성
-                }
-            }
-
-            function showSuccess(message)
-            {
-                const successDiv = document.getElementById('successMessage');
-                const messageText = document.getElementById('successMessageText');
-                messageText.textContent = message;
-                successDiv.classList.remove('hidden');
-                lucide.createIcons();
-            }
-
-            function showError(message)
-            {
-                const errorDiv = document.getElementById('errorMessage');
-                const messageText = document.getElementById('errorMessageText');
-                messageText.textContent = message;
-                errorDiv.classList.remove('hidden');
-                lucide.createIcons();
-            }
-
-            function showFieldError(fieldName, message)
-            {
-                const errorDiv = document.getElementById(fieldName + 'Error');
-                const messageSpan = document.getElementById(fieldName + 'ErrorMessage');
-                if (errorDiv && messageSpan)
-                {
-                    messageSpan.textContent = message;
-                    errorDiv.classList.remove('hidden');
-                    lucide.createIcons();
-                }
-            }
-
-            function hideMessages()
-            {
-                document.getElementById('successMessage').classList.add('hidden');
-                document.getElementById('errorMessage').classList.add('hidden');
-                document.getElementById('nicknameError').classList.add('hidden');
-            }
+        
         </script>
     </body>
 </html>

@@ -11,8 +11,8 @@ export function init()
     document.querySelector('.withdraw-btn')
         ?.addEventListener('click', withdraw);
 
-    document.querySelector('.report-list-btn')
-        ?.addEventListener('click', adminService.getReports);
+    document.querySelectorAll('.report-list-btn')
+        ?.forEach(btn => btn.addEventListener('click', adminService.getReports));
 }
 
 async function signOut()
@@ -55,13 +55,7 @@ function createMobileMenu()
     {
         mobileMenuButton.addEventListener('click', function ()
         {
-            if (mobileMenu.style.display === 'none' || mobileMenu.style.display === '')
-            {
-                mobileMenu.style.display = 'block';
-            } else
-            {
-                mobileMenu.style.display = 'none';
-            }
+            mobileMenu.classList.toggle('hidden');
         });
     }
 }

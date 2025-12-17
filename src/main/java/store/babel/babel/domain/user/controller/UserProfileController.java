@@ -38,6 +38,7 @@ public class UserProfileController
         return VIEWS_USER_PROFILE;
     }
 
+    @Deprecated
     @LoginRequest
     @PostMapping("/profile")
     public String getUser(@Valid @ModelAttribute("updateProfileForm") UserProfileForm form,
@@ -55,17 +56,15 @@ public class UserProfileController
         return "redirect:/users/profile";
     }
 
-    /**
-     * REST API 엔드포인트: fetch로 호출되는 프로필 업데이트
-     * @RequestBody로 JSON 데이터를 받습니다
-     */
+
+
     @LoginRequest
     @PostMapping("/profile/api")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> updateProfileApi(
             @Valid @RequestBody UserProfileUpdateRequest request,
             BindingResult result,
-            @LoginUser User user) throws IOException
+            @LoginUser User user)
     {
         Map<String, Object> response = new HashMap<>();
 

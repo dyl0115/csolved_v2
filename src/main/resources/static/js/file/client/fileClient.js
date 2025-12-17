@@ -1,10 +1,8 @@
-const imageUploadUrl = 'http://localhost:8080/api/image';
-
 export async function uploadImage(imageForm)
 {
     if (!imageForm) return null;
 
-    const response = await fetch(imageUploadUrl, {
+    const response = await fetch('/api/image', {
         method: 'POST',
         body: imageForm,
     });

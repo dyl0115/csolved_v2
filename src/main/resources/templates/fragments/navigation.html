@@ -63,12 +63,6 @@
                                 <i data-lucide="log-out" class="w-4 h-4"></i>
                                 <span>로그아웃</span>
                             </a>
-                            
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#withdrawModal"
-                               class="withdraw-btn flex items-center space-x-2 px-4 py-3 text-red-600 hover:bg-red-50 rounded-b-lg transition">
-                                <i data-lucide="user-x" class="w-4 h-4"></i>
-                                <span>회원탈퇴</span>
-                            </a>
                         </div>
                     </div>
                 </div>
@@ -80,7 +74,7 @@
             </div>
             
             <!-- 모바일 메뉴 버튼 -->
-            <div id="mobile-menu" class="mobile-menu md:hidden pb-4" style="display: none;">
+            <div id="mobile-menu" class="mobile-menu md:hidden pb-4 hidden">
                 <a href="/post/list?page=1"
                    class="flex items-center space-x-2 px-4 py-3 text-white hover:bg-gray-800 transition">
                     <i data-lucide="home" class="w-5 h-5"></i>
@@ -110,7 +104,6 @@
                     <span>내 활동</span>
                 </a>
                 <a href="#"
-                   id="report-list-btn"
                    class="report-list-btn flex items-center space-x-2 px-4 py-3 text-gray-300 hover:bg-gray-800 transition"
                    th:if="${user.admin}">
                     <i data-lucide="clipboard-list" class="w-4 h-4"></i>
@@ -121,12 +114,6 @@
                    class="sign-out-btn flex items-center space-x-2 px-4 py-3 text-gray-300 hover:bg-gray-800 transition">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                     <span>로그아웃</span>
-                </a>
-                <a href="#"
-                   id="withdraw-btn"
-                   class="withdraw-btn flex items-center space-x-2 px-4 py-3 text-red-400 hover:bg-gray-800 transition">
-                    <i data-lucide="user-x" class="w-4 h-4"></i>
-                    <span>회원탈퇴</span>
                 </a>
             </div>
         </div>

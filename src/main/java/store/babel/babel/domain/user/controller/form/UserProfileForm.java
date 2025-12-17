@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 import store.babel.babel.domain.user.dto.User;
 
+@Deprecated
 @Getter
 @Builder
 public class UserProfileForm

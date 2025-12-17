@@ -1,4 +1,4 @@
-import * as userClient from '../client/userClient.js';
+import * as userClient from '../client/userActivityClient.js';
 
 export async function getBookmarks(page)
 {

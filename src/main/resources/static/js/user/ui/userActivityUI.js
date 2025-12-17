@@ -1,4 +1,4 @@
-import * as userService from '../service/userService.js';
+import * as userService from '../service/userActivityService.js';
 import * as paginationUI from '../../global/utils/paginationUI.js';
 import * as navigationUI from '/js/global/utils/navigationUI.js';
 import * as timeUI from '/js/global/utils/timeUI.js';
