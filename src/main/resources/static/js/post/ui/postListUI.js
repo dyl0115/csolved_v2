@@ -13,7 +13,7 @@ export function init()
 
 function onPageChange(requiredPage)
 {
-    let url = new URL(window.location.href);
+    const url = new URL(window.location.href);
     url.searchParams.set('page', requiredPage);
     window.location.href = url;
 }

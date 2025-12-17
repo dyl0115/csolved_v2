@@ -39,9 +39,8 @@ public class ReportController
     {
         Pagination pagination = Pagination.from(request.getPage(), reportService.countReports(ReportCountQuery.from(request)), request.getSize());
         List<ReportCard> reports = reportService.getReports(ReportSearchQuery.from(request, pagination));
-
         model.addAttribute("reports", reports);
-        model.addAttribute("page", pagination);
+        model.addAttribute("pagination", pagination);
         model.addAttribute("totalCount", reportService.countAll());
         model.addAttribute("pendingCount", reportService.countPending());
         model.addAttribute("rejectedCount", reportService.countRejected());

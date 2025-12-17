@@ -1,5 +1,5 @@
 import * as authService from '../../auth/service/authService.js';
-import * as adminService from '../../admin/service/adminService.js';
+import * as adminService from '../../admin/service/reportService.js';
 import {handleError} from "../error/errorHandler.js";
 
 export function init()
@@ -8,9 +8,6 @@ export function init()
 
     document.querySelectorAll('.sign-out-btn')
         ?.forEach(btn => btn.addEventListener('click', signOut));
-
-    document.querySelectorAll('.report-list-btn')
-        ?.forEach(btn => btn.addEventListener('click', adminService.getReports));
 }
 
 async function signOut()

@@ -4,9 +4,7 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
         <title>신고 관리</title>
-        <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
-        <!-- Lucide Icons -->
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     
@@ -107,10 +105,10 @@
                                     신고 목록
                                 </h2>
                                 <div class="text-sm text-gray-500">
-                                    <span th:text="${page.currentPage}">
+                                    <span th:text="${pagination.currentPage}">
                                         1
                                     </span> /
-                                    <span th:text="${page.totalPages}">
+                                    <span th:text="${pagination.totalPages}">
                                         3
                                     </span> 페이지
                                 </div>
@@ -147,7 +145,8 @@
                                 </thead>
                                 <tbody class="divide-y divide-gray-200">
                                     <tr th:each="report : ${reports}"
-                                        class="hover:bg-gray-50 transition"
+                                        class="report-container hover:bg-gray-50 transition"
+                                        th:id="${report.id}"
                                         th:classappend="${report.status == 'PENDING'} ? 'bg-red-50'">
                                         
                                         <!-- ID -->
@@ -261,8 +260,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                                             <div class="flex items-center gap-2">
                                                 <!-- 상세보기 버튼 (항상 표시) -->
-                                                <button th:onclick="|viewDetailReason(${report.id})|"
-                                                        class="text-blue-500 hover:text-blue-700 transition"
+                                                <button class="report-reason-btn text-blue-500 hover:text-blue-700 transition"
                                                         title="상세보기">
                                                     <i data-lucide="eye"
                                                        class="w-4 h-4">
@@ -272,12 +270,11 @@
                                                 <!-- PENDING: 신고된 글 삭제 -->
                                                 <a th:if="${report.status == 'PENDING'}"
                                                    href="#"
-                                                   class="text-red-500 hover:text-red-700 transition"
+                                                   class="report-accept-btn text-red-500 hover:text-red-700 transition"
                                                    title="신고된 글 삭제"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
-                                                   th:data-target-id="${report.targetId}"
-                                                   onclick="acceptReports(this); return false;">
+                                                   th:data-target-id="${report.targetId}">
                                                     <i data-lucide="circle-x"
                                                        class="w-4 h-4">
                                                     </i>
@@ -286,12 +283,11 @@
                                                 <!-- PENDING: 신고된 글 보존 -->
                                                 <a th:if="${report.status == 'PENDING'}"
                                                    href="#"
-                                                   class="text-green-500 hover:text-green-700 transition"
+                                                   class="report-dismiss-btn text-green-500 hover:text-green-700 transition"
                                                    title="신고된 글 보존"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
-                                                   th:data-target-id="${report.targetId}"
-                                                   onclick="dismissReports(this); return false;">
+                                                   th:data-target-id="${report.targetId}">
                                                     <i data-lucide="circle-check"
                                                        class="w-4 h-4">
                                                     </i>
@@ -300,12 +296,11 @@
                                                 <!-- APPROVED: 신고된 글 복원 -->
                                                 <a th:if="${report.status == 'APPROVED'}"
                                                    href="#"
-                                                   class="text-blue-500 hover:text-blue-700 transition"
+                                                   class="report-undo-btn text-blue-500 hover:text-blue-700 transition"
                                                    title="신고된 글 재복원"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
-                                                   th:data-target-id="${report.targetId}"
-                                                   onclick="undoReportAction(this); return false;">
+                                                   th:data-target-id="${report.targetId}">
                                                     <i data-lucide="circle-arrow-up"
                                                        class="w-4 h-4">
                                                     </i>
@@ -314,12 +309,11 @@
                                                 <!-- REJECTED: 신고된 글 삭제 -->
                                                 <a th:if="${report.status == 'REJECTED'}"
                                                    href="#"
-                                                   class="text-red-500 hover:text-red-700 transition"
+                                                   class="report-reprocess-btn text-red-500 hover:text-red-700 transition"
                                                    title="신고된 글 삭제"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
-                                                   th:data-target-id="${report.targetId}"
-                                                   onclick="reprocessReport(this); return false;">
+                                                   th:data-target-id="${report.targetId}">
                                                     <i data-lucide="circle-x"
                                                        class="w-4 h-4">
                                                     </i>
@@ -328,12 +322,11 @@
                                                 <!-- APPROVED/REJECTED -> PENDING으로-->
                                                 <a th:if="${report.status == 'REJECTED' || report.status == 'APPROVED'} "
                                                    href="#"
-                                                   class="text-purple-500 hover:text-purple-700 transition"
+                                                   class="report-pending-btn text-purple-500 hover:text-purple-700 transition"
                                                    title="대기중으로 처리"
                                                    th:data-admin-id="${user.id}"
                                                    th:data-target-type="${report.targetType}"
-                                                   th:data-target-id="${report.targetId}"
-                                                   onclick="pendingReport(this); return false;">
+                                                   th:data-target-id="${report.targetId}">
                                                     <i data-lucide="circle-arrow-left" class="w-4 h-4"></i>
                                                 </a>
                                             </div>
@@ -359,77 +352,7 @@
                         </div>
                         
                         <!-- 페이지네이션 -->
-                        <div class="bg-gray-50 px-6 py-4 border-t"
-                             th:if="${!#lists.isEmpty(reports)}">
-                            <div class="flex items-center justify-center">
-                                <div class="flex gap-2">
-                                    <!-- 이전 페이지 -->
-                                    <a th:if="${page.currentPage > 1}"
-                                       th:href="@{/admin/report
-                                       (page=${page.currentPage - 1},
-                                       size=${page.size},
-                                       status=${param.status},
-                                       targetType=${param.targetType},
-                                       keyword=${param.keyword},
-                                       sortType=${param.sortType},
-                                       startDateTime=${param.startDateTime},
-                                       endDateTime=${param.endDateTime})}"
-                                       class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
-                                        <i data-lucide="chevron-left"
-                                           class="w-4 h-4">
-                                        </i>
-                                    </a>
-                                    <span th:unless="${page.currentPage > 1}"
-                                          class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
-                                        <i data-lucide="chevron-left"
-                                           class="w-4 h-4">
-                                        </i>
-                                    </span>
-                                    
-                                    <!-- 페이지 번호 -->
-                                    <div class="flex gap-1">
-                                        <a th:each="i : ${#numbers.sequence(1, page.totalPages)}"
-                                           th:if="${i >= page.currentPage - 1 && i <= page.currentPage + 1}"
-                                           th:href="@{/admin/report
-                                           (page=${i},
-                                           size=${page.size},
-                                           status=${param.status},
-                                           targetType=${param.targetType},
-                                           keyword=${param.keyword},
-                                           sortType=${param.sortType},
-                                           startDateTime=${param.startDateTime},
-                                           endDateTime=${param.endDateTime})}"
-                                           th:classappend="${i == page.currentPage} ? 'bg-gray-800 text-white' : 'hover:bg-gray-100'"
-                                           class="px-4 py-2 border rounded-lg transition">
-                                            <span th:text="${i}">1</span>
-                                        </a>
-                                    </div>
-                                    
-                                    <!-- 다음 페이지 -->
-                                    <a th:if="${page.currentPage < page.totalPages}"
-                                       th:href="@{/admin/report
-                                       (page=${page.currentPage + 1},
-                                       size=${page.size},
-                                       status=${param.status},
-                                       targetType=${param.targetType},
-                                       keyword=${param.keyword},
-                                       sortType=${param.sortType},
-                                       startDateTime=${param.startDateTime},
-                                       endDateTime=${param.endDateTime})}"
-                                       class="px-3 py-2 border rounded-lg hover:bg-gray-100 transition">
-                                        <i data-lucide="chevron-right"
-                                           class="w-4 h-4">
-                                        </i>
-                                    </a>
-                                    <span th:unless="${page.currentPage < page.totalPages}"
-                                          class="px-3 py-2 border rounded-lg text-gray-300 cursor-not-allowed">
-                                        <i data-lucide="chevron-right"
-                                           class="w-4 h-4">
-                                        </i>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
+                        <div th:replace="~{/fragments/pagination::pagination('report-pagination', ${pagination})}"></div>
                     </div>
                 </div>
                 
@@ -446,7 +369,7 @@
                             </h3>
                         </div>
                         <div class="p-4">
-                            <form id="searchForm">
+                            <form id="search-form">
                                 <div class="space-y-4">
                                     <!-- 검색어 -->
                                     <div>
@@ -563,7 +486,7 @@
                                     
                                     <!-- 검색 버튼 -->
                                     <button type="button"
-                                            onclick="performSearch()"
+                                            id="report-search-btn"
                                             class="w-full px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition flex items-center justify-center space-x-2">
                                         <i data-lucide="search"
                                            class="w-5 h-5">
@@ -575,7 +498,7 @@
                                     
                                     <!-- 초기화 버튼 -->
                                     <button type="button"
-                                            onclick="resetSearch()"
+                                            id="report-search-reset-btn"
                                             class="w-full px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition flex items-center justify-center space-x-2">
                                         <i data-lucide="refresh-cw"
                                            class="w-4 h-4">
@@ -593,7 +516,7 @@
         </div>
         
         <!-- 신고사유 상세보기 모달 -->
-        <div id="detailModal"
+        <div id="detail-modal"
              class="modal hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
@@ -608,7 +531,7 @@
                             </i>
                         </button>
                     </div>
-                    <div id="detailContent">
+                    <div id="detail-content">
                         <!-- AJAX로 로드될 내용 -->
                     </div>
                 </div>
@@ -630,269 +553,17 @@
     <div th:replace="~{/fragments/footer :: default-footer}"></div>
     
     <script type="module">
-        import * as navigationUI from '/js/common/navigationUI.js';
+        import * as reportListUI from '/js/admin/ui/reportListUI.js';
 
-        navigationUI.init();
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', function ()
+        {
+            reportListUI.init();
+            lucide.createIcons();
+        })
     </script>
     
     <script th:inline="javascript">
-        // 통합 검색 기능
-        async function performSearch()
-        {
-            try
-            {
-                const formData = {
-                    keyword: document.getElementById('keyword').value.trim() || null,
-                    status: document.getElementById('status').value || null,
-                    targetType: document.getElementById('targetType').value || null,
-                    sortType: document.getElementById('sortType').value || null,
-                    startDateTime: document.getElementById('startDateTime').value || null,
-                    endDateTime: document.getElementById('endDateTime').value || null,
-                    page: 1,
-                    size: 20
-                };
-
-                Object.keys(formData).forEach(key =>
-                {
-                    if (formData[key] === null || formData[key] === '')
-                    {
-                        delete formData[key];
-                    }
-                });
-
-                // URL 파라미터로 변환하여 GET 요청
-                const params = new URLSearchParams();
-                Object.keys(formData).forEach(key =>
-                {
-                    if (formData[key] !== undefined)
-                    {
-                        params.append(key, formData[key]);
-                    }
-                });
-
-                // 페이지 이동
-                window.location.href = `/admin/report?${params.toString()}`;
-            }
-            catch (error)
-            {
-                console.error('검색 실패:', error);
-                alert('검색 중 오류가 발생했습니다.');
-            }
-        }
-
-        // 검색 조건 초기화
-        function resetSearch()
-        {
-            window.location.href = `/admin/report?page=1&size=20`;
-        }
-
-        // 상세보기 모달
-        async function viewDetailReason(reportId)
-        {
-            try
-            {
-                const response = await fetch(`/api/report/${reportId}`);
-                document.getElementById('detailContent').textContent = await response.text();
-                document.getElementById('detailModal').classList.remove('hidden');
-                lucide.createIcons();
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('상세 정보를 불러오는데 실패했습니다.');
-            }
-        }
-
-        // 신고 수락 -> 글 삭제
-        async function acceptReports(element)
-        {
-            const data = {
-                status: 'APPROVED',
-                adminId: parseInt(element.dataset.adminId),
-                targetType: element.dataset.targetType,
-                targetId: parseInt(element.dataset.targetId)
-            }
-
-            try
-            {
-                const response = await fetch(`/api/report/approve`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok)
-                {
-                    alert('신고된 게시글을 삭제했습니다.')
-                    window.location.reload();
-                } else
-                {
-                    alert('신고를 처리하는데 실패했습니다. ');
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고를 처리하는데 실패했습니다.');
-            }
-        }
-
-        // 신고 기각 -> 글 보존
-        async function dismissReports(element)
-        {
-            const data = {
-                status: 'REJECTED',
-                adminId: parseInt(element.dataset.adminId),
-                targetType: element.dataset.targetType,
-                targetId: parseInt(element.dataset.targetId)
-            }
-
-            try
-            {
-                const response = await fetch(`/api/report/reject`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok)
-                {
-                    alert('신고된 게시글을 보존했습니다.');
-                    window.location.reload();
-                } else
-                {
-                    alert('신고를 처리하는데 실패했습니다. ');
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고를 처리하는데 실패했습니다.');
-            }
-        }
-
-        // 신고 처리 취소 -> 글 복원
-        async function undoReportAction(element)
-        {
-            const data = {
-                status: 'REJECTED',
-                adminId: parseInt(element.dataset.adminId),
-                targetType: element.dataset.targetType,
-                targetId: parseInt(element.dataset.targetId)
-            }
-
-            try
-            {
-                const response = await fetch(`/api/report/restore`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok)
-                {
-                    alert('삭제된 게시글을 복원했습니다.');
-                    window.location.reload();
-                } else
-                {
-                    alert('신고를 처리하는데 실패했습니다. ');
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고를 처리하는데 실패했습니다.');
-            }
-        }
-
-        // 신고 처리 재수락 -> 글 삭제
-        async function reprocessReport(element)
-        {
-            const data = {
-                status: 'APPROVED',
-                adminId: parseInt(element.dataset.adminId),
-                targetType: element.dataset.targetType,
-                targetId: parseInt(element.dataset.targetId)
-            }
-
-            try
-            {
-                const response = await fetch(`/api/report/reprocess`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok)
-                {
-                    alert('신고된 게시글을 삭제했습니다.')
-                    window.location.reload();
-                } else
-                {
-                    alert('신고를 처리하는데 실패했습니다. ');
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고를 처리하는데 실패했습니다.');
-            }
-        }
-
-        // 처리한 글 다시 PENDING으로
-        async function pendingReport(element)
-        {
-            const data = {
-                status: 'PENDING',
-                adminId: parseInt(element.dataset.adminId),
-                targetType: element.dataset.targetType,
-                targetId: parseInt(element.dataset.targetId)
-            }
-
-            try
-            {
-                const response = await fetch(`/api/report/re-pending`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-
-                if (response.ok)
-                {
-                    alert('해당 게시글을 다시 대기중으로 변경했습니다.')
-                    window.location.reload();
-                } else
-                {
-                    alert('신고를 처리하는데 실패했습니다. ');
-                }
-            }
-            catch (error)
-            {
-                console.error('Error:', error);
-                alert('신고를 처리하는데 실패했습니다.');
-            }
-        }
-
-        // 엔터키로 검색 실행
-        document.getElementById('searchForm').addEventListener('keypress', function (e)
-        {
-            if (e.key === 'Enter')
-            {
-                e.preventDefault();
-                performSearch();
-            }
-        });
+    
     </script>
     
     <script th:replace="~{/fragments/report-modal :: reportedCommenModalScript}"></script>

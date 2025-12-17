@@ -49,7 +49,7 @@
                                 <span>내 활동</span>
                             </a>
                             
-                            <a href="#"
+                            <a href="/admin/report?page=1&size=20&sortType=CREATED_AT"
                                class="report-list-btn flex items-center space-x-2 px-4 py-3 text-gray-700 hover:bg-gray-100 transition"
                                th:if="${user.admin}">
                                 <i data-lucide="clipboard-list" class="w-4 h-4"></i>
@@ -103,7 +103,7 @@
                     <i data-lucide="activity" class="w-4 h-4"></i>
                     <span>내 활동</span>
                 </a>
-                <a href="#"
+                <a href="/admin/report?page=1&size=20&sortType=CREATED_AT"
                    class="report-list-btn flex items-center space-x-2 px-4 py-3 text-gray-300 hover:bg-gray-800 transition"
                    th:if="${user.admin}">
                     <i data-lucide="clipboard-list" class="w-4 h-4"></i>
