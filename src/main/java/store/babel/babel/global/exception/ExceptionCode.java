@@ -33,7 +33,9 @@ public enum ExceptionCode
     PASSWORD_MISMATCH("A004", "비밀번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND("A005", "등록되지 않은 사용자입니다.", HttpStatus.NOT_FOUND),
     INVALID_SESSION("A006", "인증되지 않은 세션입니다.", HttpStatus.UNAUTHORIZED),
-    
+
+    // 사용자 프로필
+    PROFILE_UPDATE_DENIED("P001", "프로필을 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN),
     // 북마크
     ALREADY_BOOKMARKED("ALREADY_BOOKMARKED", "이미 북마크한 게시글입니다.", HttpStatus.CONFLICT),
 

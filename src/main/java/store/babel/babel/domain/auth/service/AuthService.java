@@ -40,7 +40,6 @@ public class AuthService
             throw new BabelException(ExceptionCode.PASSWORD_MISMATCH);
         }
 
-
         String hashedPassword = passwordManager.hashPassword(command.getPassword());
         userMapper.insertUser(User.from(command, hashedPassword));
     }

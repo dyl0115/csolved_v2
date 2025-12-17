@@ -2,7 +2,6 @@ package store.babel.babel.domain.post.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import store.babel.babel.domain.post.controller.dto.PostCreateRequest;
 import store.babel.babel.domain.post.controller.dto.PostUpdateRequest;

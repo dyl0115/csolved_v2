@@ -1,6 +1,5 @@
 export async function getBookmarks(page)
 {
-    console.log("page=" + page);
     const response = await fetch(`/user/activity/bookmark?page=${page}`);
 
     if (!response.ok)

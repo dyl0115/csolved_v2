@@ -1,10 +1,14 @@
 import * as fileClient from '../../file/client/fileClient.js'
+import * as userProfileService from '../service/userProfileService.js'
 import {handleError} from "../../global/error/errorHandler.js";
 
 export function init()
 {
     document.getElementById('profile-image-input')
         .addEventListener('change', (event) => handleImageSelect(event));
+
+    document.getElementById('profile-update-btn')
+        .addEventListener('click', (event) => updateProfile(event));
 
     // 모달 외부 클릭 시 닫기
     document.getElementById('deleteModal').addEventListener('click', function (e)
@@ -17,6 +21,36 @@ export function init()
     {
         if (e.key === 'Escape') hideDeleteModal();
     });
+}
+
+// 프로필 업데이트
+async function updateProfile(event)
+{
+    const profile = event.currentTarget.closest('.profile-container');
+    const userId = profile.querySelector('#user-id').value;
+    const nickname = profile.querySelector('#nickname').value;
+    const profileImage = profile.querySelector('#profile-image-url').value;
+    const successMessage = document.getElementById('profile-success-message');
+    const errorMessage = document.getElementById('profile-error-message');
+
+    const form = {
+        userId: userId,
+        nickname: nickname,
+        profileImage: profileImage
+    }
+
+    try
+    {
+        await userProfileService.updateProfile(form);
+        errorMessage.classList.add('hidden');
+        successMessage.classList.remove('hidden');
+    }
+    catch (error)
+    {
+        successMessage.classList.add('hidden');
+        errorMessage.classList.remove('hidden');
+        errorMessage.querySelector('#profile-error-text').textContent = error.message;
+    }
 }
 
 // 프로필 이미지 선택 핸들러
@@ -33,14 +67,13 @@ async function handleImageSelect(event)
     {
         const imageSrc = await fileClient.uploadImage(formData);
         document.getElementById('profile-image-preview').src = imageSrc;
-        document.getElementById('profile-image-input').value = imageSrc;
+        document.getElementById('profile-image-url').value = imageSrc;
     }
     catch (error)
     {
         handleError(error);
     }
 }
-
 
 
 // 비밀번호 보기/숨기기 토글
