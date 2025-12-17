@@ -206,13 +206,21 @@
                                 
                                 <!-- 댓글과 대댓글 -->
                                 <div class="answer-container flex gap-3 mb-6 pb-6 border-gray-200 border-l-2 border-gray-200 last:border-b-0 last:mb-0 last:pb-0"
-                                     th:each="answer:${answers}">
+                                     th:each="answer:${answers}"
+                                     th:data-answer-id="${answer.id}">
                                     
                                     <!-- 댓쓴이 프로필 -->
                                     <div class="flex-shrink-0 ml-4">
-                                        <img class="rounded-full w-10 h-10 object-cover"
-                                             th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
-                                             alt="프로필 이미지"/>
+                                        <th:block th:if="${answer.deletedAt != null}">
+                                            <img class="rounded-full w-10 h-10 object-cover"
+                                                 src="/assets/anonymous.jpg"
+                                                 alt="프로필 이미지"/>
+                                        </th:block>
+                                        <th:block th:if="${answer.deletedAt == null}">
+                                            <img class="rounded-full w-10 h-10 object-cover"
+                                                 th:src="${answer.anonymous ? '/assets/anonymous.jpg' : answer.authorProfileImage}"
+                                                 alt="프로필 이미지"/>
+                                        </th:block>
                                     </div>
                                     
                                     <div class="flex-1 min-w-0">
@@ -220,23 +228,38 @@
                                             <!-- 댓쓴이 닉네임 -->
                                             <div class="flex items-center flex-wrap gap-2">
                                                <span class="font-bold text-gray-800"
-                                                     th:text="${answer.anonymous} ? '익명' : ${answer.authorNickname}">
-                                                    댓쓴이 닉네임
+                                                     th:classappend="${answer.deletedAt != null} ? 'opacity-50 italic' : ''">
+                                                    <th:block th:if="${answer.deletedAt != null}">
+                                                        (삭제)
+                                                    </th:block>
+                                                    <th:block th:if="${answer.deletedAt == null}">
+                                                        <th:block th:if="${answer.anonymous}">
+                                                            <th:block th:if="${answer.authorId == post.authorId}">
+                                                                익명(글쓴이)
+                                                            </th:block>
+                                                            <th:block th:unless="${answer.authorId == post.authorId}">
+                                                                익명
+                                                            </th:block>
+                                                        </th:block>
+                                                        <th:block th:unless="${answer.anonymous}"
+                                                                  th:text="${answer.authorNickname}">
+                                                        </th:block>
+                                                    </th:block>
                                                 </span>
                                                 
                                                 <!-- 댓글시간 -->
                                                 <span class="timeago text-gray-500 text-sm"
+                                                      th:if="${answer.deletedAt == null}"
                                                       th:data-date="${answer.createdAt}">
                                                     1시간 전
                                                 </span>
                                             </div>
                                             
                                             <!-- 댓글 메뉴 (드롭다운) -->
-                                            <div class="relative flex-shrink-0">
+                                            <div class="answer-menu-container relative flex-shrink-0">
                                                 <!-- 댓글 메뉴 버튼 -->
-                                                <button th:onclick="|toggleMenu('answer-menu' + ${answer.id})|"
-                                                        class="flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150"
-                                                        id="answer-menu-button">
+                                                <button th:if="${answer.deletedAt == null}"
+                                                        class="answer-menu-btn flex items-center justify-center w-8 h-8 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors duration-150">
                                                     <i data-lucide="ellipsis"
                                                        class="w-5 h-5">
                                                     </i>
@@ -244,12 +267,10 @@
                                                 
                                                 <!-- 댓글 드롭다운 메뉴 -->
                                                 <div th:id="answer-menu + ${answer.id}"
-                                                     class="answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                     class="toggle-menu answer-menu hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
                                                     <div class="py-1">
                                                         <!-- 댓글 삭제하기 (작성자만) -->
-                                                        <button th:if="${answer.authorId == user.id}"
-                                                                th:onclick="|deleteAnswer(${answer.id})|"
-                                                                class="w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
+                                                        <button class="answer-delete-btn w-full flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150">
                                                             <i data-lucide="trash-2"
                                                                class="w-4 h-4">
                                                             </i>
@@ -276,24 +297,24 @@
                                         
                                         <!-- 댓글 내용 -->
                                         <div class="mb-3 text-gray-700 prose max-w-none break-words"
+                                             th:classappend="${answer.deletedAt != null} ? 'opacity-50 italic'"
                                              th:utext="${answer.content}">
                                             댓글 내용
                                         </div>
                                         
                                         <!-- 댓글 액션 버튼들 -->
-                                        <div class="flex items-center gap-2 ">
+                                        <div class="flex items-center gap-2 "
+                                             th:classappend="${answer.deletedAt != null} ? 'pointer-events-none opacity-50 select-none' : ''">
                                             <!-- 좋아요 버튼 -->
-                                            <button class="group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
-                                                    th:data-answer-id="${answer.id}"
-                                                    onclick="addAnswerLike(this)">
+                                            <button class="answer-like-btn group inline-flex items-center gap-1.5 py-1.5 text-sm text-gray-600 hover:text-red-500 transition-colors duration-200"
+                                                    th:data-answer-id="${answer.id}">
                                                 <i data-lucide="heart"
                                                    class="w-4 h-4 group-hover:fill-red-500 transition-all duration-200">
                                                 </i>
                                                 <span class="font-medium">
                                                     좋아요
                                                 </span>
-                                                <span th:id="|answer-like-count${answer.id}|"
-                                                      class="font-medium"
+                                                <span class="answer-like-count font-medium"
                                                       th:text="${answer.likes}">
                                                     12
                                                 </span>

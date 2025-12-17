@@ -45,7 +45,7 @@ public class AnswerService
         {
             throw new BabelException(ExceptionCode.ANSWER_NOT_FOUND);
         }
-
+        
         if (!Objects.equals(answer.getAuthorId(), userId))
         {
             throw new BabelException(ExceptionCode.ANSWER_DELETE_DENIED);

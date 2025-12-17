@@ -55,21 +55,18 @@ async function deleteNotice()
 async function addLike()
 {
     const noticeId = document.getElementById('post-id').textContent;
-    const likeButton = document.getElementById('like-button');
     const likeCount = document.getElementById('like-count');
     let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
 
     try
     {
-        await noticeService.addLike(noticeId);
         likeCount.textContent = ++likeCountInt;
-        likeButton.disabled = true;
+        await noticeService.addLike(noticeId);
     }
     catch (error)
     {
-        handleError(error);
         likeCount.textContent = --likeCountInt;
-        likeButton.disabled = false;
+        handleError(error);
     }
 
 }

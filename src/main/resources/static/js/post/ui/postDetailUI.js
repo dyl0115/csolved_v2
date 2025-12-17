@@ -20,7 +20,7 @@ export function init()
 
 async function deletePost()
 {
-    const postId = document.getElementById('postId').textContent;
+    const postId = document.getElementById('post-id').textContent;
 
     if (confirm('게시글을 삭제하시겠습니까?'))
     {
@@ -39,7 +39,7 @@ async function deletePost()
 
 async function addPostLike()
 {
-    const postId = document.getElementById('postId').textContent;
+    const postId = document.getElementById('post-id').textContent;
     const likeCount = document.getElementById('post-like-count');
     let likeCountInt = parseInt(likeCount.textContent, 10) || 0;
 
@@ -57,7 +57,7 @@ async function addPostLike()
 
 async function toggleBookmark()
 {
-    const postId = document.getElementById('postId').textContent;
+    const postId = document.getElementById('post-id').textContent;
     const bookmarkButton = document.getElementById('bookmark-btn');
     const bookmarked = bookmarkButton.dataset.bookmarked === 'true';
     const bookmarkIcon = document.getElementById('bookmark-icon');
