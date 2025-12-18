@@ -156,7 +156,7 @@
                     </div>
                     
                     <!-- 페이지네이션 -->
-                    <div th:replace="~{/fragments/pagination::pagination(${pagination})}"></div>
+                    <div th:replace="~{/fragments/pagination::pagination('best-pagination',${pagination})}"></div>
                     
                     <!-- 더보기 안내 -->
                     <div th:if="${!#lists.isEmpty(bestPosts)}"
@@ -207,9 +207,16 @@
         document.addEventListener('DOMContentLoaded', async function ()
         {
             navigationUI.init();
-            paginationUI.init();
+            paginationUI.init('#best-pagination', onPageChange);
             timeUI.init();
             lucide.createIcons();
+
+            function onPageChange(requiredPage)
+            {
+                const url = new URL(window.location.href);
+                url.searchParams.set('page', requiredPage);
+                window.location.href = url;
+            }
         });
     </script>
 </html>

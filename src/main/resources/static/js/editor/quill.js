@@ -52,6 +52,11 @@ function setEvents()
     });
 }
 
+export function getQuill()
+{
+    return quill;
+}
+
 function selectFile(accept)
 {
     return new Promise((resolve) =>

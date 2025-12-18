@@ -81,7 +81,7 @@ function isValidTag(text)
     return true;
 }
 
-function addTag(tagText)
+export function addTag(tagText)
 {
     tags.add(tagText);
 
@@ -92,6 +92,27 @@ function addTag(tagText)
     badge.querySelector('.tag-text').textContent = tagText;
 
     tagContainer.insertBefore(badge, tagInput);
+    updateHiddenInput();
+}
+
+export function removeTag(tagText)
+{
+    tags.delete(tagText);
+    
+    // UI에서 해당 태그 찾아서 제거
+    const badge = tagContainer.querySelector(`[data-tag="${tagText}"]`);
+    if (badge) {
+        badge.remove();
+    }
+    
+    updateHiddenInput();
+}
+
+export function clearAllTags()
+{
+    // 모든 태그 배지 제거 (input 제외)
+    tagContainer.querySelectorAll('.tag-badge').forEach(badge => badge.remove());
+    tags.clear();
     updateHiddenInput();
 }
 
