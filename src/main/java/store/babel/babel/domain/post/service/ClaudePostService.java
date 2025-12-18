@@ -129,9 +129,21 @@ public class ClaudePostService
                 사용자 메시지: %s
                 
                 ## 응답 규칙
-                1. 제목, 내용, 태그는 필요한 것만 수정하세요.
-                2. 메시지는 반드시 작성하세요.
-                3. **내용(content)은 반드시 Quill Delta JSON 형식으로 작성하세요.**
+                1. **제목, 내용, 태그는 실제로 수정이 필요한 경우에만 응답에 포함하세요.**
+                2. 단순 대화(감사, 확인, 질문)는 message만 작성하세요.
+                3. 메시지는 반드시 작성하세요.
+                4. 내용(content)을 수정할 때는 반드시 Quill Delta JSON 형식으로 작성하세요.
+                
+                ## 수정이 필요한 경우 예시
+                - 사용자: "제목을 더 흥미롭게 바꿔줘" → title, message 응답
+                - 사용자: "문단 추가해줘" → content, message 응답
+                - 사용자: "태그 바꿔줘" → tags, message 응답
+                
+                ## 수정이 불필요한 경우 예시
+                - 사용자: "고마워" → message만 응답
+                - 사용자: "좋아" → message만 응답
+                - 사용자: "더 설명해줘" → message만 응답 (설명만 하고 수정 안함)
+                - 사용자: "이 글 어때?" → message만 응답 (평가/피드백만)
                 
                 ## Quill Delta 형식 예시
                 {"ops":[{"insert":"굵은 텍스트","attributes":{"bold":true}},{"insert":"\\n일반 텍스트\\n"}]}
@@ -153,6 +165,7 @@ public class ClaudePostService
                 - 줄바꿈은 반드시 \\n으로 표현
                 - 기존 미디어는 그대로 유지
                 - 임의의 URL 절대 사용 금지
+                - **불필요한 필드는 응답에 포함하지 마세요**
                 
                 내용을 수정할 때는 위 형식을 절대 벗어나지 마세요.
                 """.formatted(

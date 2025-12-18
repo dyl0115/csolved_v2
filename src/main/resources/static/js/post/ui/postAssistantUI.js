@@ -6,7 +6,10 @@ let isResizing = false;
 export function init()
 {
     document.getElementById('post-submit-btn')
-        ?.addEventListener('click', postSubmit);
+        ?.addEventListener('click', postCreate);
+
+    document.getElementById('post-update-btn')
+        ?.addEventListener('click', postUpdate);
 
     document.getElementById('resizer')
         ?.addEventListener('mousedown', event => startResize(event))
@@ -16,7 +19,7 @@ export function init()
     document.addEventListener('mouseup', stopResize);
 }
 
-async function postSubmit()
+async function postCreate()
 {
     const form = {
         categoryId: document.getElementById('categoryId').value,
@@ -30,6 +33,30 @@ async function postSubmit()
     try
     {
         await postService.createPost(form);
+        alert('작성이 완료되었습니다.');
+        window.location.href = '/post/list?page=1';
+    }
+    catch (error)
+    {
+        handleError(error);
+    }
+}
+
+async function postUpdate()
+{
+    const form = {
+        postId: document.getElementById('post-id').value,
+        categoryId: document.getElementById('categoryId').value,
+        title: document.getElementById('title').value,
+        authorId: document.getElementById('authorId').value,
+        anonymous: document.getElementById('anonymous').checked,
+        tags: document.getElementById('tag-hidden-input').value,
+        content: document.getElementById('content').value
+    };
+
+    try
+    {
+        await postService.updatePost(form);
         alert('작성이 완료되었습니다.');
         window.location.href = '/post/list?page=1';
     }
