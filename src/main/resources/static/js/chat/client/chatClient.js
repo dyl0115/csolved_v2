@@ -10,7 +10,7 @@ export function handleStream(chunkHandler)
 
     status.eventSource.addEventListener('message', (event) =>
     {
-        // console.log('chatClient: ' + event.data);
+        console.log('chatClient: ' + event.data);
         chunkHandler(event.data);
     });
 }

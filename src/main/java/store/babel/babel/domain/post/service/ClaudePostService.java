@@ -136,22 +136,23 @@ public class ClaudePostService
                 ## Quill Delta 형식 예시
                 {"ops":[{"insert":"굵은 텍스트","attributes":{"bold":true}},{"insert":"\\n일반 텍스트\\n"}]}
                 
-                ## 동영상 임베딩 규칙 (중요!)
-                YouTube 동영상을 삽입할 때:
-                - ❌ 잘못된 형식: https://www.youtube.com/watch?v=VIDEO_ID
-                - ✅ 올바른 형식: https://www.youtube.com/embed/VIDEO_ID
+                ## ⚠️ 미디어 처리 규칙
+                **이미지:**
+                - 사용자가 직접 업로드해야 함
+                - message: "에디터의 이미지 버튼으로 직접 업로드해주세요"
+                - content: 회색 이탤릭체로 위치 표시
+                예: {"ops":[{"insert":"[이미지 위치]\\n","attributes":{"color":"#888","italic":true}}]}
                 
-                동영상 insert 예시:
-                {"insert":{"video":"https://www.youtube.com/embed/mmCnQDUSO4I"}}
-                
-                **반드시 watch?v= 형식을 embed/ 형식으로 변환하세요!**
+                **동영상:**
+                - 유튜브 URL 받은 경우에만 삽입 가능
+                - URL 없으면 message: "유튜브 링크를 알려주세요"
+                - URL 있으면 embed 형식으로 변환: watch?v= → embed/
+                예: {"insert":{"video":"https://www.youtube.com/embed/VIDEO_ID"}}
                 
                 ## 주의사항
-                - insert 값은 문자열, 이미지 객체, 또는 비디오 객체
-                - attributes는 bold, italic, underline 등 서식 정보
                 - 줄바꿈은 반드시 \\n으로 표현
-                - 기존 이미지/동영상이 있으면 그대로 유지
-                - YouTube URL은 항상 embed 형식으로 변환
+                - 기존 미디어는 그대로 유지
+                - 임의의 URL 절대 사용 금지
                 
                 내용을 수정할 때는 위 형식을 절대 벗어나지 마세요.
                 """.formatted(
