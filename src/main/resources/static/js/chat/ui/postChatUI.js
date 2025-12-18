@@ -109,7 +109,6 @@ function updateContent(post)
     const deltaOps = chatService.parseContent(post.content);
     if (deltaOps)
     {
-        // TODO: quill 의존성 제거 + 부분 업데이트 방식으로 개선해야 함.
         quill.setContents(deltaOps);
         document.getElementById('content').textContent = deltaOps;
 
