@@ -2,17 +2,38 @@ const status = {
     eventSource: null,
 }
 
-export function handleStream(chunkHandler)
+export function handleStream(chunkHandler, errorHandler)
 {
-    if (status.eventSource) return;
+    if (status.eventSource)
+    {
+        console.warn('이미 연결되어 있습니다.')
+        return;
+    }
 
     status.eventSource = new EventSource('/ai/post/connect');
 
     status.eventSource.addEventListener('message', (event) =>
     {
-        console.log('chatClient: ' + event.data);
+        // console.log('chatClient: ' + event.data);
         chunkHandler(event.data);
     });
+
+    status.eventSource.onerror = (error) =>
+    {
+        console.error('SSE 연결 오류:', error);
+        closeConnection()
+
+    }
+}
+
+export function closeConnection()
+{
+    if (status.eventSource)
+    {
+        status.eventSource.close();
+        status.eventSource = null;
+        console.log('SSE 연결 종료');
+    }
 }
 
 export async function sendMessage(request)
@@ -32,3 +53,4 @@ export async function sendMessage(request)
         throw new Error(errorData.message || '알 수 없는 오류');
     }
 }
+

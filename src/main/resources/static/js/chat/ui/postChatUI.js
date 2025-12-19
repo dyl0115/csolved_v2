@@ -35,26 +35,26 @@ export function init()
 
 export function sendChatMessage()
 {
-const messageInput = document.getElementById('chat-input');
+    const messageInput = document.getElementById('chat-input');
 
-const message = messageInput.value.trim();
-if (!message) return;
+    const message = messageInput.value.trim();
+    if (!message) return;
 
-const quill = quillUI.getQuill();
+    const quill = quillUI.getQuill();
 
 // Quill에서 직접 Delta 가져오기
-const currentDelta = quill ? quill.getContents() : null;
-    
-// postId 확인 (수정 모드)
-const postIdElement = document.getElementById('postId');
-const postId = postIdElement ? postIdElement.value : null;
+    const currentDelta = quill ? quill.getContents() : null;
 
-const form = {
-    postId: postId, // 수정시 postId 포함
+// postId 확인 (수정 모드)
+    const postIdElement = document.getElementById('postId');
+    const postId = postIdElement ? postIdElement.value : null;
+
+    const form = {
+        postId: postId, // 수정시 postId 포함
         title: document.getElementById('title').value,
-    content: currentDelta ? JSON.stringify(currentDelta) : JSON.stringify(document.getElementById('content').value),
-    tags: document.getElementById('tag-hidden-input').value,
-    message: message,
+        content: currentDelta ? JSON.stringify(currentDelta) : JSON.stringify(document.getElementById('content').value),
+        tags: document.getElementById('tag-hidden-input').value,
+        message: message,
     }
 
     addUserMessage(message);
@@ -197,7 +197,6 @@ async function updateContent(post)
         if (quill)
         {
             quill.setContents(sanitizedDelta, 'silent');
-            // hidden input도 업데이트 (수동으로)
             document.getElementById('content').value = quill.root.innerHTML;
         }
 
