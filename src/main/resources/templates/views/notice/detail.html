@@ -296,9 +296,9 @@
                                         </div>
                                         
                                         <!-- 댓글 내용 -->
-                                        <div class="mb-3 text-gray-700 prose max-w-none break-words"
+                                        <div class="mb-3 text-gray-700 prose max-w-none break-words whitespace-pre-wrap"
                                              th:classappend="${answer.deletedAt != null} ? 'opacity-50 italic'"
-                                             th:utext="${answer.content}">
+                                             th:text="${answer.content}">
                                             댓글 내용
                                         </div>
                                         

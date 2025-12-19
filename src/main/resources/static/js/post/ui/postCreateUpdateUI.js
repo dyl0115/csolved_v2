@@ -35,10 +35,10 @@ async function createPost()
 
 async function updatePost()
 {
-    const postId = document.getElementById('postId').value;
+    const postId = document.getElementById('post-id').value;
 
     const form = {
-        postId: document.getElementById('postId').value,
+        postId: postId,
         categoryId: document.getElementById('categoryId').value,
         title: document.getElementById('title').value,
         authorId: document.getElementById('authorId').value,

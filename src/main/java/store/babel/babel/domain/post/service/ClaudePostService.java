@@ -36,14 +36,11 @@ public class ClaudePostService
     @Async
     public void stream(Long userId, ClaudeMessage message) throws IOException
     {
-        log.info(message.toString());
         ClaudeSession session = claudeSessionManager.getSession(userId);
         SseEmitter emitter = session.getEmitter();
 
         session.addHistory(message);
 
-        log.info("history: " + session.getHistory().toString());
-        log.info("emitter: " + emitter);
         List<ClaudeMessage> history = session.getHistory();
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
 
