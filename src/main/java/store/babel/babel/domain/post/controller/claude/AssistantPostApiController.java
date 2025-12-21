@@ -26,10 +26,9 @@ public class AssistantPostApiController
     @LoginRequest
     @ResponseBody
     @PostMapping("/message")
-    public void stream(@LoginUser User user,
-                       @RequestBody ClaudeMessage message)
+    public void assistPost(@LoginUser User user,
+                           @RequestBody ClaudeMessage message)
     {
-        System.out.println("claude controller");
-        claudePostService.stream(user.getId(), message);
+        claudePostService.assistPost(user.getId(), message);
     }
 }

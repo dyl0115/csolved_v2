@@ -6,7 +6,6 @@ import com.anthropic.helpers.BetaMessageAccumulator;
 import com.anthropic.models.beta.messages.*;
 import com.anthropic.models.messages.Model;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +30,8 @@ public class ClaudePostService
 
     private final ClaudeSessionManager claudeSessionManager;
     private final AnthropicClient claudeClient;
-    private final ObjectMapper objectMapper;
     private final PromptManager promptManager;
+    private final ObjectMapper objectMapper;
 
     public SseEmitter connect(Long userId)
     {
@@ -41,35 +40,34 @@ public class ClaudePostService
     }
 
     @Async
-    public void stream(Long userId, ClaudeMessage message)
+    public void assistPost(Long userId, ClaudeMessage message)
     {
-        System.out.println("claude service");
         ClaudeSession session = claudeSessionManager.getSession(userId);
         session.addHistory(message);
 
-        BetaMessageAccumulator accumulator = streamToClient(session);
+        BetaMessageAccumulator accumulator = streamResponse(session);
         ClaudeMessage response = parseResponse(accumulator);
         session.addHistory(response);
     }
 
-    private BetaMessageAccumulator streamToClient(ClaudeSession session)
+    private BetaMessageAccumulator streamResponse(ClaudeSession session)
     {
         SseEmitter emitter = session.getEmitter();
         List<ClaudeMessage> history = session.getHistory();
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
 
         try (StreamResponse<BetaRawMessageStreamEvent> streamResponse
-                     = claudeClient.beta().messages().createStreaming(createParams(history)))
+                     = claudeClient.beta().messages().createStreaming(buildRequestParams(history)))
         {
             streamResponse.stream()
                     .peek(accumulator::accumulate)
-                    .forEach(event -> sendTextDelta(emitter, event));
+                    .forEach(event -> handleStreamEvent(emitter, event));
         }
 
         return accumulator;
     }
 
-    private void sendTextDelta(SseEmitter emitter, BetaRawMessageStreamEvent event)
+    private void handleStreamEvent(SseEmitter emitter, BetaRawMessageStreamEvent event)
     {
         if (event.contentBlockDelta().isEmpty()) return;
 
@@ -113,7 +111,7 @@ public class ClaudePostService
         }
     }
 
-    private StructuredMessageCreateParams<ClaudeMessage> createParams(List<ClaudeMessage> history)
+    private StructuredMessageCreateParams<ClaudeMessage> buildRequestParams(List<ClaudeMessage> history)
     {
         StructuredMessageCreateParams.Builder<ClaudeMessage> builder = MessageCreateParams.builder()
                 .model(Model.CLAUDE_HAIKU_4_5_20251001)
@@ -124,19 +122,18 @@ public class ClaudePostService
         {
             if (Objects.equals(message.getRole(), "assistant"))
             {
-                builder.addAssistantMessage(createStringMessage(message));
+                builder.addAssistantMessage(buildPrompt(message));
             }
             else if (Objects.equals(message.getRole(), "user"))
             {
-                builder.addUserMessage(createStringMessage(message));
+                builder.addUserMessage(buildPrompt(message));
             }
         });
 
         return builder.build();
     }
 
-
-    private String createStringMessage(ClaudeMessage message)
+    private String buildPrompt(ClaudeMessage message)
     {
         return promptManager.loadAndRender(POST_CREATE_ASSISTANT_PROMPT, message);
     }

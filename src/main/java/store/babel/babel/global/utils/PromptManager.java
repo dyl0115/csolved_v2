@@ -34,11 +34,6 @@ public class PromptManager
         return result;
     }
 
-    public String loadAndRender(String filename, Map<String, String> variables)
-    {
-        return render(load(filename), variables);
-    }
-
     public String loadAndRender(String filename, Object source)
     {
         String template = load(filename);
