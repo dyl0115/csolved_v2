@@ -7,7 +7,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 
 @Slf4j
 @Getter
@@ -32,7 +31,7 @@ public class ClaudeSession
         history.add(message);
     }
 
-    public void setOnCompletion(Runnable callback)
+    public void onCompletion(Runnable callback)
     {
         emitter.onCompletion(() ->
         {
@@ -42,7 +41,7 @@ public class ClaudeSession
         });
     }
 
-    public void setOnTimeout(Runnable callback)
+    public void onTimeout(Runnable callback)
     {
         emitter.onTimeout(() ->
         {
@@ -53,14 +52,14 @@ public class ClaudeSession
         });
     }
 
-    public void setOnError(Consumer<Throwable> callback)
+    public void onError(Runnable callback)
     {
         emitter.onError((e) ->
         {
             log.error("SSE 오류: {}", e.getMessage());
             emitter.completeWithError(e);
             history.clear();
-            if (callback != null) callback.accept(e);
+            if (callback != null) callback.run();
         });
     }
 }

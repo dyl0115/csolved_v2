@@ -15,24 +15,23 @@ import store.babel.babel.domain.user.dto.User;
 import store.babel.babel.global.utils.login.LoginRequest;
 import store.babel.babel.global.utils.login.LoginUser;
 
-import java.io.IOException;
 import java.util.List;
 
 import static store.babel.babel.domain.post.dto.PostType.POST;
 
 @RequiredArgsConstructor
+@RequestMapping("/ai/post/")
 @Controller
 public class AssistantPostController
 {
     private static final String VIEW_AI_POST_CREATE_FORM = "/views/post/assistant_create";
     private static final String VIEW_AI_POST_UPDATE_FORM = "/views/post/assistant_update";
 
-    private final ClaudePostService claudePostService;
     private final CategoryService categoryService;
     private final PostService postService;
 
     @LoginRequest
-    @GetMapping("/ai/post/createForm")
+    @GetMapping("/createForm")
     public String aiCreateForm(Model model)
     {
         List<Category> categories = categoryService.getAllCategories(PostType.POST.getValue());
@@ -41,7 +40,7 @@ public class AssistantPostController
     }
 
     @LoginRequest
-    @GetMapping("/ai/post/{postId}/updateForm")
+    @GetMapping("/{postId}/updateForm")
     public String aiUpdateForm(@LoginUser User user,
                                @PathVariable("postId") Long postId,
                                Model model)
@@ -54,21 +53,5 @@ public class AssistantPostController
         model.addAttribute("user", user);
 
         return VIEW_AI_POST_UPDATE_FORM;
-    }
-
-    @LoginRequest
-    @GetMapping("/ai/post/connect")
-    public SseEmitter connect(@LoginUser User user)
-    {
-        return claudePostService.connect(user.getId());
-    }
-
-    @LoginRequest
-    @ResponseBody
-    @PostMapping("/ai/post/message")
-    public void processMessage(@LoginUser User user,
-                               @RequestBody ClaudeMessage message) throws IOException
-    {
-        claudePostService.stream(user.getId(), message);
     }
 }

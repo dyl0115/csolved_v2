@@ -1,24 +1,18 @@
 package store.babel.babel.domain.post.controller.claude;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import store.babel.babel.global.exception.BabelException;
+import store.babel.babel.global.exception.ExceptionCode;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
 public class ClaudeSessionManager
 {
-    private Map<Long, Optional<ClaudeSession>> claudeSessionMap;
-
-    @PostConstruct
-    public void init()
-    {
-        claudeSessionMap = new ConcurrentHashMap<>();
-    }
+    private final Map<Long, ClaudeSession> sessionMap = new ConcurrentHashMap<>();
 
     public void createSession(Long userId)
     {
@@ -31,27 +25,31 @@ public class ClaudeSessionManager
         log.info("세션 생성: userId={}", userId);
         ClaudeSession session = ClaudeSession.create();
 
-        session.setOnCompletion(() -> removeSession(userId));
-        session.setOnTimeout(() -> removeSession(userId));
-        session.setOnError((e) -> removeSession(userId));
+        session.onCompletion(() -> removeSession(userId));
+        session.onTimeout(() -> removeSession(userId));
+        session.onError(() -> removeSession(userId));
 
-        claudeSessionMap.put(userId, Optional.of(session));
+        sessionMap.put(userId, session);
     }
 
     public ClaudeSession getSession(Long userId)
     {
-        return claudeSessionMap.get(userId).orElseThrow();
+        ClaudeSession session = sessionMap.get(userId);
+        if (session == null)
+        {
+            throw new BabelException(ExceptionCode.CHAT_SESSION_NOT_FOUND);
+        }
+        return session;
     }
 
     public boolean hasSession(Long userId)
     {
-        return claudeSessionMap.containsKey(userId)
-                && claudeSessionMap.get(userId).isPresent();
+        return sessionMap.containsKey(userId);
     }
 
     public void removeSession(Long userId)
     {
         log.info("세션 제거: userId={}", userId);
-        claudeSessionMap.remove(userId);
+        sessionMap.remove(userId);
     }
 }

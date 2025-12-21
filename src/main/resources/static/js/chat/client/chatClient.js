@@ -21,8 +21,11 @@ export function handleStream(chunkHandler, errorHandler)
     status.eventSource.onerror = (error) =>
     {
         console.error('SSE 연결 오류:', error);
-        closeConnection()
-
+        closeConnection();
+        if (errorHandler)
+        {
+            errorHandler(error);
+        }
     }
 }
 
@@ -54,3 +57,7 @@ export async function sendMessage(request)
     }
 }
 
+window.addEventListener('beforeunload', () =>
+{
+    closeConnection();
+});
