@@ -27,7 +27,7 @@ import java.util.*;
 @Service
 public class ClaudePostService
 {
-    private static final String POST_CREATE_ASSISTANT_PROMPT = "/prompts/post-create-assistant.md";
+    private static final String POST_CREATE_ASSISTANT_PROMPT = "prompts/post-create-assistant.md";
 
     private final ClaudeSessionManager claudeSessionManager;
     private final AnthropicClient claudeClient;
@@ -39,15 +39,22 @@ public class ClaudePostService
         claudeSessionManager.createSession(userId);
         return claudeSessionManager.getSession(userId).getEmitter();
     }
-    
+
     @Async
     public void stream(Long userId, ClaudeMessage message)
     {
+        System.out.println("claude service");
         ClaudeSession session = claudeSessionManager.getSession(userId);
-        SseEmitter emitter = session.getEmitter();
-
         session.addHistory(message);
 
+        BetaMessageAccumulator accumulator = streamToClient(session);
+        ClaudeMessage response = parseResponse(accumulator);
+        session.addHistory(response);
+    }
+
+    private BetaMessageAccumulator streamToClient(ClaudeSession session)
+    {
+        SseEmitter emitter = session.getEmitter();
         List<ClaudeMessage> history = session.getHistory();
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
 
@@ -56,49 +63,53 @@ public class ClaudePostService
         {
             streamResponse.stream()
                     .peek(accumulator::accumulate)
-                    .forEach(
-                            event ->
-                            {
-                                if (event.contentBlockDelta().isPresent())
-                                {
-                                    event.contentBlockDelta().stream()
-                                            .flatMap(contentBlock -> contentBlock.delta().text().stream())
-                                            .map(BetaTextDelta::text)
-                                            .forEach(text ->
-                                            {
-                                                try
-                                                {
-                                                    log.info("text: " + text);
-                                                    emitter.send(SseEmitter.event()
-                                                            .name("message")
-                                                            .data(text));
-                                                }
-                                                catch (IOException e)
-                                                {
-                                                    throw new RuntimeException(e);
-                                                }
-                                            });
-                                }
-                            }
-                    );
+                    .forEach(event -> sendTextDelta(emitter, event));
         }
 
+        return accumulator;
+    }
+
+    private void sendTextDelta(SseEmitter emitter, BetaRawMessageStreamEvent event)
+    {
+        if (event.contentBlockDelta().isEmpty()) return;
+
+        event.contentBlockDelta().stream()
+                .flatMap(contentBlock -> contentBlock.delta().text().stream())
+                .map(BetaTextDelta::text)
+                .forEach(text -> sendToClient(emitter, text));
+    }
+
+    private void sendToClient(SseEmitter emitter, String text)
+    {
+        try
+        {
+            log.info("text: {}", text);
+            emitter.send(SseEmitter.event()
+                    .name("message")
+                    .data(text));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("SSE 전송 실패", e);
+        }
+    }
+
+    private ClaudeMessage parseResponse(BetaMessageAccumulator accumulator)
+    {
         String jsonText = accumulator.message(ClaudeMessage.class)
                 .content()
                 .stream()
                 .flatMap(block -> block.rawContentBlock().text().stream())
                 .map(BetaTextBlock::text)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("No Text Content"));
-
+                .orElseThrow(() -> new RuntimeException("응답 텍스트 없음"));
         try
         {
-            ClaudeMessage claudeMessage = objectMapper.readValue(jsonText, ClaudeMessage.class);
-            session.addHistory(claudeMessage);
+            return objectMapper.readValue(jsonText, ClaudeMessage.class);
         }
         catch (JsonProcessingException e)
         {
-            throw new RuntimeException(e);
+            throw new RuntimeException("응답 파싱 실패", e);
         }
     }
 

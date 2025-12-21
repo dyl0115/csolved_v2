@@ -10,7 +10,7 @@ export function handleStream(chunkHandler, errorHandler)
         return;
     }
 
-    status.eventSource = new EventSource('/ai/post/connect');
+    status.eventSource = new EventSource('/api/ai/post/connect');
 
     status.eventSource.addEventListener('message', (event) =>
     {
@@ -41,7 +41,7 @@ export function closeConnection()
 
 export async function sendMessage(request)
 {
-    const response = await fetch('/ai/post/message', {
+    const response = await fetch('/api/ai/post/message', {
         method: "POST",
         headers:
             {

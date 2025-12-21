@@ -11,13 +11,11 @@ import java.util.Map;
 @Component
 public class PromptManager
 {
-    private static final String PROMPT_PATH = "prompts/";
-
     public String load(String filename)
     {
         try
         {
-            ClassPathResource resource = new ClassPathResource(PROMPT_PATH + filename);
+            ClassPathResource resource = new ClassPathResource(filename);
             return resource.getContentAsString(StandardCharsets.UTF_8);
         }
         catch (IOException e)

@@ -29,6 +29,7 @@ public class AssistantPostApiController
     public void stream(@LoginUser User user,
                        @RequestBody ClaudeMessage message)
     {
+        System.out.println("claude controller");
         claudePostService.stream(user.getId(), message);
     }
 }
