@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.function.BiConsumer;
+import java.io.IOException;
 
 @Slf4j
 @Getter
@@ -33,6 +33,21 @@ public class AssistantChatSession
     public void closeChatTurn(PostAssistResponse response)
     {
         chatHistory.closeTurn(response);
+    }
+
+    public void send(String text)
+    {
+        try
+        {
+            log.debug("SSE 전송: {}", text);
+            chatEmitter.send(SseEmitter.event()
+                    .name("message")
+                    .data(text));
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("SSE 전송 실패", e);
+        }
     }
 
     public void onCompletion(Runnable callback)

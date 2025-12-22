@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import store.babel.babel.domain.post.controller.claude.ChatSessionArgumentResolver;
 import store.babel.babel.global.utils.login.LoginRequestInterceptor;
 import store.babel.babel.global.utils.login.LoginUserArgumentResolver;
 import store.babel.babel.global.utils.filter.FilterRequestArgumentResovler;
@@ -24,6 +25,7 @@ public class WebConfig implements WebMvcConfigurer
     private final FilterRequestArgumentResovler filterRequestArgumentResovler;
     private final SearchRequestArgumentResolver searchRequestArgumentResolver;
     private final LoginRequestInterceptor loginRequestInterceptor;
+    private final ChatSessionArgumentResolver chatSessionArgumentResolver;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry)
@@ -49,5 +51,8 @@ public class WebConfig implements WebMvcConfigurer
 
         // @SearchInfo가 있는 SearchRequest 변수에 search정보를 바인딩합니다.
         resolvers.add(searchRequestArgumentResolver);
+
+        // @ChatSession이 있는 ChatSessionArgumentResolver 변수에 ChatSession을 바인딩합니다.
+        resolvers.add(chatSessionArgumentResolver);
     }
 }

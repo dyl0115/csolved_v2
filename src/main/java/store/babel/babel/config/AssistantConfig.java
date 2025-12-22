@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ClaudeConfig
+public class AssistantConfig
 {
     @Value("${CLAUDE_API_KEY}")
     private String claudeApiKey;

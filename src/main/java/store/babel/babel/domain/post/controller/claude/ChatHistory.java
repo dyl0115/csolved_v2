@@ -2,7 +2,7 @@ package store.babel.babel.domain.post.controller.claude;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class ChatHistory<REQ, RES>
 {
@@ -25,11 +25,13 @@ public class ChatHistory<REQ, RES>
         turns.get(turns.size() - 1).close(response);
     }
 
-    public void forEach(BiConsumer<REQ, RES> consumer)
+    public void forEach(Consumer<REQ> onUser, Consumer<RES> onAssistant)
     {
-        turns.forEach(turn -> consumer.accept(
-                turn.getUserMessage(),
-                turn.getAssistantMessage()));
+        turns.forEach(turn ->
+        {
+            onUser.accept(turn.getUserMessage());
+            if (turn.isClosed()) onAssistant.accept(turn.getAssistantMessage());
+        });
     }
 
     public void clearAll()

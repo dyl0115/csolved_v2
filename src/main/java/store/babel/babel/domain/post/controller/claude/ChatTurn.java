@@ -21,4 +21,9 @@ public class ChatTurn<REQ, RES>
     {
         this.assistantMessage = response;
     }
+
+    public boolean isClosed()
+    {
+        return this.assistantMessage != null;
+    }
 }
