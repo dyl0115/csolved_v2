@@ -5,7 +5,6 @@ import com.anthropic.client.okhttp.AnthropicOkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import store.babel.babel.domain.post.controller.claude.ClaudeSessionManager;
 
 @Configuration
 public class ClaudeConfig

@@ -5,60 +5,64 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BiConsumer;
 
 @Slf4j
 @Getter
 @Builder
-public class ClaudeSession
+public class AssistantChatSession
 {
-    private SseEmitter emitter;
-    private List<ClaudeMessage> history;
+    private SseEmitter chatEmitter;
+    private ChatHistory<PostAssistRequest, PostAssistResponse> chatHistory;
 
-    public static ClaudeSession create()
+    public static AssistantChatSession create()
     {
         SseEmitter emitter = new SseEmitter(0L);
 
-        return ClaudeSession.builder()
-                .emitter(emitter)
-                .history(new CopyOnWriteArrayList<>())
+        return AssistantChatSession.builder()
+                .chatHistory(new ChatHistory<>())
+                .chatEmitter(emitter)
                 .build();
     }
 
-    public void addHistory(ClaudeMessage message)
+    public void openChatTurn(PostAssistRequest request)
     {
-        history.add(message);
+        chatHistory.openTurn(request);
+    }
+
+    public void closeChatTurn(PostAssistResponse response)
+    {
+        chatHistory.closeTurn(response);
     }
 
     public void onCompletion(Runnable callback)
     {
-        emitter.onCompletion(() ->
+        chatEmitter.onCompletion(() ->
         {
             log.info("SSE 연결완료");
-            history.clear();
+            chatHistory.clearAll();
             if (callback != null) callback.run();
         });
     }
 
     public void onTimeout(Runnable callback)
     {
-        emitter.onTimeout(() ->
+        chatEmitter.onTimeout(() ->
         {
             log.info("SSE 타임아웃");
-            emitter.complete();
-            history.clear();
+            chatEmitter.complete();
+            chatHistory.clearAll();
             if (callback != null) callback.run();
         });
     }
 
     public void onError(Runnable callback)
     {
-        emitter.onError((e) ->
+        chatEmitter.onError((e) ->
         {
             log.error("SSE 오류: {}", e.getMessage());
-            emitter.completeWithError(e);
-            history.clear();
+            chatEmitter.completeWithError(e);
+            chatHistory.clearAll();
             if (callback != null) callback.run();
         });
     }

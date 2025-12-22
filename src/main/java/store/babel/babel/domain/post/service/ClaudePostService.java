@@ -12,13 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import store.babel.babel.domain.post.controller.claude.ClaudeMessage;
-import store.babel.babel.domain.post.controller.claude.ClaudeSession;
-import store.babel.babel.domain.post.controller.claude.ClaudeSessionManager;
+import store.babel.babel.domain.post.controller.claude.*;
 import store.babel.babel.global.utils.PromptManager;
 
 import java.io.IOException;
-import java.util.*;
 
 
 @Slf4j
@@ -26,9 +23,10 @@ import java.util.*;
 @Service
 public class ClaudePostService
 {
-    private static final String POST_CREATE_ASSISTANT_PROMPT = "prompts/post-create-assistant.md";
+    private static final String POST_CREATE_SYSTEM_PROMPT = "prompts/post-create-system.md";
+    private static final String POST_CREATE_USER_PROMPT = "prompts/post-create-user.md";
 
-    private final ClaudeSessionManager claudeSessionManager;
+    private final AssistantChatSessionManager claudeSessionManager;
     private final AnthropicClient claudeClient;
     private final PromptManager promptManager;
     private final ObjectMapper objectMapper;
@@ -36,28 +34,31 @@ public class ClaudePostService
     public SseEmitter connect(Long userId)
     {
         claudeSessionManager.createSession(userId);
-        return claudeSessionManager.getSession(userId).getEmitter();
+        return claudeSessionManager.getSession(userId).getChatEmitter();
     }
 
     @Async
-    public void assistPost(Long userId, ClaudeMessage message)
+    public void assistPost(Long userId, PostAssistRequest request)
     {
-        ClaudeSession session = claudeSessionManager.getSession(userId);
-        session.addHistory(message);
+        AssistantChatSession session = claudeSessionManager.getSession(userId);
+        session.openChatTurn(request);
 
         BetaMessageAccumulator accumulator = streamResponse(session);
-        ClaudeMessage response = parseResponse(accumulator);
-        session.addHistory(response);
+        PostAssistResponse response = parseResponse(accumulator);
+        session.closeChatTurn(response);
     }
 
-    private BetaMessageAccumulator streamResponse(ClaudeSession session)
+    private BetaMessageAccumulator streamResponse(AssistantChatSession session)
     {
-        SseEmitter emitter = session.getEmitter();
-        List<ClaudeMessage> history = session.getHistory();
+        SseEmitter emitter = session.getChatEmitter();
+        ChatHistory<PostAssistRequest, PostAssistResponse> history = session.getChatHistory();
+
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
 
-        try (StreamResponse<BetaRawMessageStreamEvent> streamResponse
-                     = claudeClient.beta().messages().createStreaming(buildRequestParams(history)))
+        try (StreamResponse<BetaRawMessageStreamEvent> streamResponse =
+                     claudeClient.beta()
+                             .messages()
+                             .createStreaming(buildRequestParams(history)))
         {
             streamResponse.stream()
                     .peek(accumulator::accumulate)
@@ -72,7 +73,10 @@ public class ClaudePostService
         if (event.contentBlockDelta().isEmpty()) return;
 
         event.contentBlockDelta().stream()
-                .flatMap(contentBlock -> contentBlock.delta().text().stream())
+                .flatMap(contentBlock -> contentBlock
+                        .delta()
+                        .text()
+                        .stream())
                 .map(BetaTextDelta::text)
                 .forEach(text -> sendToClient(emitter, text));
     }
@@ -92,9 +96,9 @@ public class ClaudePostService
         }
     }
 
-    private ClaudeMessage parseResponse(BetaMessageAccumulator accumulator)
+    private PostAssistResponse parseResponse(BetaMessageAccumulator accumulator)
     {
-        String jsonText = accumulator.message(ClaudeMessage.class)
+        String jsonText = accumulator.message(PostAssistResponse.class)
                 .content()
                 .stream()
                 .flatMap(block -> block.rawContentBlock().text().stream())
@@ -103,7 +107,7 @@ public class ClaudePostService
                 .orElseThrow(() -> new RuntimeException("응답 텍스트 없음"));
         try
         {
-            return objectMapper.readValue(jsonText, ClaudeMessage.class);
+            return objectMapper.readValue(jsonText, PostAssistResponse.class);
         }
         catch (JsonProcessingException e)
         {
@@ -111,30 +115,32 @@ public class ClaudePostService
         }
     }
 
-    private StructuredMessageCreateParams<ClaudeMessage> buildRequestParams(List<ClaudeMessage> history)
+    private StructuredMessageCreateParams<PostAssistResponse> buildRequestParams(ChatHistory<PostAssistRequest, PostAssistResponse> history)
     {
-        StructuredMessageCreateParams.Builder<ClaudeMessage> builder = MessageCreateParams.builder()
+        StructuredMessageCreateParams.Builder<PostAssistResponse> builder = MessageCreateParams.builder()
                 .model(Model.CLAUDE_HAIKU_4_5_20251001)
                 .maxTokens(2048L)
-                .outputFormat(ClaudeMessage.class);
+                .system(promptManager.load(POST_CREATE_SYSTEM_PROMPT))
+                .outputFormat(PostAssistResponse.class);
 
-        history.forEach(message ->
+        history.forEach((request, response) ->
         {
-            if (Objects.equals(message.getRole(), "assistant"))
-            {
-                builder.addAssistantMessage(buildPrompt(message));
-            }
-            else if (Objects.equals(message.getRole(), "user"))
-            {
-                builder.addUserMessage(buildPrompt(message));
-            }
+            builder.addUserMessage(promptManager.loadAndRender(POST_CREATE_USER_PROMPT, request));
+            if (response != null) builder.addAssistantMessage(toJson(response));
         });
 
         return builder.build();
     }
 
-    private String buildPrompt(ClaudeMessage message)
+    private String toJson(PostAssistResponse response)
     {
-        return promptManager.loadAndRender(POST_CREATE_ASSISTANT_PROMPT, message);
+        try
+        {
+            return objectMapper.writeValueAsString(response);
+        }
+        catch (JsonProcessingException e)
+        {
+            throw new RuntimeException("메시지 JSON 변환 실패", e);
+        }
     }
 }

@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @Component
-public class ClaudeSessionManager
+public class AssistantChatSessionManager
 {
-    private final Map<Long, ClaudeSession> sessionMap = new ConcurrentHashMap<>();
+    private final Map<Long, AssistantChatSession> sessionMap = new ConcurrentHashMap<>();
 
     public void createSession(Long userId)
     {
@@ -23,7 +23,7 @@ public class ClaudeSessionManager
         }
 
         log.info("세션 생성: userId={}", userId);
-        ClaudeSession session = ClaudeSession.create();
+        AssistantChatSession session = AssistantChatSession.create();
 
         session.onCompletion(() -> removeSession(userId));
         session.onTimeout(() -> removeSession(userId));
@@ -32,10 +32,10 @@ public class ClaudeSessionManager
         sessionMap.put(userId, session);
     }
 
-    public ClaudeSession getSession(Long userId)
+    public AssistantChatSession getSession(Long userId)
     {
-        ClaudeSession session = sessionMap.get(userId);
-        if (session == null)
+        AssistantChatSession session = sessionMap.get(userId);
+        if (!hasSession(userId))
         {
             throw new BabelException(ExceptionCode.CHAT_SESSION_NOT_FOUND);
         }

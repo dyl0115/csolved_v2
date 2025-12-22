@@ -27,8 +27,8 @@ public class AssistantPostApiController
     @ResponseBody
     @PostMapping("/message")
     public void assistPost(@LoginUser User user,
-                           @RequestBody ClaudeMessage message)
+                           @RequestBody PostAssistRequest request)
     {
-        claudePostService.assistPost(user.getId(), message);
+        claudePostService.assistPost(user.getId(), request);
     }
 }
