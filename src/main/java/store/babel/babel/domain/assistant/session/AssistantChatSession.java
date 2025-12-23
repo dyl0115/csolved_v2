@@ -7,6 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
 @Slf4j
 @Getter
@@ -39,9 +40,9 @@ public class AssistantChatSession
         }
     }
 
-    public AssistantChatSession onOpen(Runnable onOpen)
+    public AssistantChatSession onInitialize(Runnable onInitialize)
     {
-        if (onOpen != null) onOpen.run();
+        onInitialize.run();
         return this;
     }
 

@@ -19,13 +19,19 @@ import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+//@Component
 public class ClaudeLlmClient implements LlmClient<PostAssistRequest>
 {
     private final ClaudeChatHistoryManager<PostAssistRequest, PostAssistResponse> historyManager;
     private final ClaudeMessageBuilder messageBuilder;
     private final AnthropicClient anthropicClient;
     private final ObjectMapper objectMapper;
+
+    @Override
+    public void openSession(Long userId)
+    {
+        historyManager.createHistory(userId);
+    }
 
     @Override
     public void stream(AssistantChatSession session, PostAssistRequest request)
@@ -51,7 +57,7 @@ public class ClaudeLlmClient implements LlmClient<PostAssistRequest>
     }
 
     @Override
-    public void cleanUp(Long userId)
+    public void closeSession(Long userId)
     {
         historyManager.clearAll(userId);
     }

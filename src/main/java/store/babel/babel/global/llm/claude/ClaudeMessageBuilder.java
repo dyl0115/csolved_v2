@@ -14,7 +14,7 @@ import store.babel.babel.global.llm.PromptManager;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Component
+//@Component
 public class ClaudeMessageBuilder
 {
     private static final String SYSTEM_PROMPT = "prompts/post-create-system.md";
@@ -35,11 +35,6 @@ public class ClaudeMessageBuilder
         history.forEach(
                 turn ->
                 {
-//                    System.out.println("user: " + turn.getUserMessage().toString());
-//                    if (turn.getAssistantMessage() != null)
-//                    {
-//                        System.out.println("assistant: " + turn.getAssistantMessage().toString());
-//                    }
                     builder.addUserMessage(promptManager.loadAndRender(USER_PROMPT, turn.getUserMessage()));
                     if (turn.getAssistantMessage() != null)
                     {

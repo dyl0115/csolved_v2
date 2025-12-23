@@ -20,22 +20,24 @@ public class PostAssistService
 
     public SseEmitter connect(Long userId)
     {
-        //여기서 그 LLM Client의 초기화가 이루어져야 함.
-
         chatSessionManager.createSession(userId)
+                .onInitialize(() ->
+                {
+                    llmClient.openSession(userId);
+                })
                 .onCompletion(() ->
                 {
-                    llmClient.cleanUp(userId);
+                    llmClient.closeSession(userId);
                     chatSessionManager.removeSession(userId);
                 })
                 .onTimeout(() ->
                 {
-                    llmClient.cleanUp(userId);
+                    llmClient.closeSession(userId);
                     chatSessionManager.removeSession(userId);
                 })
                 .onError(() ->
                 {
-                    llmClient.cleanUp(userId);
+                    llmClient.closeSession(userId);
                     chatSessionManager.removeSession(userId);
                 });
 

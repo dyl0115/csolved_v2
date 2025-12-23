@@ -37,13 +37,16 @@ public enum ExceptionCode
 
     // 채팅
     CHAT_SESSION_NOT_FOUND("H001", "채팅 세션이 존재하지 않습니다.", HttpStatus.NOT_FOUND),
+    AI_RESOURCE_EXHAUSTED("H002", "AI 사용 가능 횟수를 초과했습니다. 토큰을 충전 후 이용해주세요.", HttpStatus.TOO_MANY_REQUESTS),
 
     // 사용자 프로필
     PROFILE_UPDATE_DENIED("U001", "프로필을 수정할 권한이 없습니다.", HttpStatus.FORBIDDEN),
 
     // 기타
     IMAGE_UPLOAD_FAILED("G001", "이미지 업로드에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+
     ACCESS_DENIED("G002", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
+
     INTERNAL_SERVER_ERROR("G003", "서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private final String code;
