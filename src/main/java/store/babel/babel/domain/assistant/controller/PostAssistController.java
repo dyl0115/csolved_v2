@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.domain.assistant.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

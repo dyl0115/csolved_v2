@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import store.babel.babel.domain.post.controller.claude.ChatSessionArgumentResolver;
+import store.babel.babel.domain.assistant.session.ChatSessionArgumentResolver;
 import store.babel.babel.global.utils.login.LoginRequestInterceptor;
 import store.babel.babel.global.utils.login.LoginUserArgumentResolver;
 import store.babel.babel.global.utils.filter.FilterRequestArgumentResovler;

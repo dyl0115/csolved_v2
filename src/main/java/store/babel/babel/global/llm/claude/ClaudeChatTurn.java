@@ -1,18 +1,18 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.global.llm.claude;
 
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class ChatTurn<REQ, RES>
+public class ClaudeChatTurn<REQ, RES>
 {
     private REQ userMessage;
     private RES assistantMessage;
 
-    public static <REQ, RES> ChatTurn<REQ, RES> open(REQ request)
+    public static <REQ, RES> ClaudeChatTurn<REQ, RES> open(REQ request)
     {
-        return ChatTurn.<REQ, RES>builder()
+        return ClaudeChatTurn.<REQ, RES>builder()
                 .userMessage(request)
                 .build();
     }

@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.domain.assistant.session;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
@@ -30,7 +30,7 @@ public class ChatSessionArgumentResolver implements HandlerMethodArgumentResolve
                                   NativeWebRequest webRequest,
                                   WebDataBinderFactory binderFactory) throws Exception
     {
-        User user = (User) loginUserArgumentResolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
+        User user = loginUserArgumentResolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
         return sessionManager.getSession(user.getId());
     }
 }

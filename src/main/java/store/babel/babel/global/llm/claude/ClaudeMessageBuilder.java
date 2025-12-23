@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.global.llm.claude;
 
 import com.anthropic.models.beta.messages.MessageCreateParams;
 import com.anthropic.models.beta.messages.StructuredMessageCreateParams;
@@ -7,7 +7,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import store.babel.babel.global.utils.PromptManager;
+import store.babel.babel.domain.assistant.dto.PostAssistRequest;
+import store.babel.babel.domain.assistant.dto.PostAssistResponse;
+import store.babel.babel.global.llm.PromptManager;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Component
@@ -20,7 +24,7 @@ public class ClaudeMessageBuilder
     private final ObjectMapper objectMapper;
 
     public StructuredMessageCreateParams<PostAssistResponse> build(
-            ChatHistory<PostAssistRequest, PostAssistResponse> history)
+            List<ClaudeChatTurn<PostAssistRequest, PostAssistResponse>> history)
     {
         StructuredMessageCreateParams.Builder<PostAssistResponse> builder = MessageCreateParams.builder()
                 .model(Model.CLAUDE_HAIKU_4_5_20251001)
@@ -29,8 +33,19 @@ public class ClaudeMessageBuilder
                 .outputFormat(PostAssistResponse.class);
 
         history.forEach(
-                request -> builder.addUserMessage(promptManager.loadAndRender(USER_PROMPT, request)),
-                response -> builder.addAssistantMessage(toJson(response)));
+                turn ->
+                {
+//                    System.out.println("user: " + turn.getUserMessage().toString());
+//                    if (turn.getAssistantMessage() != null)
+//                    {
+//                        System.out.println("assistant: " + turn.getAssistantMessage().toString());
+//                    }
+                    builder.addUserMessage(promptManager.loadAndRender(USER_PROMPT, turn.getUserMessage()));
+                    if (turn.getAssistantMessage() != null)
+                    {
+                        builder.addAssistantMessage(toJson(turn.getAssistantMessage()));
+                    }
+                });
 
         return builder.build();
     }

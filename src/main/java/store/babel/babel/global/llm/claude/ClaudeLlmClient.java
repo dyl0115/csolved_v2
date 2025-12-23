@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.global.llm.claude;
 
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.core.http.StreamResponse;
@@ -10,36 +10,53 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import store.babel.babel.domain.assistant.dto.PostAssistRequest;
+import store.babel.babel.domain.assistant.dto.PostAssistResponse;
+import store.babel.babel.domain.assistant.session.AssistantChatSession;
+import store.babel.babel.global.llm.LlmClient;
+
 import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class ClaudeLlmClient implements LlmClient<PostAssistResponse>
+public class ClaudeLlmClient implements LlmClient<PostAssistRequest>
 {
-    private final AnthropicClient anthropicClient;
+    private final ClaudeChatHistoryManager<PostAssistRequest, PostAssistResponse> historyManager;
     private final ClaudeMessageBuilder messageBuilder;
+    private final AnthropicClient anthropicClient;
     private final ObjectMapper objectMapper;
 
     @Override
-    public PostAssistResponse stream(ChatHistory<PostAssistRequest, PostAssistResponse> history,
-                                     Consumer<String> onText)
+    public void stream(AssistantChatSession session, PostAssistRequest request)
     {
-        StructuredMessageCreateParams<PostAssistResponse> request = messageBuilder.build(history);
+        Long userId = request.getAuthorId();
+
+        historyManager.openTurn(userId, request);
+
+        StructuredMessageCreateParams<PostAssistResponse> message
+                = messageBuilder.build(historyManager.getHistory(userId));
+
         BetaMessageAccumulator accumulator = BetaMessageAccumulator.create();
 
         try (StreamResponse<BetaRawMessageStreamEvent> streamResponse =
-                     anthropicClient.beta().messages().createStreaming(request))
+                     anthropicClient.beta().messages().createStreaming(message))
         {
             streamResponse.stream()
                     .peek(accumulator::accumulate)
-                    .forEach(event -> handleStreamEvent(event, onText));
+                    .forEach(event -> handleTextDelta(event, session::send));
         }
 
-        return parseResponse(accumulator);
+        historyManager.closeTurn(userId, parseResponse(accumulator));
     }
 
-    private void handleStreamEvent(BetaRawMessageStreamEvent event, Consumer<String> onText)
+    @Override
+    public void cleanUp(Long userId)
+    {
+        historyManager.clearAll(userId);
+    }
+
+    private void handleTextDelta(BetaRawMessageStreamEvent event, Consumer<String> onText)
     {
         if (event.contentBlockDelta().isEmpty()) return;
 

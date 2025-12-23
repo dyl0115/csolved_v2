@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.domain.assistant.session;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

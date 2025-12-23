@@ -24,7 +24,7 @@ async function postCreate()
     const form = {
         categoryId: document.getElementById('categoryId').value,
         title: document.getElementById('title').value,
-        authorId: document.getElementById('authorId').value,
+        authorId: document.getElementById('author-id').value,
         anonymous: document.getElementById('anonymous').checked,
         tags: document.getElementById('tag-hidden-input').value,
         content: document.getElementById('content').value
@@ -48,7 +48,7 @@ async function postUpdate()
         postId: document.getElementById('post-id').value,
         categoryId: document.getElementById('categoryId').value,
         title: document.getElementById('title').value,
-        authorId: document.getElementById('authorId').value,
+        authorId: document.getElementById('author-id').value,
         anonymous: document.getElementById('anonymous').checked,
         tags: document.getElementById('tag-hidden-input').value,
         content: document.getElementById('content').value

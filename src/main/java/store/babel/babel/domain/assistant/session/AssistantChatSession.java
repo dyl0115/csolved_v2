@@ -1,9 +1,10 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.domain.assistant.session;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 
 import java.io.IOException;
 
@@ -13,26 +14,14 @@ import java.io.IOException;
 public class AssistantChatSession
 {
     private SseEmitter chatEmitter;
-    private ChatHistory<PostAssistRequest, PostAssistResponse> chatHistory;
 
     public static AssistantChatSession create()
     {
         SseEmitter emitter = new SseEmitter(0L);
 
         return AssistantChatSession.builder()
-                .chatHistory(new ChatHistory<>())
                 .chatEmitter(emitter)
                 .build();
-    }
-
-    public void openChatTurn(PostAssistRequest request)
-    {
-        chatHistory.openTurn(request);
-    }
-
-    public void closeChatTurn(PostAssistResponse response)
-    {
-        chatHistory.closeTurn(response);
     }
 
     public void send(String text)
@@ -50,35 +39,44 @@ public class AssistantChatSession
         }
     }
 
-    public void onCompletion(Runnable callback)
+    public AssistantChatSession onOpen(Runnable onOpen)
+    {
+        if (onOpen != null) onOpen.run();
+        return this;
+    }
+
+    public AssistantChatSession onCompletion(Runnable onCompletion)
     {
         chatEmitter.onCompletion(() ->
         {
             log.info("SSE 연결완료");
-            chatHistory.clearAll();
-            if (callback != null) callback.run();
+            if (onCompletion != null) onCompletion.run();
         });
+
+        return this;
     }
 
-    public void onTimeout(Runnable callback)
+    public AssistantChatSession onTimeout(Runnable onTimeout)
     {
         chatEmitter.onTimeout(() ->
         {
             log.info("SSE 타임아웃");
             chatEmitter.complete();
-            chatHistory.clearAll();
-            if (callback != null) callback.run();
+            if (onTimeout != null) onTimeout.run();
         });
+
+        return this;
     }
 
-    public void onError(Runnable callback)
+    public AssistantChatSession onError(Runnable onError)
     {
         chatEmitter.onError((e) ->
         {
             log.error("SSE 오류: {}", e.getMessage());
             chatEmitter.completeWithError(e);
-            chatHistory.clearAll();
-            if (callback != null) callback.run();
+            if (onError != null) onError.run();
         });
+
+        return this;
     }
 }

@@ -1,4 +1,4 @@
-package store.babel.babel.global.utils;
+package store.babel.babel.global.llm;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @Component
 public class PromptManager

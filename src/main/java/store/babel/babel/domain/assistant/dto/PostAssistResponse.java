@@ -1,4 +1,4 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.domain.assistant.dto;
 
 import lombok.Getter;
 import lombok.ToString;

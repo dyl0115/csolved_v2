@@ -1,9 +1,11 @@
-package store.babel.babel.domain.post.controller.claude;
+package store.babel.babel.domain.assistant.session;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import store.babel.babel.domain.assistant.dto.PostAssistRequest;
 import store.babel.babel.global.exception.BabelException;
 import store.babel.babel.global.exception.ExceptionCode;
+import store.babel.babel.global.llm.LlmClient;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,7 +16,7 @@ public class AssistantChatSessionManager
 {
     private final Map<Long, AssistantChatSession> sessionMap = new ConcurrentHashMap<>();
 
-    public void createSession(Long userId)
+    public AssistantChatSession createSession(Long userId)
     {
         if (hasSession(userId))
         {
@@ -25,11 +27,9 @@ public class AssistantChatSessionManager
         log.info("세션 생성: userId={}", userId);
         AssistantChatSession session = AssistantChatSession.create();
 
-        session.onCompletion(() -> removeSession(userId));
-        session.onTimeout(() -> removeSession(userId));
-        session.onError(() -> removeSession(userId));
-
         sessionMap.put(userId, session);
+
+        return sessionMap.get(userId);
     }
 
     public AssistantChatSession getSession(Long userId)

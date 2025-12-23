@@ -50,10 +50,11 @@ export function sendChatMessage()
     const postId = postIdElement ? postIdElement.value : null;
 
     const form = {
+        authorId: document.getElementById('author-id').value,
         postId: postId, // 수정시 postId 포함
         title: document.getElementById('title').value,
-        content: currentDelta ? JSON.stringify(currentDelta) : JSON.stringify(document.getElementById('content').value),
         tags: document.getElementById('tag-hidden-input').value,
+        content: currentDelta ? JSON.stringify(currentDelta) : JSON.stringify(document.getElementById('content').value),
         message: message,
     }
 

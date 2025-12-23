@@ -20,9 +20,10 @@ export function sendMessage(form)
 
     const request = {
         role: "user",
+        authorId: form.authorId,
         title: form.title,
-        content: form.content,
         tags: form.tags.split(","),
+        content: form.content,
         message: form.message
     };
 
