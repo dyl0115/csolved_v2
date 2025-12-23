@@ -2,6 +2,8 @@ package store.babel.babel.global.llm.claude;
 
 import com.anthropic.client.AnthropicClient;
 import com.anthropic.core.http.StreamResponse;
+import com.anthropic.errors.AnthropicException;
+import com.anthropic.errors.AnthropicServiceException;
 import com.anthropic.helpers.BetaMessageAccumulator;
 import com.anthropic.models.beta.messages.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -13,13 +15,15 @@ import org.springframework.stereotype.Component;
 import store.babel.babel.domain.assistant.dto.PostAssistRequest;
 import store.babel.babel.domain.assistant.dto.PostAssistResponse;
 import store.babel.babel.domain.assistant.session.AssistantChatSession;
+import store.babel.babel.global.exception.BabelException;
+import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.llm.LlmClient;
 
 import java.util.function.Consumer;
 
 @Slf4j
 @RequiredArgsConstructor
-//@Component
+@Component
 public class ClaudeLlmClient implements LlmClient<PostAssistRequest>
 {
     private final ClaudeChatHistoryManager<PostAssistRequest, PostAssistResponse> historyManager;
@@ -51,6 +55,14 @@ public class ClaudeLlmClient implements LlmClient<PostAssistRequest>
             streamResponse.stream()
                     .peek(accumulator::accumulate)
                     .forEach(event -> handleTextDelta(event, session::send));
+        }
+        catch (AnthropicServiceException exception)
+        {
+            // 예외를 더 구체적으로
+            if (exception.statusCode() == 429)
+            {
+                throw new BabelException(ExceptionCode.AI_RESOURCE_EXHAUSTED);
+            }
         }
 
         historyManager.closeTurn(userId, parseResponse(accumulator));

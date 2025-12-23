@@ -14,7 +14,7 @@ import store.babel.babel.global.llm.PromptManager;
 import java.util.List;
 
 @RequiredArgsConstructor
-//@Component
+@Component
 public class ClaudeMessageBuilder
 {
     private static final String SYSTEM_PROMPT = "prompts/post-create-system.md";

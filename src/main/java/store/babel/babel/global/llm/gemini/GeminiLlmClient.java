@@ -23,7 +23,7 @@ import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
-@Component
+//@Component
 public class GeminiLlmClient implements LlmClient<PostAssistRequest>
 {
     private static final String SYSTEM_PROMPT = "prompts/post-create-system.md";
