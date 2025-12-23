@@ -120,3 +120,8 @@ function updateHiddenInput()
 {
     tagHiddenInput.value = [...tags].join(',');
 }
+
+export function getTags()
+{
+    return [...tags];
+}

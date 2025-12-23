@@ -13,6 +13,10 @@ const status = {
 
 export function init()
 {
+    // 현재 화면의 제목과 태그를 status에 동기화
+    status.previousTitle = document.getElementById('title').value || '';
+    status.previousTags = tagUI.getTags();
+
     chatService.handleStream((post) =>
     {
         updateTitle(post);
@@ -93,7 +97,10 @@ function addAssistantMessage(textContent)
 
 function updateTitle(post)
 {
-    if (post.title !== undefined && post.title !== status.previousTitle)
+    // AI가 제목을 제공하지 않았거나 빈 값인 경우 기존 제목 유지
+    if (!post.title || post.title.trim() === '') return;
+
+    if (post.title !== status.previousTitle)
     {
         document.getElementById('title').value = post.title;
         status.previousTitle = post.title;
@@ -106,6 +113,10 @@ function updateTags(post)
 
     // 빈 문자열 제거
     const newTags = post.tags.filter(tag => tag && tag.trim() !== '');
+
+    // AI가 태그를 제공하지 않았고(빈 배열), 기존에 태그가 있는 경우 기존 태그 유지
+    if (newTags.length === 0 && status.previousTags.length > 0) return;
+
     const previousTags = status.previousTags;
 
     // 변경사항이 없으면 스킥
