@@ -252,7 +252,27 @@ function updateMessage(post)
 {
     if (post.message !== undefined && post.message !== status.previousMessage)
     {
-        document.getElementById(status.assistantMessageTextId).textContent = post.message;
+        // 데스크탑 메시지 업데이트
+        const desktopMessage = document.getElementById(status.assistantMessageTextId);
+        if (desktopMessage)
+        {
+            desktopMessage.textContent = post.message;
+        }
+
+        // 모바일 메시지도 함께 업데이트
+        const mobileMessage = document.getElementById(status.assistantMessageTextId + '-mobile');
+        if (mobileMessage)
+        {
+            mobileMessage.textContent = post.message;
+        }
+
+        // 모바일 채팅 영역 스크롤
+        const mobileChatMessages = document.getElementById('mobile-chat-messages');
+        if (mobileChatMessages)
+        {
+            mobileChatMessages.scrollTop = mobileChatMessages.scrollHeight;
+        }
+
         status.previousMessage = post.message;
     }
 }

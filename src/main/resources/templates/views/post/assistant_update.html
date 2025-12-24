@@ -37,6 +37,31 @@
                     transform: translateY(0);
                 }
             }
+            
+            /* 모바일 바텀시트 safe area */
+            .safe-area-bottom {
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+            }
+            
+            /* 모바일 바텀시트 스크롤바 */
+            #mobile-chat-messages::-webkit-scrollbar {
+                width: 4px;
+            }
+            
+            #mobile-chat-messages::-webkit-scrollbar-thumb {
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 2px;
+            }
+            
+            /* FAB 애니메이션 */
+            #ai-chat-fab {
+                transition: transform 0.3s ease, opacity 0.3s ease;
+            }
+            
+            /* 바텀시트 오버스크롤 방지 */
+            #ai-bottom-sheet {
+                overscroll-behavior: contain;
+            }
         </style>
     </head>
     <body class="bg-gray-50">
@@ -288,6 +313,7 @@
         import * as navigationUI from "/js/global/utils/navigationUI.js";
         import * as quillUI from "/js/editor/quill.js";
         import * as tagUI from "/js/global/utils/tagUI.js";
+        import * as mobileBottomSheetUI from "/js/chat/ui/mobileBottomSheetUI.js";
 
         document.addEventListener('DOMContentLoaded', async function ()
         {
@@ -296,6 +322,7 @@
             tagUI.init();             // tagUI를 먼저 초기화
             postAssistantUI.init();
             aiChatUI.init();          // 그 다음 aiChatUI 초기화
+            mobileBottomSheetUI.init(); // 모바일 바텀시트 초기화
             lucide.createIcons();
         });
     </script>
