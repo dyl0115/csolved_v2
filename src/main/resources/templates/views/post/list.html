@@ -26,7 +26,7 @@
                       categories=${categories}">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <!-- 왼쪽 사이드바 -->
-                <div class="lg:col-span-3 space-y-4">
+                <div class="lg:col-span-3 space-y-4 order-2 lg:order-1">
                     
                     <!-- 실시간 인기 게시글 -->
                     <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -149,7 +149,7 @@
                 </div>
                 
                 <!-- 메인 콘텐츠 -->
-                <div class="lg:col-span-6">
+                <div class="lg:col-span-6 order-1 lg:order-2">
                     <!-- 게시글이 없는 경우 -->
                     <div th:if="${#lists.isEmpty(postCards)}" class="bg-white rounded-lg shadow-md p-8 text-center">
                         <i data-lucide="inbox" class="w-16 h-16 mx-auto text-gray-400 mb-4"></i>
@@ -250,7 +250,7 @@
                 </div>
                 
                 <!-- 오른쪽 사이드바 -->
-                <div class="lg:col-span-3 space-y-4">
+                <div class="lg:col-span-3 space-y-4 order-3 lg:order-3">
                     <!-- 최신 활동 -->
                     <div class="bg-hidden hidden bg-white rounded-lg shadow-md overflow-hidden">
                         <div class="bg-green-500 text-white px-4 py-3 flex justify-between items-center space-x-2">

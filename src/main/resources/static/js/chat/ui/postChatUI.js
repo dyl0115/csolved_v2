@@ -194,26 +194,58 @@ async function sanitizeDelta(delta)
     return {ops: validatedOps};
 }
 
+// 마지막 content 업데이트 추적용
+let contentUpdateCounter = 0;
+
 async function updateContent(post)
 {
-    if (post.content === undefined || post.content === status.previousContent) return;
+    if (post.content === undefined) return;
+
+    // 같은 content면 스킵
+    if (post.content === status.previousContent) return;
+
+    const currentUpdate = ++contentUpdateCounter;
+    console.log(`[updateContent #${currentUpdate}] 시작, content 길이: ${post.content.length}`);
 
     const deltaOps = chatService.parseContent(post.content);
-    if (deltaOps)
+
+    console.log(`[updateContent #${currentUpdate}] parseContent 결과:`, deltaOps ? '성공' : '실패 (null)');
+
+    if (!deltaOps)
     {
-        // 이미지 URL 검증
-        const sanitizedDelta = await sanitizeDelta(deltaOps);
-
-        const quill = quillUI.getQuill();
-
-        if (quill)
-        {
-            quill.setContents(sanitizedDelta, 'silent');
-            document.getElementById('content').value = quill.root.innerHTML;
-        }
-
-        status.previousContent = post.content;
+        console.log(`[updateContent #${currentUpdate}] deltaOps가 null이라 스킵`);
+        return;
     }
+
+    // deltaOps가 배열이므로 {ops: [...]} 형태로 변환
+    const delta = Array.isArray(deltaOps) ? {ops: deltaOps} : deltaOps;
+
+    console.log(`[updateContent #${currentUpdate}] delta 생성됨, ops 개수: ${delta.ops?.length}`);
+
+    // 이미지 URL 검증 (비동기)
+    const sanitizedDelta = await sanitizeDelta(delta);
+
+    // 비동기 작업 후 다른 업데이트가 있었는지 확인
+    if (currentUpdate !== contentUpdateCounter)
+    {
+        console.log(`[updateContent #${currentUpdate}] 새 업데이트(#${contentUpdateCounter})가 있어서 스킵`);
+        return;
+    }
+
+    const quill = quillUI.getQuill();
+
+    console.log(`[updateContent #${currentUpdate}] quill 존재: ${!!quill}`);
+
+    if (quill)
+    {
+        console.log(`[updateContent #${currentUpdate}] setContents 호출`);
+        quill.setContents(sanitizedDelta, 'silent');
+        document.getElementById('content').value = quill.root.innerHTML;
+        console.log(`[updateContent #${currentUpdate}] setContents 완료`);
+    }
+
+    status.previousContent = post.content;
+    console.log(`[updateContent #${currentUpdate}] 완료`);
 }
 
 function updateMessage(post)

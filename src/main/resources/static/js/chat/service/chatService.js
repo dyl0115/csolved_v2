@@ -35,29 +35,39 @@ export function parseContent(content)
     try
     {
         const delta = JSON.parse(content);
+        console.log('[parseContent] JSON.parse 성공:', delta);
 
         if (delta?.ops && Array.isArray(delta.ops))
         {
+            console.log('[parseContent] delta.ops 반환, 길이:', delta.ops.length);
             return delta.ops;
+        } else
+        {
+            console.log('[parseContent] delta.ops가 없거나 배열이 아님:', delta);
         }
     }
     catch (error)
     {
+        console.log('[parseContent] JSON.parse 실패, jsonrepair 시도:', error.message);
         try
         {
             const repaired = jsonrepair(content);
             const delta = JSON.parse(repaired);
+            console.log('[parseContent] jsonrepair 성공:', delta);
 
-            if (delta?.ops && Arrays.isArray(delta.ops))
+            if (delta?.ops && Array.isArray(delta.ops))
             {
+                console.log('[parseContent] repaired delta.ops 반환, 길이:', delta.ops.length);
                 return delta.ops;
             }
         }
         catch (error2)
         {
+            console.log('[parseContent] jsonrepair도 실패:', error2.message);
             return null;
         }
     }
+    console.log('[parseContent] null 반환 (ops 없음)');
     return null;
 }
 

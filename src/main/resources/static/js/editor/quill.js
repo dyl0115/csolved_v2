@@ -50,6 +50,9 @@ function setEvents()
     {
         document.getElementById('content').value = quill.root.innerHTML;
     });
+
+    // 붙여넣기 이벤트 처리 (base64 이미지 자동 업로드)
+    quill.root.addEventListener('paste', handlePaste);
 }
 
 export function getQuill()
@@ -112,6 +115,141 @@ async function imageHandler()
         hideLoading(range.index);
         handleError(error);
     }
+}
+
+/**
+ * 붙여넣기 이벤트 핸들러
+ * - 클립보드에서 이미지 파일이 있으면 업로드
+ * - HTML에 base64 이미지가 있으면 업로드
+ */
+async function handlePaste(event)
+{
+    const clipboardData = event.clipboardData;
+    if (!clipboardData) return;
+
+    // 1. 클립보드에 이미지 파일이 있는 경우 (스크린샷, 파일 복사 등)
+    const imageFile = getImageFileFromClipboard(clipboardData);
+    if (imageFile)
+    {
+        event.preventDefault();
+        await uploadAndInsertImage(imageFile);
+        return;
+    }
+
+    // 2. HTML에 base64 이미지가 있는 경우 (웹에서 이미지 복사)
+    const html = clipboardData.getData('text/html');
+    if (html && containsBase64Image(html))
+    {
+        event.preventDefault();
+        await handleBase64ImagePaste(html);
+    }
+}
+
+/**
+ * 클립보드에서 이미지 파일 추출
+ */
+function getImageFileFromClipboard(clipboardData)
+{
+    const items = clipboardData.items;
+    for (let i = 0; i < items.length; i++)
+    {
+        if (items[i].type.startsWith('image/'))
+        {
+            return items[i].getAsFile();
+        }
+    }
+    return null;
+}
+
+/**
+ * HTML에 base64 이미지가 포함되어 있는지 확인
+ */
+function containsBase64Image(html)
+{
+    return html.includes('data:image/');
+}
+
+/**
+ * base64 이미지가 포함된 HTML 붙여넣기 처리
+ */
+async function handleBase64ImagePaste(html)
+{
+    // base64 이미지 추출
+    const base64Regex = /data:image\/(png|jpeg|jpg|gif|webp);base64,[A-Za-z0-9+/=]+/g;
+    const matches = html.match(base64Regex);
+
+    if (!matches || matches.length === 0) return;
+
+    const range = quill.getSelection() || {index: quill.getLength()};
+
+    for (const base64Data of matches)
+    {
+        try
+        {
+            showLoading(range.index);
+
+            // base64 → File 변환
+            const file = base64ToFile(base64Data);
+
+            // 업로드
+            const imageUrl = await uploadFile(file);
+
+            hideLoading(range.index);
+            insertImage(range.index, imageUrl);
+        }
+        catch (error)
+        {
+            hideLoading(range.index);
+            console.error('base64 이미지 업로드 실패:', error);
+            handleError(error);
+        }
+    }
+}
+
+/**
+ * 이미지 파일 업로드 및 에디터에 삽입
+ */
+async function uploadAndInsertImage(file)
+{
+    const range = quill.getSelection() || {index: quill.getLength()};
+
+    showLoading(range.index);
+
+    try
+    {
+        const imageUrl = await uploadFile(file);
+        hideLoading(range.index);
+        insertImage(range.index, imageUrl);
+    }
+    catch (error)
+    {
+        hideLoading(range.index);
+        handleError(error);
+    }
+}
+
+/**
+ * base64 데이터를 File 객체로 변환
+ */
+function base64ToFile(base64Data)
+{
+    // data:image/png;base64,xxxxx 형식 파싱
+    const [header, data] = base64Data.split(',');
+    const mimeMatch = header.match(/data:(image\/\w+);base64/);
+    const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
+    const extension = mimeType.split('/')[1];
+
+    // base64 → binary
+    const binaryString = atob(data);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++)
+    {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // File 객체 생성
+    const blob = new Blob([bytes], {type: mimeType});
+    return new File([blob], `pasted-image-${Date.now()}.${extension}`, {type: mimeType});
 }
 
 // function videoHandler()

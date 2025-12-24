@@ -284,9 +284,9 @@
         {
             navigationUI.init();
             quillUI.init('#editor');
+            tagUI.init();             // tagUI를 먼저 초기화
             postAssistantUI.init();
-            aiChatUI.init();
-            tagUI.init();
+            aiChatUI.init();          // 그 다음 aiChatUI 초기화
             lucide.createIcons();
         });
     </script>

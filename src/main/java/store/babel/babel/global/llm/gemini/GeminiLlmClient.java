@@ -18,6 +18,7 @@ import store.babel.babel.global.exception.ExceptionCode;
 import store.babel.babel.global.llm.PromptManager;
 import store.babel.babel.global.llm.LlmClient;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +39,23 @@ public class GeminiLlmClient implements LlmClient<PostAssistRequest>
     {
         historyManager.createHistory(userId,
                 () -> googleClient.chats.create("gemini-2.0-flash-lite"));
+
+    }
+
+    public void test()
+    {
+        List<Content> history = new ArrayList<>();
+
+        history.add(Content.builder()
+                .role("user")
+                .parts(Part.builder().text("안녕 너는 누구니?").build())
+                .build());
+
+        history.add(Content.builder()
+                .role("model")
+                .parts(Part.builder().text("저는 Google에서 개발한 Gemini입니다.").build())
+                .build());
+
     }
 
     @Override
@@ -70,6 +88,7 @@ public class GeminiLlmClient implements LlmClient<PostAssistRequest>
                 .build();
 
         Chat session = historyManager.getHistory(request.getAuthorId());
+
         try (ResponseStream<GenerateContentResponse> streamResponse
                      = session.sendMessageStream(promptManager.loadAndRender(USER_PROMPT, request), config))
         {
