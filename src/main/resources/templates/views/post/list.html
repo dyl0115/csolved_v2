@@ -164,11 +164,6 @@
                     
                     <!-- 게시글이 있는 경우: 작성 버튼 -->
                     <div th:if="${!#lists.isEmpty(postCards)}" class="mb-4 flex justify-end">
-                        <a class="inline-flex items-center space-x-2 bg-gray-800 text-white px-6 py-3 mr-3 rounded-lg hover:bg-gray-700 transition shadow-md"
-                           th:href="@{/ai/post/createForm}">
-                            <i data-lucide="bot" class="w-5 h-5"></i>
-                            <span>AI와 게시글 작성</span>
-                        </a>
                         <a class="inline-flex items-center space-x-2 bg-gray-800 text-white px-6 py-3 rounded-lg hover:bg-gray-700 transition shadow-md"
                            th:href="@{/post/createForm}">
                             <i data-lucide="edit" class="w-5 h-5"></i>

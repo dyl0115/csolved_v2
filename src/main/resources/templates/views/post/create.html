@@ -16,10 +16,19 @@
         
         <div class="max-w-5xl mx-auto py-8 px-4">
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <!-- 헤더 -->
                 <div class="bg-gray-900 text-white px-6 py-4">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="pen-tool" class="w-5 h-5"></i>
-                        <h4 class="text-xl font-semibold">글 작성하기</h4>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                            <h4 class="text-xl font-semibold">글 작성하기</h4>
+                        </div>
+                        <a th:href="@{/ai/post/createForm}">
+                            <button class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white text-sm font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl">
+                                <span>✨</span>
+                                <span>AI와 작성하기</span>
+                            </button>
+                        </a>
                     </div>
                 </div>
                 
