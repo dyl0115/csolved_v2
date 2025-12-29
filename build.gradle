@@ -5,6 +5,10 @@ plugins {
     id "com.gorylenko.gradle-git-properties" version "2.4.1"
 }
 
+gitProperties {
+    failOnNoGitDirectory = false
+}
+
 group = 'store.csolved'
 version = '0.0.1-SNAPSHOT'
 
