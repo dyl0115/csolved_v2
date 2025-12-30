@@ -40,6 +40,12 @@ aws:
     bucket-name: ${BUCKET_NAME}
     region: ${AWS_REGION}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 logging:
   level:
     root: INFO

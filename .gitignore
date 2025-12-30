@@ -38,3 +38,7 @@ out/
 
 ### Environment ###
 .env
+
+### Nginx (생성되는 파일) ###
+nginx/nginx.conf
+nginx/active_app

@@ -18,6 +18,10 @@ WORKDIR /app
 COPY --from=builder /app/build/libs/*.jar app.jar
 
 ENV TZ=Asia/Seoul
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime  \
+    && echo $TZ > /etc/timezone  \
+    && apt-get update  \
+    && apt-get install -y curl  \
+    && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=dev", "app.jar"]
