@@ -24,7 +24,7 @@ http {
         }
 
         location /api/ai/post/connect {
-            proxy_pass http://spring:8080;
+            proxy_pass http://backend;
 
             # SSE 필수 설정
             proxy_buffering off;
