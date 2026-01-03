@@ -58,11 +58,13 @@ public class ClaudeLlmClient implements LlmClient<PostAssistRequest>
         }
         catch (AnthropicServiceException exception)
         {
-            // 예외를 더 구체적으로
-            if (exception.statusCode() == 429)
-            {
-                throw new BabelException(ExceptionCode.AI_RESOURCE_EXHAUSTED);
-            }
+//            if (exception.statusCode() == 429)
+//            {
+//                throw new BabelException(ExceptionCode.AI_RESOURCE_EXHAUSTED);
+//            }
+
+            log.error("앤트로픽 서버 예외 발생" + exception.statusCode() + " "
+                    + exception.getMessage());
         }
 
         historyManager.closeTurn(userId, parseResponse(accumulator));

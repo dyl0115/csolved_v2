@@ -27,7 +27,7 @@ public class AssistantChatSession
     {
         try
         {
-            log.debug("SSE 전송: {}", text);
+            log.info("SSE 전송: {}", text);
             chatEmitter.send(SseEmitter.event()
                     .name("message")
                     .data(text));

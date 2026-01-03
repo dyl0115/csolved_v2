@@ -46,7 +46,7 @@ wait_for_health()
   local RETRY_COUNT=0
 
   while [ $RETRY_COUNT -lt $MAX_RETRY ]; do
-    local HEALTH=$(docker inspect --format='{{.State.Health.Status}}' csolved-app-$NEXT_APP-1 2>/dev/null || echo "starting")
+    local HEALTH=$(docker inspect --format='{{.State.Health.Status}}' csolved_v2-app-$NEXT_APP-1 2>/dev/null || echo "starting")
 
     if [ "$HEALTH" == "healthy" ]; then
         echo "헬스 체크 성공"

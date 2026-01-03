@@ -22,5 +22,24 @@ http {
             proxy_send_timeout 60s;
             proxy_read_timeout 60s;
         }
+
+        location /api/ai/post/connect {
+            proxy_pass http://spring:8080;
+
+            # SSE 필수 설정
+            proxy_buffering off;
+            proxy_cache off;
+            proxy_http_version 1.1;
+            proxy_set_header Connection '';
+
+            # 타임아웃 (Spring SseEmitter timeout보다 길게)
+            proxy_read_timeout 3600s;
+            proxy_send_timeout 3600s;
+
+            # 헤더 전달
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        }
     }
 }
