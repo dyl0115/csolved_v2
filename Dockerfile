@@ -24,4 +24,4 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime  \
     && apt-get install -y curl  \
     && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=dev", "app.jar"]
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=prod", "app.jar"]

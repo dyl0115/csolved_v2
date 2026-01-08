@@ -4,19 +4,18 @@ spring:
       max-file-size: 500MB
       max-request-size: 500MB
   datasource:
-    driver-class-name: ${DB_DRIVER}
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DEV_DB_URL}
+    username: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
 
   flyway:
     enabled: true
     baseline-on-migrate: true
     locations: classpath:db/migration
-
-    url: ${DB_URL}
-    user: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${DEV_DB_URL}
+    user: ${DEV_DB_USERNAME}
+    password: ${DEV_DB_PASSWORD}
 
   thymeleaf:
     prefix: classpath:/templates
@@ -32,6 +31,7 @@ mybatis:
     - classpath*:store/csolved/csolved/**/mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 aws:
   s3:
@@ -44,19 +44,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus,health,metrics
-  server:
-    port: ${PROMETHEUS_PORT}
-
-server:
-  servlet:
-    session:
-      timeout: 720m
-  tomcat:
-    mbeanregistry:
-      enabled: true
+        include: health
 
 logging:
   level:
     root: INFO
-    store.csolved.csolved.domain.post.mapper.store.csolved.csolved.domain.community.mapper.CommunityMapper: TRACE
