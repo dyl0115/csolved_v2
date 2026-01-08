@@ -2,30 +2,31 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Babel 회원가입</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://unpkg.com/lucide@latest"></script>
     </head>
     <body>
-        <section class="bg-gray-100">
-            <div class="min-h-screen flex items-center justify-center p-4">
+        <section class="bg-gray-100 min-h-screen">
+            <div class="min-h-screen flex items-center justify-center px-4 py-8 sm:p-4">
                 <div class="w-full max-w-md bg-white rounded-lg shadow-lg">
                     
                     <!-- 로고 -->
-                    <div class="text-center p-6">
-                        <div class="mx-auto bg-blue-500 rounded-full w-16 h-16 flex items-center justify-center mb-4">
-                            <i data-lucide="code" class="text-white w-8 h-8"></i>
+                    <div class="text-center p-4 sm:p-6">
+                        <div class="mx-auto bg-blue-500 rounded-full w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center mb-3 sm:mb-4">
+                            <i data-lucide="code" class="text-white w-7 h-7 sm:w-8 sm:h-8"></i>
                         </div>
-                        <h1 class="text-2xl font-bold text-gray-800">Babel</h1>
-                        <p class="text-gray-600 mt-2">생각을 기록하고 나눌 수 있는 공간</p>
+                        <h1 class="text-xl sm:text-2xl font-bold text-gray-800">Babel</h1>
+                        <p class="text-gray-600 mt-2 text-sm sm:text-base">생각을 기록하고 나눌 수 있는 공간</p>
                     </div>
                     
                     <!-- 회원가입 입력 폼 -->
-                    <div class="p-6">
-                        <form id="signUpForm">
+                    <div class="p-4 sm:p-6">
+                        <form id="signUpForm" class="space-y-4">
                             
                             <!-- 회원가입 이메일 입력창 -->
-                            <div class="mb-4">
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     이메일 주소
                                 </label>
@@ -34,13 +35,13 @@
                                         name="email"
                                         id="email"
                                         placeholder="사용할 이메일 주소"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                        class="w-full px-4 py-3 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 >
                                 <span id="email-error" class="text-red-500 text-sm mt-1 hidden"></span>
                             </div>
                             
                             <!-- 회원가입 닉네임 입력창 -->
-                            <div class="mb-4">
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     닉네임
                                 </label>
@@ -49,13 +50,13 @@
                                         name="nickname"
                                         id="nickname"
                                         placeholder="커뮤니티에서 사용할 닉네임 (2-8자)"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                        class="w-full px-4 py-3 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 >
                                 <span id="nickname-error" class="text-red-500 text-sm mt-1 hidden"></span>
                             </div>
                             
                             <!-- 회원가입 비밀번호 입력창 -->
-                            <div class="mb-4">
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     비밀번호
                                 </label>
@@ -64,13 +65,13 @@
                                         name="password"
                                         id="password"
                                         placeholder="8자 이상, 영문/숫자/특수문자 조합"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                        class="w-full px-4 py-3 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 >
                                 <span id="password-error" class="text-red-500 text-sm mt-1 hidden"></span>
                             </div>
                             
                             <!-- 회원가입 비밀번호 확인 입력창 -->
-                            <div class="mb-4">
+                            <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     비밀번호 확인
                                 </label>
@@ -79,33 +80,34 @@
                                         name="passwordConfirm"
                                         id="passwordConfirm"
                                         placeholder="비밀번호를 다시 입력해주세요"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
+                                        class="w-full px-4 py-3 sm:py-2 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 >
                                 <span id="passwordConfirm-error" class="text-red-500 text-sm mt-1 hidden"></span>
                             </div>
                             
                             <!-- 개인정보 처리 동의 체크박스 -->
-                            <div class="mb-5">
+                            <div>
                                 <div class="flex items-center gap-2">
-                                    <input type="checkbox" name="agreeTerms" id="agreeTerms" class="w-4 h-4">
-                                    <label class="text-xs text-gray-600">이용약관 및 개인정보처리방침에 동의합니다</label>
+                                    <input type="checkbox" name="agreeTerms" id="agreeTerms"
+                                           class="w-5 h-5 sm:w-4 sm:h-4">
+                                    <label for="agreeTerms" class="text-sm sm:text-xs text-gray-600">이용약관 및 개인정보처리방침에
+                                                                                                     동의합니다</label>
                                 </div>
                                 <span id="agreeTerms-error" class="text-red-500 text-sm mt-1 hidden"></span>
                             </div>
                             
                             <!-- 에러 메시지 표시 영역 -->
-                            <div class="mb-5">
+                            <div>
                                 <div id="errorMessage"
                                      class="p-4 text-sm text-red-700 bg-red-100 hidden rounded-lg">
                                 </div>
                             </div>
                             
-                            
                             <!-- 회원가입 버튼 -->
                             <button
                                     type="submit"
                                     id="submitBtn"
-                                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2">
+                                    class="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-medium py-3.5 sm:py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center gap-2 text-base">
                                 <i data-lucide="file-pen" class="w-5 h-5"></i>
                                 <span>회원가입</span>
                             </button>
@@ -113,7 +115,7 @@
                         </form>
                         
                         <!-- 로그인 페이지로 이동 링크 -->
-                        <div class="text-center mt-4">
+                        <div class="text-center mt-4 py-2">
                             <p class="text-sm text-gray-600">
                                 이미 계정이 있으신가요?
                                 <a href="/auth/signIn" class="text-blue-600 hover:underline font-medium">로그인</a>
