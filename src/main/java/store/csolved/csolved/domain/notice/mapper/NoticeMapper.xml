@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="store.csolved.csolved.domain.notice.mapper.NoticeMapper">
+
+    <resultMap id="noticeMap" type="store.csolved.csolved.domain.notice.dto.Notice">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="content" column="content"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="answerCount" column="answer_count"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+    </resultMap>
+
+    <resultMap id="noticeCardMap" type="store.csolved.csolved.domain.notice.dto.NoticeCard">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="answerCount" column="answer_count"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+    </resultMap>
+
+    <insert id="saveNotice" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO posts(title,
+                          post_type,
+                          anonymous,
+                          user_id,
+                          content,
+                          category_id,
+                          created_at)
+        VALUES (#{title},
+                #{postType},
+                #{anonymous},
+                #{authorId},
+                #{content},
+                #{categoryId},
+                CURRENT_TIMESTAMP);
+    </insert>
+
+    <update id="updateNotice">
+        UPDATE posts
+        SET title       = #{title},
+            content     = #{content},
+            category_id = #{categoryId},
+            modified_at = CURRENT_TIMESTAMP
+        WHERE id = #{noticeId};
+    </update>
+
+    <update id="deleteNotice">
+        UPDATE posts
+        SET deleted_at = CURRENT_TIMESTAMP
+        WHERE id = #{noticeId};
+    </update>
+
+    <select id="getNotice" resultMap="noticeMap">
+        SELECT p.id           id,
+               p.title        title,
+               u.id           author_id,
+               u.nickname     author_nickname,
+               p.anonymous    anonymous,
+               p.content      content,
+               p.views        views,
+               p.likes        likes,
+               p.answer_count answer_count,
+               p.category_id  category_id,
+               p.created_at   created_at,
+               p.modified_at  modified_at
+        FROM posts p
+                 LEFT JOIN users u ON p.user_id = u.id
+        WHERE p.id = #{noticeId};
+    </select>
+
+    <select id="getNoticeCards" resultMap="noticeCardMap">
+        SELECT
+        p.id id,
+        p.title title,
+        p.anonymous anonymous,
+        p.user_id author_id,
+        u.nickname author_nickname,
+        p.views views,
+        p.likes likes,
+        p.category_id category_id,
+        p.answer_count answer_count,
+        p.created_at created_at,
+        p.modified_at modified_at
+        FROM posts p
+        LEFT JOIN users u ON u.id = p.user_id
+        WHERE p.deleted_at IS NULL
+        AND p.post_type = 0
+        <if test="titleKeywordProvided">
+            AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        <if test="authorKeywordProvided">
+            AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        ORDER BY p.created_at DESC
+        LIMIT #{limit} OFFSET #{offset};
+    </select>
+
+    <select id="countNotices">
+        SELECT COUNT(p.id)
+        FROM posts p
+        WHERE p.deleted_at IS NULL
+        AND p.post_type = 0
+        <if test="titleKeywordProvided">
+            AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        <if test="authorKeywordProvided">
+            AND p.user_id LIKE CONCAT('%', #{searchKeyword}, '%');
+        </if>
+    </select>
+
+    <select id="hasUserLiked">
+        select EXISTS(select 1
+                      from post_likes
+                      where user_id = #{authorId}
+                        and post_id = #{noticeId});
+    </select>
+
+    <update id="increaseLikes">
+        update posts
+        set likes = likes + 1
+        where id = #{noticeId};
+    </update>
+
+    <insert id="addUserLike">
+        insert into post_likes(post_id, user_id)
+        values (#{noticeId}, #{authorId});
+    </insert>
+
+    <update id="increaseView">
+        update posts
+        set views = views + 1
+        where id = #{noticeId};
+    </update>
+</mapper>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="store.csolved.csolved.domain.answer.mapper.AnswerMapper">
+    <resultMap id="answerMap" type="store.csolved.csolved.domain.answer.dto.Answer">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorProfileImage" column="profile_image"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="content" column="content"/>
+        <result property="likes" column="likes"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="saveAnswer" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO answers(post_id,
+                            author_id,
+                            anonymous,
+                            content,
+                            created_at)
+        VALUES (#{postId},
+                #{authorId},
+                #{anonymous},
+                #{content},
+                CURRENT_TIMESTAMP);
+    </insert>
+
+    <select id="getAnswers">
+        SELECT a.id            id,
+               u.id            author_id,
+               u.profile_image author_profile_image,
+               u.nickname      author_nickname,
+               a.anonymous     anonymous,
+               a.content       content,
+               a.likes         likes,
+               a.created_at    created_at,
+               a.deleted_at    deleted_at
+        FROM answers a
+                 LEFT JOIN users u ON u.id = a.author_id
+        WHERE post_id = #{postId};
+    </select>
+
+    <select id="getAnswer" resultMap="answerMap">
+        SELECT a.id            id,
+               a.post_id       post_id,
+               u.id            author_id,
+               u.profile_image profile_image,
+               u.nickname      author_nickname,
+               a.anonymous     anonymous,
+               a.content       content,
+               a.likes         likes,
+               a.created_at    created_at
+        FROM answers a
+                 LEFT JOIN users u ON u.id = a.author_id
+        WHERE a.id = #{answerId}
+          AND a.deleted_at IS NULL;
+    </select>
+
+    <select id="getAnswerForAdmin" resultMap="answerMap">
+        SELECT a.id            id,
+               a.post_id       post_id,
+               u.id            author_id,
+               u.profile_image profile_image,
+               u.nickname      author_nickname,
+               a.anonymous     anonymous,
+               a.content       content,
+               a.likes         likes,
+               a.created_at    created_at
+        FROM answers a
+                 LEFT JOIN users u ON u.id = a.author_id
+        WHERE a.id = #{answerId};
+    </select>
+
+    <select id="getPostId">
+        SELECT post_id
+        FROM answers
+        WHERE id = #{answerId};
+    </select>
+
+    <select id="getAuthorId">
+        SELECT author_id
+        FROM answers
+        WHERE id = #{answerId}
+          AND deleted_at IS NULL;
+    </select>
+
+    <select id="existComments">
+        select exists(select 1
+                      from comments
+                      where answer_id = #{answerId})
+    </select>
+
+    <update id="deleteAnswer">
+        UPDATE answers
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'SELF'
+        WHERE id = #{answerId}
+          AND deleted_at IS NULL;
+    </update>
+
+    <update id="deleteAnswerByAdmin">
+        UPDATE answers
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'ADMIN'
+        WHERE id = #{answerId}
+          AND deleted_at IS NULL;
+    </update>
+
+    <update id="restoreAnswerByAdmin">
+        UPDATE answers
+        SET deleted_at   = NULL,
+            deleted_type = NULL
+        WHERE id = #{answerId}
+          AND deleted_at IS NOT NULL
+          AND deleted_type = 'ADMIN';
+    </update>
+
+    <select id="hasUserLike">
+        SELECT EXISTS(SELECT 1
+                      FROM answer_likes
+                      WHERE answer_id = #{answerId}
+                        AND user_id = #{userId});
+    </select>
+
+    <update id="increaseLikes">
+        UPDATE answers
+        SET likes = likes + 1
+        WHERE id = ${answerId};
+    </update>
+
+    <insert id="addUserLike">
+        INSERT INTO answer_likes(answer_id,
+                                 user_id,
+                                 created_at)
+        VALUES (#{answerId},
+                #{userId},
+                CURRENT_TIMESTAMP);
+    </insert>
+</mapper>

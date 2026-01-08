@@ -1,0 +1,32 @@
+package store.csolved.csolved.domain.notice.dto;
+
+import lombok.Builder;
+import lombok.Getter;
+import store.csolved.csolved.domain.notice.controller.dto.NoticeCreateRequest;
+
+import static store.csolved.csolved.domain.post.dto.PostType.NOTICE;
+
+@Getter
+@Builder
+public class NoticeCreateCommand
+{
+    private Long id;
+    private Long postType;
+    private boolean anonymous;
+    private Long categoryId;
+    private Long authorId;
+    private String title;
+    private String content;
+
+    public static NoticeCreateCommand from(NoticeCreateRequest request)
+    {
+        return NoticeCreateCommand.builder()
+                .postType(NOTICE.getValue())
+                .title(request.getTitle())
+                .content(request.getContent())
+                .authorId(request.getAuthorId())
+                .anonymous(request.isAnonymous())
+                .categoryId(request.getCategoryId())
+                .build();
+    }
+}

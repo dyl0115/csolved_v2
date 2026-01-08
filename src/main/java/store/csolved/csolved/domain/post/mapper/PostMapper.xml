@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="store.csolved.csolved.domain.post.mapper.PostMapper">
+
+    <resultMap id="postMap" type="store.csolved.csolved.domain.post.dto.Post">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="content" column="content"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="answerCount" column="answer_count"/>
+        <result property="bookmarked" column="bookmarked"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+        <collection property="tags" ofType="store.csolved.csolved.domain.tag.dto.Tag">
+            <id property="id" column="tag_id"/>
+            <result property="name" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="postCardMap" type="store.csolved.csolved.domain.post.dto.PostCard">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="authorId" column="author_id"/>
+        <result property="authorNickname" column="author_nickname"/>
+        <result property="anonymous" column="anonymous"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="views" column="views"/>
+        <result property="likes" column="likes"/>
+        <result property="answerCount" column="answer_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="modifiedAt" column="modified_at"/>
+        <collection property="tags" ofType="store.csolved.csolved.domain.tag.dto.Tag">
+            <id property="id" column="tag_id"/>
+            <result property="name" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <insert id="savePost"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO posts(post_type,
+                          user_id,
+                          anonymous,
+                          title,
+                          content,
+                          category_id)
+        VALUES (#{postType},
+                #{authorId},
+                #{anonymous},
+                #{title},
+                #{content},
+                #{categoryId});
+    </insert>
+
+    <update id="updatePost">
+        UPDATE posts
+        SET anonymous   = #{anonymous},
+            title       = #{title},
+            content     = #{content},
+            category_id = #{categoryId},
+            modified_at = CURRENT_TIMESTAMP
+        WHERE id = #{id};
+    </update>
+
+    <update id="deletePost">
+        UPDATE posts
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'SELF'
+        WHERE id = #{postId}
+          AND deleted_at IS NULL;
+    </update>
+
+    <delete id="deletePostByAdmin">
+        UPDATE posts
+        SET deleted_at   = CURRENT_TIMESTAMP,
+            deleted_type = 'ADMIN'
+        WHERE id = #{postId}
+          AND deleted_at IS NULL;
+    </delete>
+
+    <update id="restorePostByAdmin">
+        UPDATE posts
+        SET deleted_at   = NULL,
+            deleted_type = NULL
+        WHERE id = #{postId}
+          AND deleted_at IS NOT NULL
+          AND deleted_type = 'ADMIN';
+    </update>
+
+    <select id="getPost" resultMap="postMap">
+        SELECT p.id                                id,
+               p.title                             title,
+               p.anonymous                         anonymous,
+               p.content                           content,
+               p.views                             views,
+               p.likes                             likes,
+               p.answer_count                      answer_count,
+               p.created_at                        created_at,
+               p.modified_at                       modified_at,
+               u.id                                author_id,
+               u.nickname                          author_nickname,
+               c.id                                category_id,
+               c.name                              category_name,
+               t.id                                tag_id,
+               t.name                              tag_name,
+               EXISTS(SELECT 1
+                      FROM bookmarks b
+                      WHERE b.post_id = p.id
+                        AND b.user_id = #{userId}) bookmarked
+        FROM posts p
+                 LEFT JOIN users u ON p.user_id = u.id
+                 LEFT JOIN category c ON p.category_id = c.id
+                 LEFT JOIN post_tags pt ON p.id = pt.post_id
+                 LEFT JOIN tags t ON t.id = pt.tag_id
+        WHERE p.id = #{postId}
+          AND p.deleted_at IS NULL;
+    </select>
+
+    <select id="countPosts">
+        SELECT COUNT(p.id)
+        FROM posts p
+        LEFT JOIN category c ON p.category_id = c.id
+        LEFT JOIN users u ON p.user_id = u.id
+        WHERE p.deleted_at IS NULL
+        AND p.post_type = 1
+        <if test="categoryProvided">
+            AND p.category_id = #{categoryId}
+        </if>
+        <if test="titleKeywordProvided">
+            AND p.title LIKE CONCAT('%', #{searchKeyword} ,'%')
+        </if>
+        <if test="authorKeywordProvided">
+            AND u.nickname LIKE CONCAT('%', #{searchKeyword} ,'%')
+            AND p.anonymous IS FALSE
+        </if>
+    </select>
+
+    <select id="getPostForAdmin" resultMap="postMap">
+        SELECT p.id                                   id,
+               p.title                                title,
+               p.anonymous                            anonymous,
+               p.content                              content,
+               p.views                                views,
+               p.likes                                likes,
+               p.answer_count                         answer_count,
+               p.created_at                           created_at,
+               p.modified_at                          modified_at,
+               u.id                                   author_id,
+               u.nickname                             author_nickname,
+               c.id                                   category_id,
+               c.name                                 category_name,
+               t.id                                   tag_id,
+               t.name                                 tag_name,
+               EXISTS(SELECT 1
+                      FROM bookmarks b
+                      WHERE b.post_id = p.id
+                        AND b.user_id = #{userId}) AS bookmarked
+        FROM posts p
+                 LEFT JOIN users u ON p.user_id = u.id
+                 LEFT JOIN category c ON p.category_id = c.id
+                 LEFT JOIN post_tags pt ON p.id = pt.post_id
+                 LEFT JOIN tags t ON t.id = pt.tag_id
+        WHERE p.id = #{postId};
+    </select>
+
+    <select id="getPostCards" resultMap="postCardMap">
+        SELECT
+        sub.post_id id,
+        sub.title title,
+        sub.anonymous anonymous,
+        sub.author_id author_id,
+        sub.author_nickname author_nickname,
+        sub.views views,
+        sub.likes likes,
+        sub.answer_count answer_count,
+        sub.created_at created_at,
+        sub.modified_at modified_at,
+        c.id category_id,
+        c.name category_name,
+        t.id tag_id,
+        t.name tag_name
+        FROM (
+        SELECT
+        p.id post_id,
+        p.title title,
+        p.anonymous anonymous,
+        p.user_id author_id,
+        u.nickname author_nickname,
+        p.category_id category_id,
+        p.views views,
+        p.likes likes,
+        p.answer_count answer_count,
+        p.created_at created_at,
+        p.modified_at modified_at
+        FROM posts p
+        LEFT JOIN users u on u.id = p.user_id
+        WHERE p.deleted_at IS NULL
+        AND p.post_type = 1 ## POST 타입은 1
+        <if test="categoryProvided">
+            AND p.category_id = #{categoryId}
+        </if>
+        <if test="titleKeywordProvided">
+            AND p.title LIKE CONCAT('%', #{searchKeyword}, '%')
+        </if>
+        <if test="authorKeywordProvided">
+            AND u.nickname LIKE CONCAT('%', #{searchKeyword}, '%')
+            AND p.anonymous = FALSE
+        </if>
+        ORDER BY
+        <choose>
+            <when test="sortType == null">p.created_at DESC</when>
+            <when test="sortType == 'RECENT'">p.created_at DESC</when>
+            <when test="sortType == 'VIEWS'">p.views DESC</when>
+            <when test="sortType == 'LIKES'">p.likes DESC</when>
+            <when test="sortType == 'ANSWERS'">p.answer_count DESC</when>
+            <otherwise>p.created_at DESC</otherwise>
+        </choose>
+        LIMIT #{limit} OFFSET #{offset}) sub
+        LEFT JOIN category c ON c.id = sub.category_id
+        LEFT JOIN post_tags pt ON pt.post_id = sub.post_id
+        LEFT JOIN tags t ON t.id = pt.tag_id;
+    </select>
+
+    <select id="countAllPosts">
+        SELECT COUNT(p.id)
+        FROM posts p
+        WHERE deleted_at IS NULL;
+    </select>
+
+    <select id="hasUserLiked">
+        SELECT EXISTS(SELECT 1
+                      FROM post_likes
+                      WHERE user_id = #{authorId}
+                        AND post_id = #{postId});
+    </select>
+
+    <update id="increaseLikes">
+        UPDATE posts
+        SET likes = likes + 1
+        WHERE id = #{postId};
+    </update>
+
+    <insert id="addUserLike">
+        INSERT INTO post_likes(post_id,
+                               user_id,
+                               created_at)
+        VALUES (#{postId},
+                #{authorId},
+                CURRENT_TIMESTAMP);
+    </insert>
+
+    <update id="increaseView">
+        UPDATE posts
+        SET views = views + 1
+        WHERE id = #{postId};
+    </update>
+
+    <!-- 내 최근 활동 시간 순으로 댓글, 대댓글 단 글 조회 -->
+    <select id="getAnsweredPosts" resultMap="postCardMap">
+        SELECT p.id           id,
+               p.post_type    post_type,
+               p.title        title,
+               p.anonymous    anonymous,
+               p.user_id      author_id,
+               u.nickname     author_nickname,
+               c.id           category_id,
+               c.name         category_name,
+               p.views        views,
+               p.likes        likes,
+               p.answer_count answer_count,
+               p.created_at   created_at,
+               t.id           tag_id,
+               t.name         tag_name
+        FROM (SELECT post_id, MAX(activity_created_at) AS latest_activity_created_at
+              FROM ((SELECT a.post_id as post_id, a.created_at AS activity_created_at
+                     FROM answers a
+                              JOIN posts p ON p.id = a.post_id
+                     WHERE author_id = #{userId}
+                       AND p.deleted_at IS NULL
+                       AND a.deleted_at IS NULL)
+                    UNION
+                    (SELECT c.post_id as post_id, c.created_at AS activity_created_at
+                     FROM comments c
+                              JOIN posts p on p.id = c.post_id
+                     WHERE author_id = #{userId}
+                       AND p.deleted_at IS NULL
+                       AND c.deleted_at IS NULL)) AS user_answered
+              GROUP BY post_id
+              ORDER BY latest_activity_created_at DESC
+              LIMIT #{pagination.offset}, #{pagination.size}) AS sorted_user_answered
+                 JOIN posts p ON p.id = sorted_user_answered.post_id
+                 JOIN users u ON u.id = p.user_id
+                 JOIN category c ON c.id = p.category_id
+                 LEFT JOIN post_tags pt ON pt.post_id = p.id
+                 LEFT JOIN tags t ON t.id = pt.tag_id
+    </select>
+
+    <!-- 댓글 대댓글 단 글 개수 조회 -->
+    <select id="countAnsweredPosts">
+        SELECT COUNT(*)
+        FROM ((SELECT a.post_id
+               FROM answers a
+                        JOIN posts p ON p.id = a.post_id
+               WHERE a.author_id = #{userId}
+                 AND a.deleted_at IS NULL
+                 AND p.deleted_at IS NULL)
+              UNION
+              (SELECT c.post_id
+               FROM comments c
+                        JOIN posts p ON p.id = c.post_id
+               WHERE c.author_id = #{userId}
+                 AND c.deleted_at IS NULL
+                 AND p.deleted_at IS NULL)) AS user_answered;
+    </select>
+
+    <select id="getMyPosts" resultMap="postCardMap">
+        SELECT up.id           id,
+               up.post_type    post_type,
+               up.id           post_id,
+               up.title        title,
+               up.anonymous    anonymous,
+               up.author_id    author_id,
+               u.nickname      author_nickname,
+               up.category_id  category_id,
+               c.name          category_name,
+               up.views        views,
+               up.likes        likes,
+               up.answer_count answer_count,
+               up.created_at   created_at,
+               t.id            tag_id,
+               t.name          tag_name
+        FROM (SELECT p.id           id,
+                     p.post_type    post_type,
+                     p.title        title,
+                     p.anonymous    anonymous,
+                     p.user_id      author_id,
+                     p.category_id  category_id,
+                     p.views        views,
+                     p.likes        likes,
+                     p.answer_count answer_count,
+                     p.created_at   created_at
+              FROM posts p
+              WHERE p.user_id = #{userId}
+                AND p.deleted_at IS NULL
+              ORDER BY p.id DESC
+              LIMIT #{pagination.offset}, #{pagination.size}) up
+                 LEFT JOIN users u ON up.author_id = u.id
+                 LEFT JOIN category c ON up.category_id = c.id
+                 LEFT JOIN post_tags pt ON pt.post_id = up.id
+                 LEFT JOIN tags t ON t.id = pt.tag_id
+    </select>
+
+    <select id="countMyPosts">
+        SELECT count(p.id)
+        FROM posts p
+        WHERE p.user_id = #{userId}
+          AND deleted_at IS NULL;
+    </select>
+
+    <select id="getAuthorId">
+        SELECT user_id
+        FROM posts
+        WHERE id = #{postId}
+          AND deleted_at IS NULL;
+    </select>
+
+    <!-- 내 북마크 게시글 조회-->
+    <select id="getBookmarkedPosts" resultMap="postCardMap">
+        SELECT sub.post_id    id,
+               p.post_type    post_type,
+               p.title        title,
+               p.anonymous    anonymous,
+               sub.author_id  author_id,
+               u.nickname     author_nickname,
+               c.id           category_id,
+               c.name         category_name,
+               p.views        views,
+               p.likes        likes,
+               p.answer_count answer_count,
+               p.created_at   created_at,
+               t.id           tag_id,
+               t.name         tag_name
+        FROM (SELECT b.id      id,
+                     b.post_id post_id,
+                     b.user_id author_id
+              FROM bookmarks b
+              WHERE b.user_id = #{userId}
+              ORDER BY b.id DESC
+              LIMIT #{pagination.offset}, #{pagination.size}) sub
+                 LEFT JOIN posts p ON p.id = sub.post_id
+                 LEFT JOIN users u ON u.id = sub.author_id
+                 LEFT JOIN category c ON c.id = p.category_id
+                 LEFT JOIN post_tags pt ON p.id = pt.post_id
+                 LEFT JOIN tags t ON pt.tag_id = t.id;
+    </select>
+
+    <update id="increaseAnswerCount">
+        UPDATE posts
+        SET answer_count = answer_count + 1
+        WHERE id = #{postId};
+    </update>
+
+    <update id="decreaseAnswerCount">
+        UPDATE posts
+        SET answer_count = answer_count - 1
+        WHERE id = #{postId};
+    </update>
+</mapper>
